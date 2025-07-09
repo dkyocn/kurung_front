@@ -8,13 +8,22 @@
   user-select: none;
 }
 
+.container {
+  width: 1920px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.7rem 1.5rem;
+}
+
 .leftWrapper {
   display: flex;
   align-items: center;
 }
 
 .menuButton {
-  font-size: 1.5rem;
+  font-size: 15pt;
   background: none;
   border: none;
   cursor: pointer;
@@ -24,7 +33,7 @@
 }
 
 .logoLink {
-  font-size: 1.2rem;
+  font-size: 15pt;
   font-weight: bold;
   text-decoration: none;
   color: black;
@@ -40,11 +49,11 @@
 
 .navItem {
   text-decoration: none;
-  color: #333;
-  font-size: 0.95rem;
+  color: #000;
+  font-size: 15pt;
 }
 
 .navItem:hover {
-  color: #000;
+  color: #88C71F;
   font-weight: bold;
 }

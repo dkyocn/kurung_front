@@ -50,8 +50,11 @@ function SimpleCalendar() {
         prevLabel="〈"
         nextLabel="〉"
         locale="ko-KR"
-        formatShortWeekday={(locale, date) => (date.getDay() + 1).toString()}
-        formatDay={(locale, date) => String(date.getDate())}
+        formatShortWeekday={(locale, date) => {
+          const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+          return weekdays[date.getDay()];
+        }}
+        formatDay={(locale, date) => `${date.getDate()}`}
       />
     </div>
   );

@@ -1,0 +1,50 @@
+/* src/styles/footer.css */
+
+.footer {
+  background-color: #ffffff;
+  color: #000000;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 12px;
+  border-top: 1px solid #ddd;
+  line-height: 1.6;
+}
+
+.footer-top {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 50px;
+  margin-top: 20px;
+}
+
+.footer-top a {
+  color: #000;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.footer-top a:hover {
+  text-decoration: none; /* 밑줄 제거 */
+  font-weight: bold;
+  color: #88c71f; /* 글씨 색상 변경 */
+}
+
+.footer-divider {
+  border-top: 1px solid #ddd;
+  margin: 20px auto 30px auto;
+  max-width: 1000px;
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.footer-section {
+  flex: 1 1 30%;
+  min-width: 250px;
+  max-width: 920px;
+  padding-left: 30px;
+}

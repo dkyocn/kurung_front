@@ -1,33 +1,45 @@
-// import React from 'react';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import apiClient from '../src/utils/axios';
 import './App.css';
 
-// 사용할 컴포넌트 불러오기 : 모든 페이지에 적용됨
-import Header from './components/common/Header';
-import Footer from './components/common/Footer';
-
-// 별도로 작성된 라우터 등록 설정 파일을 불러오기함
-import AppRouter from './routers/router';
+import CheckButton from './components/buttons/CheckButton';
+import UpdateButton from './components/buttons/UpdateButton';
+import SaveButton from './components/buttons/SaveButton';
+import CreateButton from './components/buttons/CreateButton';
+import DeleteButton from './components/buttons/DeleteButton'; // 
 
 function App() {
-  const [dietId, setDietId] = useState('');
+  const [isChecked, setIsChecked] = useState(false);
 
-  useEffect(() => {
-    apiClient.get('/diet/1').then((res) => {
-      setDietId(res.data.dietId);
-    });
-  }, []);
-  return <div className="App">백엔드 데이터 : {dietId}</div>;
-  // return (
-  //   <Router>
-  //     {/* 라우터 등록은 App.js 에서 설정함 */}
-  //     <Header /> {/* 모든 페이지에 공통으로 표시 */}
-  //     <AppRouter /> {/* 라우터 설정 */}
-  //     <Footer /> {/* 모든 페이지에 공통으로 표시 */}
-  //   </Router>
-  // );
+  const handleCheck = () => setIsChecked((prev) => !prev);
+  const handleUpdate = () => alert("수정 버튼이 클릭되었습니다!");
+  const handleSave = () => alert("저장 버튼이 클릭되었습니다!");
+  const handleCreate = () => alert("생성 버튼이 클릭되었습니다!");
+  const handleDelete = () => alert("삭제 버튼이 클릭되었습니다!"); // 
+
+  return (
+    <Router>
+      <div className="App" style={{ padding: '50px' }}>
+        <CheckButton
+          label="체크박스 테스트!"
+          checked={isChecked}
+          onChange={handleCheck}
+        />
+
+        <h2 style={{ marginTop: '40px' }}>UpdateButton 테스트 화면</h2>
+        <UpdateButton onClick={handleUpdate} />
+
+        <h2 style={{ marginTop: '40px' }}>SaveButton 테스트 화면</h2>
+        <SaveButton onClick={handleSave} />
+
+        <h2 style={{ marginTop: '40px' }}>CreateButton 테스트 화면</h2>
+        <CreateButton onClick={handleCreate} />
+
+        <h2 style={{ marginTop: '40px' }}>DeleteButton 테스트 화면</h2>
+        <DeleteButton onClick={handleDelete} /> {/* ✅ 추가 */}
+      </div>
+    </Router>
+  );
 }
 
 export default App;

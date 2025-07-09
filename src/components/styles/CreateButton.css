@@ -1,0 +1,26 @@
+/* UpdateButton.css */
+
+.update-button-wrapper {
+  display: flex;
+  align-items: center;
+  font-family: 'Pretendard', sans-serif;
+  font-size: 14px;
+  color: #000;
+}
+
+/* 버튼 기본 스타일 */
+.update-button {
+  background-color: #88C71F; 
+  color: white; /* 글자색 하얀색 */
+  border: none;
+  border-radius: 12px;     
+  width: 84px;             
+  height: 39px;            
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* 클릭된 느낌 줄 수도 있음 */
+.update-button:active {
+  transform: scale(0.97);
+}

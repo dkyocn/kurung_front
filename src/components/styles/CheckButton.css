@@ -1,0 +1,53 @@
+.checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  font-family: 'Pretendard', sans-serif;
+  font-size: 16px;
+  color: #000; /* 텍스트는 검정색 */
+}
+
+/* 기본 체크박스 숨김 */
+.checkbox-wrapper input[type="checkbox"] {
+  display: none;
+}
+
+/* 라벨 커스텀 */
+.checkbox-wrapper label {
+  position: relative;
+  padding-left: 34px;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* 체크박스 네모 모양 (기본 회색 박스) */
+.checkbox-wrapper label::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  background-color: #EDEDED; /* 체크 전 회색 */
+  border: none;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+/* 체크된 상태 - 연두색 배경 */
+.checkbox-wrapper input[type="checkbox"]:checked + label::before {
+  background-color: #88C71F;
+}
+
+/* 체크 표시 (✓ 표시) */
+.checkbox-wrapper input[type="checkbox"]:checked + label::after {
+  content: '';
+  position: absolute;
+  left: 8px;  /* 왼쪽 위치를 살짝 조정 (기존: 8px → 9px or 10px) */
+  top: 45%;
+  transform: translateY(-50%) rotate(50deg);
+  width: 6px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+}

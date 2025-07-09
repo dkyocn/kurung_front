@@ -1,14 +1,22 @@
-// src/components/buttons/UpdateButton.js
+// src/components/buttons/SaveButton.js
 
-import React from "react";
-import "../styles/UpdateButton.css"; // 버튼 스타일 분리
+import React from 'react';
+import '../styles/SaveButton.css'; // 버튼 스타일 분리
 
-const UpdateButton = ({ label = "저장", onClick }) => {
+const SaveButton = ({ label = '저장', link, onClick }) => {
+  const handleClick = () => {
+    if (onClick) {
+      onClick(); // onClick 우선 실행
+    } else if (link) {
+      window.location.href = link;
+    }
+  };
+
   return (
-    <button className="update-button" onClick={onClick}>
-      {label}
+    <button className="save-button" onClick={handleClick}>
+      저장
     </button>
   );
 };
 
-export default UpdateButton;
+export default SaveButton;

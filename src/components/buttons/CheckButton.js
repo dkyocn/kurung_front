@@ -1,22 +1,22 @@
 // src/components/buttons/CheckButton.js
 
-import React from "react";
-import "../styles/CheckButton.css"; // 만든 CSS 불러오기
+import React from 'react';
+import '../styles/CheckButton.css'; // 만든 CSS 불러오기
 
-const CheckButton = ({ label, checked, onChange }) => {
+const CheckButton = ({ label = '작성', link, onClick }) => {
+  const handleClick = () => {
+    if (onClick) {
+      onClick(); // onClick 우선 실행
+    } else if (link) {
+      window.location.href = link;
+    }
+  };
+
   return (
-    <div className="checkbox-wrapper">
-      <input
-        type="checkbox"
-        id="custom-checkbox"
-        checked={checked}
-        onChange={onChange}
-      />
-      <label htmlFor="custom-checkbox">{label}</label>
-    </div>
+    <button className="check-button" onClick={handleClick}>
+      {label}
+    </button>
   );
 };
 
 export default CheckButton;
-
-

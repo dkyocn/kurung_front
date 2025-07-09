@@ -1,6 +1,6 @@
-/* CheckButton.css */
+/* PdfDownloadButton.css */
 
-.check-button-wrapper {
+.pdfDownload-button-wrapper {
   display: flex;
   align-items: center;
   font-family: 'Pretendard', sans-serif;
@@ -9,7 +9,7 @@
 }
 
 /* 버튼 기본 스타일 */
-.check-button {
+.pdfDownload-button {
   background-color: #88c71f;
   color: white; /* 글자색 하얀색 */
   border: none;
@@ -21,6 +21,6 @@
 }
 
 /* 클릭된 느낌 줄 수도 있음 */
-.check-button:active {
+.pdfDownload-button:active {
   transform: scale(0.97);
 }

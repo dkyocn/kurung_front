@@ -1,6 +1,6 @@
-/* CheckButton.css */
+/* FileUploadButton.css */
 
-.check-button-wrapper {
+.fileUpload-button-wrapper {
   display: flex;
   align-items: center;
   font-family: 'Pretendard', sans-serif;
@@ -9,9 +9,9 @@
 }
 
 /* 버튼 기본 스타일 */
-.check-button {
-  background-color: #88c71f;
-  color: white; /* 글자색 하얀색 */
+.fileUpload-button {
+  background-color: #ededed;
+  color: black; /* 글자색 하얀색 */
   border: none;
   border-radius: 12px;
   width: 84px;
@@ -21,6 +21,6 @@
 }
 
 /* 클릭된 느낌 줄 수도 있음 */
-.check-button:active {
+.fileUpload-button:active {
   transform: scale(0.97);
 }

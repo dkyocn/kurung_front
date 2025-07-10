@@ -1,0 +1,63 @@
+.sidebar {
+  width: 250px;
+  background-color: #333;
+  color: white;
+  height: 100vh;
+  padding: 20px 15px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 15px; /* ✅ 폰트 크기 15px로 수정 */
+}
+
+.logo {
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.menu-section {
+  padding: 0;
+}
+
+.menu-title {
+  font-weight: bold;
+  margin-top: 15px;
+  cursor: pointer;
+  padding-top: 10px;
+  border-top: 1px solid #555;
+
+  display: flex;                 /* Flex 레이아웃 적용 */
+  justify-content: space-between; /* 좌우 양쪽 정렬 */
+  align-items: center;
+}
+
+.title-text {
+  flex: 1; /* 왼쪽 텍스트가 공간 차지 */
+}
+
+.arrow-icon {
+  width: 16px;
+  height: 16px;
+  margin-left: 10px;
+}
+
+.submenu {
+  margin: 6px 0 6px 10px;
+  padding-left: 10px;
+  cursor: pointer;
+  color: #ccc;
+  font-size: 15px; /* ✅ submenu도 폰트 크기 맞춰줌 */
+}
+
+.bini-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 6px;
+  vertical-align: middle;
+  object-fit: contain;
+  background-color: #333; /* 메뉴바 배경색과 동일하게 설정 */
+  border-radius: 4px;
+}
+
+.submenu:hover {
+  color: #88C71F;
+}

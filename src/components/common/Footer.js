@@ -1,13 +1,14 @@
 // src/components/Footer.js
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import '../styles/Footer.css'; // CSS 파일 불러오기
 
 const Footer = ({ isLoggedIn, user }) => {
   return (
     <footer className="footer">
       <div className="footer-top">
-        <a href="#">라이프로그</a>
+        <Link to="/createLifeLog">라이프로그</Link>
         <a href="#">식단</a>
         <a href="#">운동</a>
         <a href="#">멘탈케어</a>

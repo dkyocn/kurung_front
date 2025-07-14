@@ -1,0 +1,118 @@
+.life-log-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+  color: #1f1f1f;
+  box-sizing: border-box;
+}
+
+.life-log-container h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 16px 0 8px;
+}
+
+input[type='text'],
+input[type='date'],
+textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #d0d0d0;
+  background-color: #f8fefb;
+  font-size: 14px;
+  margin-bottom: 8px;
+  box-sizing: border-box;
+}
+
+input[type='text']:focus,
+input[type='date']:focus,
+textarea:focus {
+  outline: none;
+  border-color: #72d685;
+  background-color: #f1fdf7;
+}
+
+textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.row input {
+  width: 100%;
+}
+
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.button-group button {
+  padding: 6px 14px;
+  border-radius: 10px;
+  background-color: white;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s;
+}
+
+.button-group button:hover {
+  background-color: #f0f8f0;
+}
+
+.button-group button.selected {
+  background-color: #def0e5;
+  border-color: #72d685;
+}
+
+.button-bottom {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.button-bottom button {
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.cancel {
+  background-color: #f4f4f4;
+  color: #444;
+}
+
+.cancel:hover {
+  background-color: #e0e0e0;
+}
+
+.temp-save {
+  background-color: #d0eaa0;
+  color: #333;
+}
+
+.temp-save:hover {
+  background-color: #c4df8b;
+}

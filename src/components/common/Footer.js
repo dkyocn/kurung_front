@@ -8,7 +8,7 @@ const Footer = ({ isLoggedIn, user }) => {
   return (
     <footer className="footer">
       <div className="footer-top">
-        <Link to="/createLifeLog">라이프로그</Link>
+        <Link to="/getLifeLogList">라이프로그</Link>
         <a href="#">식단</a>
         <a href="#">운동</a>
         <a href="#">멘탈케어</a>

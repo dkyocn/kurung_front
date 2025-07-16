@@ -1,0 +1,178 @@
+/* src/styles/lifeLog/lifeLogCalendar.css */
+
+.calendar-wrapper {
+  max-width: 500px;
+  margin: 60px auto;
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+}
+
+.calendar-wrapper h2 {
+  font-size: 25px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  text-align: left;
+  padding-left: 10px;
+}
+
+.react-calendar {
+  border: none;
+  font-size: 16px;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+}
+
+.react-calendar__navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.react-calendar__navigation__label {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+.react-calendar__tile--now {
+  background: transparent !important;
+  color: #000;
+  border-radius: 50%;
+}
+
+.react-calendar__tile abbr {
+  display: none;
+}
+
+.life-log-container {
+  max-width: 600px;
+  margin: 0px auto;
+  padding: 10px;
+  font-family: 'Arial', sans-serif;
+  color: #1f1f1f;
+  box-sizing: border-box;
+}
+
+.life-log-container h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.log-title.center-align {
+  text-align: center;
+}
+
+.log-title.left-align {
+  text-align: left;
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 16px 0 8px;
+  text-align: left;
+}
+
+.readonly-field {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #d0d0d0;
+  background-color: #f8fefb;
+  font-size: 14px;
+  box-sizing: border-box;
+  color: #555;
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+.empty-message {
+  text-align: center;
+  color: #888;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.row > div {
+  width: 100%;
+}
+
+.button-group.read-only {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.button-group.read-only button {
+  padding: 6px 14px;
+  border-radius: 10px;
+  background-color: white;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  cursor: default;
+  pointer-events: none;
+  color: #555;
+}
+
+.button-group.read-only button.selected {
+  background-color: #def0e5;
+  border-color: #72d685;
+  font-weight: bold;
+  color: #2e7d32;
+}
+
+.button-bottom {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.button-bottom button {
+  padding: 8px 16px;
+  font-size: 14px;
+  color: white;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background-color: #88c71f;
+}
+
+.button-top {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.button-top button {
+  padding: 8px 16px;
+  font-size: 14px;
+  color: white;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background-color: #88c71f;
+}
+
+.cancel {
+  background-color: #f4f4f4;
+  color: #444;
+}
+
+.cancel:hover {
+  background-color: #e0e0e0;
+}

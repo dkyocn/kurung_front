@@ -13,7 +13,6 @@ function App() {
   return (
     <Router>
       <Header />
-      <SimpleCalendar />
       <AppRouter />
       <Footer />
     </Router>

@@ -9,7 +9,7 @@ const Footer = ({ isLoggedIn, user }) => {
     <footer className="footer">
       <div className="footer-top">
         <Link to="/createLifeLog">라이프로그</Link>
-        <a href="#">식단</a>
+        <Link to="/diet">식단</Link>
         <a href="#">운동</a>
         <a href="#">멘탈케어</a>
         <a href="#">건강관리</a>

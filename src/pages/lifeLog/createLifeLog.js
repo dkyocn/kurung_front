@@ -122,16 +122,18 @@ const CreateLifLogForm = () => {
 
       <label>Activity</label>
       <div className="button-group">
-        {emotions.map((e) => (
-          <button
-            key={e}
-            className={formData.activity === e ? 'selected' : ''}
-            onClick={() => handleSelect('activity', e)}
-            type="button"
-          >
-            {e}
-          </button>
-        ))}
+        {['매우활동적', '활동적', '가벼운 운동', '거의 활동 없음'].map(
+          (level) => (
+            <button
+              key={level}
+              className={formData.activity === level ? 'selected' : ''}
+              onClick={() => handleSelect('activity', level)}
+              type="button"
+            >
+              {level}
+            </button>
+          )
+        )}
       </div>
 
       <label>Summary</label>

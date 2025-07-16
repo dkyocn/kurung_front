@@ -3,9 +3,11 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 import CreateLifeLog from '../pages/lifeLog/createLifeLog';
+import GetLifeLogList from '../pages/lifeLog/getLifeLogList';
 
 const lifeLogRoutes = [
   <Route path="/createLifeLog" element={<CreateLifeLog />} />,
+  <Route path="/getLifeLogList" element={<GetLifeLogList />} />,
 ];
 
 export default lifeLogRoutes;

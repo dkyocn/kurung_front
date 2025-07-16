@@ -4,7 +4,6 @@ import './App.css';
 
 import Header from './components/common/Header';
 import Footer from './components/common/Footer';
-import SimpleCalendar from './components/common/Calendar';
 import AppRouter from './routers/router';
 
 function App() {
@@ -13,7 +12,6 @@ function App() {
   return (
     <Router>
       <Header />
-      <SimpleCalendar />
       <AppRouter />
       <Footer />
     </Router>

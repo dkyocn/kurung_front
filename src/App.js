@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import './App.css';
 
+import Menubar from './components/common/Menubar';
 import Header from './components/common/Header';
 import Footer from './components/common/Footer';
 import AppRouter from './routers/router';
@@ -12,6 +13,7 @@ function App() {
   return (
     <Router>
       <Header />
+      <Menubar />
       <AppRouter />
       <Footer />
     </Router>

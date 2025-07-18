@@ -197,3 +197,102 @@ input[type=range]::-webkit-slider-thumb {
   border: none !important;
   outline: none !important;
 }
+
+/* 카드 컨테이너 */
+.exercise-log-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 32px 0 60px 0;
+}
+
+.exercise-log-container h1 {
+  text-align: center;
+  font-size: 2em;
+  margin-bottom: 32px;
+  font-weight: bold;
+}
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  padding: 28px 24px 24px 24px;
+  margin-bottom: 28px;
+}
+
+.card h2 {
+  font-size: 1.18em;
+  font-weight: bold;
+  margin-bottom: 6px;
+  margin-top: 0;
+}
+
+.card p {
+  color: #888;
+  font-size: 0.98em;
+  margin-bottom: 18px;
+  margin-top: 0;
+}
+
+/* 2열 레이아웃 */
+.row-2col {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 12px;
+}
+.row-2col > div {
+  flex: 1;
+}
+
+/* 세트 추가 버튼 */
+.set-add-btn {
+  width: 100%;
+  margin-top: 8px;
+  margin-bottom: 0;
+  font-size: 1.05em;
+  font-weight: 500;
+  padding: 10px 0;
+}
+
+/* 제출 버튼 */
+.submit-btn {
+  width: 100%;
+  margin-top: 18px;
+  font-size: 1.1em;
+  font-weight: 600;
+  padding: 13px 0;
+}
+
+/* 세트/반복 입력 행 */
+.set-rep-group {
+  margin-bottom: 0;
+}
+.set-rep-row {
+  margin-bottom: 6px;
+}
+
+/* 슬라이더 그룹 간격 */
+.slider-group {
+  margin: 24px 0 20px 0;
+}
+
+/* 체크박스 그리드 */
+.checkbox-grid {
+  margin-top: 8px;
+  margin-bottom: 12px;
+}
+
+/* 라벨, 인풋, 셀렉트, 텍스트에어 */
+label {
+  font-weight: bold;
+  margin-bottom: 6px;
+  display: block;
+}
+input, select, textarea {
+  margin-bottom: 0;
+}
+.required {
+  color: #F45757;
+  margin-left: 2px;
+  font-weight: bold;
+}

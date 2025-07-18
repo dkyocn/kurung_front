@@ -76,6 +76,18 @@ function CreateExerciseLog() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // 필수값 체크
+    if (
+      !form.exerciseDate ||
+      !form.intensity ||
+      !form.duration ||
+      !part ||
+      !exercise ||
+      !form.pre_condition
+    ) {
+      alert('필수 입력값을 모두 입력하세요!');
+      return;
+    }
 
     const dateString = form.exerciseDate; // "2025-07-19"
     const localDateTimeString = dateString ? `${dateString}T00:00:00` : null;
@@ -110,85 +122,128 @@ function CreateExerciseLog() {
   };
 
   return (
-    <div>
+    <div className="exercise-log-container">
+      <h1>운동 기록 입력</h1>
       <form onSubmit={handleSubmit}>
-        <h1>운동 기록 입력</h1>
+        {/* 운동 기본 정보 카드 */}
+        <div className="card">
+          <h2>운동 기본 정보</h2>
+          <p>오늘의 운동에 관한 기본 정보를 입력해주세요.</p>
 
-        <label htmlFor="date">운동 날짜</label>
-        <input id="exerciseDate" type="date" onChange={handleChange} />
-
-        <label htmlFor="pre_condition">운동 전 컨디션</label>
-        <select id="pre_condition" onChange={handleChange}>
-          <option value="5">매우 좋음</option>
-          <option value="4">좋음</option>
-          <option value="3">보통</option>
-          <option value="2">나쁨</option>
-          <option value="1">매우 나쁨</option>
-        </select>
-
-        <label htmlFor="part">운동 종목</label>
-        <select id="part" value={part} onChange={e => setPart(e.target.value)}>
-          <option value="upper">상체</option>
-          <option value="lower">하체</option>
-          <option value="core">코어</option>
-          <option value="full">전신</option>
-          <option value="cardio">유산소</option>
-        </select>
-
-        <label htmlFor="exercise">운동 유형</label>
-        <select id="exercise" value={exercise} onChange={e => setExercise(e.target.value)}>
-          {exercises[part].map((ex) => (
-            <option key={ex} value={ex}>{ex}</option>
-          ))}
-        </select>
-
-        <label htmlFor="intensity">운동 강도</label>
-        <select id="intensity" onChange={handleChange}>
-          <option value="낮음">낮음</option>
-          <option value="중간">중간</option>
-          <option value="높음">높음</option>
-        </select>
-
-        <label htmlFor="duration">운동 시간 (분)</label>
-        <input id="duration" placeholder="예: 30" type="number" onChange={handleChange} />
-
-        <label htmlFor="calories">소모한 칼로리 (kcal)</label>
-        <input id="calories" placeholder="예: 420" type="number" onChange={handleChange} />
-
-        <label htmlFor="heartrate">평균 심박수 (bpm)</label>
-        <input id="heartrate" placeholder="예: 130" type="number" onChange={handleChange} />
-
-        <label>세트 수 및 반복 횟수</label>
-        <div className="set-rep-group">
-          <input id="setCount" type="number" placeholder="세트 수 (예: 3)" onChange={handleChange} />
-          <input id="repCount" type="number" placeholder="반복 수 (예: 12)" onChange={handleChange} />
-        </div>
-
-        <label>세트별 무게 및 반복 입력</label>
-        <div id="setList" className="set-rep-group">
-          {setList.map((set, idx) => (
-            <div className="set-rep-row" key={idx}>
-              <input id="setCount"
-                type="number"
-                placeholder="무게(kg)"
-                value={set.weight}
-                onChange={e => handleSetChange(idx, 'weight', e.target.value)}
-              />
-              <input id="repCount"
-                type="number"
-                placeholder="반복 수"
-                value={set.reps}
-                onChange={e => handleSetChange(idx, 'reps', e.target.value)}
-              />
-              <button className="button button-delete" type="button" onClick={() => handleRemoveSet(idx)}>삭제</button>
+          <div className="row-2col">
+            <div>
+              <label htmlFor="exerciseDate">운동 날짜 <span className="required">*</span></label>
+              <input id="exerciseDate" type="date" onChange={handleChange} />
             </div>
-          ))}
-        </div>
-        <button className="button button-default" type="button" onClick={handleAddSet}>세트 추가</button>
+            <div>
+              <label htmlFor="pre_condition">운동 전 컨디션 <span className="required">*</span></label>
+              <select id="pre_condition" onChange={handleChange}>
+                <option value="">선택</option>
+                <option value="5">매우 좋음</option>
+                <option value="4">좋음</option>
+                <option value="3">보통</option>
+                <option value="2">나쁨</option>
+                <option value="1">매우 나쁨</option>
+              </select>
+            </div>
+          </div>
 
-        <div className="slider-double-row">
-          {/* 오늘 전반적인 몸 상태 */}
+          <div className="row-2col">
+            <div>
+              <label htmlFor="part">운동 종목 <span className="required">*</span></label>
+              <select id="part" value={part} onChange={e => setPart(e.target.value)}>
+                <option value="upper">상체</option>
+                <option value="lower">하체</option>
+                <option value="core">코어</option>
+                <option value="full">전신</option>
+                <option value="cardio">유산소</option>
+              </select>
+
+            </div>
+            <div>
+              <label htmlFor="exercise">운동 유형 <span className="required">*</span></label>
+              <select id="exercise" value={exercise} onChange={e => setExercise(e.target.value)}>
+                {exercises[part].map((ex) => (
+                  <option key={ex} value={ex}>{ex}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="row-2col">
+            <div>
+              <label htmlFor="intensity">운동 강도 <span className="required">*</span></label>
+              <select id="intensity" onChange={handleChange}>
+                <option value="">선택</option>
+                <option value="약">약</option>
+                <option value="중">중</option>
+                <option value="강">강</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="duration">운동 시간 (분) <span className="required">*</span></label>
+              <input id="duration" placeholder="예: 30" type="number" onChange={handleChange} />
+            </div>
+          </div>
+        </div>
+
+        {/* 운동 상세 기록 카드 */}
+        <div className="card">
+          <h2>운동 상세 기록</h2>
+          <p>선택적으로 추가 정보를 입력할 수 있습니다.</p>
+
+          <div className="row-2col">
+            <div>
+              <label htmlFor="calories">소모한 칼로리 (kcal)</label>
+              <input id="calories" placeholder="예: 420" type="number" onChange={handleChange} />
+            </div>
+            <div>
+              <label htmlFor="heartrate">평균 심박수 (bpm)</label>
+              <input id="heartrate" placeholder="예: 130" type="number" onChange={handleChange} />
+            </div>
+          </div>
+
+          <div className="row-2col">
+            <div>
+              <label htmlFor="setCount">세트 수</label>
+              <input id="setCount" type="number" placeholder="세트 수 (예: 3)" onChange={handleChange} />
+            </div>
+            <div>
+              <label htmlFor="repCount">반복 수</label>
+              <input id="repCount" type="number" placeholder="반복 수 (예: 12)" onChange={handleChange} />
+            </div>
+          </div>
+
+          <label>세트별 무게 및 반복 입력</label>
+          <div id="setList" className="set-rep-group">
+            {setList.map((set, idx) => (
+              <div className="set-rep-row" key={idx}>
+                <input
+                  type="number"
+                  placeholder="무게(kg)"
+                  value={set.weight}
+                  onChange={e => handleSetChange(idx, 'weight', e.target.value)}
+                />
+                <input
+                  type="number"
+                  placeholder="반복 수"
+                  value={set.reps}
+                  onChange={e => handleSetChange(idx, 'reps', e.target.value)}
+                />
+                <button className="button button-delete" type="button" onClick={() => handleRemoveSet(idx)}>삭제</button>
+              </div>
+            ))}
+          </div>
+          <button className="button button-default set-add-btn" type="button" onClick={handleAddSet}>+ 세트 추가</button>
+        </div>
+
+        {/* 운동 후 컨디션 및 메모 카드 */}
+        <div className="card">
+          <h2>운동 후 컨디션 및 메모</h2>
+          <p>운동 후 몸 상태와 느낀 점을 기록해주세요.</p>
+
           <div className="slider-group">
+            <div className="slider-label">오늘 전반적인 몸 상태</div>
             <div className="slider-row">
               <span className="slider-min">매우 나쁨</span>
               <input
@@ -203,8 +258,8 @@ function CreateExerciseLog() {
             <div className="slider-label">{bodyLabels[bodyCondition]}</div>
           </div>
 
-          {/* 운동 후 기분 */}
           <div className="slider-group">
+            <div className="slider-label">운동 후 기분</div>
             <div className="slider-row">
               <span className="slider-min">별로</span>
               <input
@@ -218,31 +273,31 @@ function CreateExerciseLog() {
             </div>
             <div className="slider-label">{feelingLabels[exerciseFeeling]}</div>
           </div>
+
+          <label>신체적으로 어떤 느낌이 있었나요?</label>
+          <div className="checkbox-grid">
+            <label>
+              <input type="checkbox" name="sensation" value="근육통 있음" checked={sensation.includes('근육통 있음')} onChange={handleSensationChange} /> 근육통 있음
+            </label>
+            <label>
+              <input type="checkbox" name="sensation" value="관절 통증" checked={sensation.includes('관절 통증')} onChange={handleSensationChange} /> 관절 통증
+            </label>
+            <label>
+              <input type="checkbox" name="sensation" value="전반적 피로" checked={sensation.includes('전반적 피로')} onChange={handleSensationChange} /> 전반적 피로
+            </label>
+            <label>
+              <input type="checkbox" name="sensation" value="활력이 생김" checked={sensation.includes('활력이 생김')} onChange={handleSensationChange} /> 활력이 생김
+            </label>
+            <label>
+              <input type="checkbox" name="sensation" value="특별한 증상 없음" checked={sensation.includes('특별한 증상 없음')} onChange={handleSensationChange} /> 특별한 증상 없음
+            </label>
+          </div>
+
+          <label htmlFor="memo">기타 느낀 점 (선택)</label>
+          <textarea id="memo" placeholder="예: 허벅지가 당기고 숨이 찼어요." rows="3" onChange={handleChange}></textarea>
         </div>
 
-        <label>신체적으로 어떤 느낌이 있었나요?</label>
-        <div className="checkbox-grid">
-          <label>
-            <input type="checkbox" name="sensation" value="근육통 있음" checked={sensation.includes('근육통 있음')} onChange={handleSensationChange} /> 근육통 있음
-          </label>
-          <label>
-            <input type="checkbox" name="sensation" value="관절 통증" checked={sensation.includes('관절 통증')} onChange={handleSensationChange} /> 관절 통증
-          </label>
-          <label>
-            <input type="checkbox" name="sensation" value="전반적 피로" checked={sensation.includes('전반적 피로')} onChange={handleSensationChange} /> 전반적 피로
-          </label>
-          <label>
-            <input type="checkbox" name="sensation" value="활력이 생김" checked={sensation.includes('활력이 생김')} onChange={handleSensationChange} /> 활력이 생김
-          </label>
-          <label>
-            <input type="checkbox" name="sensation" value="특별한 증상 없음" checked={sensation.includes('특별한 증상 없음')} onChange={handleSensationChange} /> 특별한 증상 없음
-          </label>
-        </div>
-
-        <label htmlFor="memo">기타 느낀 점 (선택)</label>
-        <textarea id="memo" placeholder="예: 허벅지가 당기고 숨이 찼어요." rows="3" onChange={handleChange}></textarea>
-
-        <button className="button button-default" type="submit">운동 기록 저장하기</button>
+        <button className="button button-default submit-btn" type="submit">운동 기록 저장하기</button>
       </form>
     </div>
   );

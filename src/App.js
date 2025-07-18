@@ -4,6 +4,7 @@ import './App.css';
 
 import Header from './components/common/Header';
 import Footer from './components/common/Footer';
+import Menubar from './components/common/Menubar';
 import AppRouter from './routers/router';
 
 function App() {
@@ -12,10 +13,13 @@ function App() {
   return (
     <Router>
       <Header />
+      <Menubar/>
       <AppRouter />
       <Footer />
     </Router>
   );
+
+
 }
 
 // function App() {

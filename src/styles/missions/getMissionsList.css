@@ -1,0 +1,125 @@
+.mission-container {
+ position: absolute;
+  top: 90px; /* 상단 헤더 높이 고려 */
+  left: 450px; 
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 40px 20px 0;
+  font-family: 'Noto Sans KR', sans-serif;
+  color: #000; /* 전체 글씨 검정색 */
+  background-color: #fff;
+  box-sizing: border-box;
+  
+}
+
+.mission-title {
+  font-size: 26px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+.mission-list {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.mission-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+  min-height: 100px;
+}
+
+.mission-text {
+  flex: 1;
+}
+
+.mission-text h4 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.mission-text p {
+  font-size: 14px;
+  margin-bottom: 12px;
+  color: #000; /* 검정 */
+}
+
+.mission-btn {
+  padding: 8px 16px;
+  font-size: 14px;
+  background-color: #88c71f;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.mission-btn:hover {
+  background-color: #76b017;
+}
+
+.bonus-section {
+  margin-top: 50px;
+  border-top: 1px solid #ddd;
+  padding-top: 30px;
+}
+
+.bonus-section h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.bonus-section p {
+  font-size: 14px;
+  margin: 6px 0;
+}
+
+.progress-section {
+  margin-top: 15px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  background-color: #eee;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: #000;
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+.mission-icon {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 20px;
+  min-width: 100px;
+  justify-content: flex-end;
+}
+
+.mission-icon img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.mission-icon span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #000;
+}
+

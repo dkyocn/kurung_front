@@ -3,6 +3,7 @@ import '../styles/Menubar.css';
 import BiniImg from '../../assets/bini.png';
 import ArrowDown from '../../assets/arrow-down.png';
 import ArrowUp from '../../assets/arrow-up.png'
+import { Link } from 'react-router-dom';
 
 const Menubar = () => {
 
@@ -74,7 +75,7 @@ const Menubar = () => {
         {openSection === 'mypage' && (
           <>
             <div className="submenu">내 정보 관리</div>
-            <div className="submenu">mission</div>
+            <Link to="/missions" className="submenu">mission</Link>
             <div className="submenu">즐겨찾기</div>
           </>
         )}

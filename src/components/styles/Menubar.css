@@ -6,12 +6,7 @@
   padding: 20px 15px;
   font-family: 'Noto Sans KR', sans-serif;
   font-size: 15px; /* ✅ 폰트 크기 15px로 수정 */
-  position: fixed; /* 화면에 고정 */
-  top: 0; /* 상단에 고정 */
-  left: 0; /* 왼쪽에 고정 */
-  z-index: 1000; /* 다른 콘텐츠 위에 표시 */
-  overflow-y: auto; /* 내용이 많을 경우 스크롤 가능 */
-  box-sizing: border-box; /* padding이 width에 포함되도록 */
+  position: absolute;
 }
 
 .logo {

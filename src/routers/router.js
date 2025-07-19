@@ -10,12 +10,14 @@ import { Routes, Route } from 'react-router-dom';
 // import noticeRoutes from './noticeRoutes';
 import dietRouters from './dietRouters';
 import lifeLogRoutes from './lifeLogRoutes';
+import exerciseRoutes from './exerciseLogRoutes';
 
 const AppRouter = () => {
   return (
     <Routes>
-      {lifeLogRoutes}
+      {exerciseRoutes}
       {dietRouters}
+      {/* {lifeLogRoutes} */}
       {/* {boardRoutes}
       {noticeRoutes}
       {memberRoutes}

@@ -1,0 +1,298 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f9f9f9;
+}
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+form {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  max-width: 800px;
+  margin: auto;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  margin-bottom: 60px;
+  margin-top: 30px; 
+}
+label {
+  font-weight: bold;
+  display: block;
+  margin-top: 25px;
+  margin-bottom: 10px;
+}
+select, input, textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+.checkbox-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin-top: 8px;
+}
+.checkbox-grid label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.radio-vertical {
+  display: flex;
+  justify-content: space-between;
+  max-width: 600px;
+  margin-top: 12px;
+}
+.radio-vertical label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 14px;
+  gap: 4px;
+}
+.set-rep-group {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.set-rep-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.set-rep-row input {
+  width: 80px;
+  font-size: 13px;
+  padding: 6px;
+}
+.set-rep-row button {
+  background-color: #88C71F;
+  color: white;
+  font-size: 12px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  height: 34px;
+}
+.button {
+  border-radius: 12px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+.button-default, .button-edit {
+  background-color: #88C71F;
+  color: #FFFFFF;
+}
+.button-cancel, .button-list {
+  background-color: #EDEDED;
+  color: #000000;
+}
+.button-delete {
+  background-color: #F45757;
+  color: #FFFFFF;
+}
+input[type=range] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  background: transparent;
+  border: none !important;
+  box-shadow: none !important;
+  flex: 1;
+  max-width: 400px;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  height: 6px;
+  background: #88C71F;
+  border-radius: 5px;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #88C71F;
+  cursor: pointer;
+  margin-top: -7px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.3);
+  border: none !important;
+  outline: none !important;
+}
+input[type=range]::-moz-range-track {
+  height: 6px;
+  background: #88C71F;
+  border-radius: 5px;
+}
+input[type=range]::-moz-range-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #88C71F;
+  cursor: pointer;
+  border: none !important;
+  outline: none !important;
+}
+input[type=range]::-ms-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #88C71F;
+  cursor: pointer;
+  border: none !important;
+  outline: none !important;
+}
+.slider-group {
+  margin: 36px 0 20px 0;
+}
+.slider-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 12px 0 0 0;
+}
+.slider-label {
+  text-align: center;
+  font-weight: bold;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 1.05em;
+}
+input[type=range] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  max-width: 500px;
+  background: transparent;
+  border: none !important;
+  box-shadow: none !important;
+  flex: 1;
+  margin: 0 18px;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  height: 6px;
+  background: #88C71F;
+  border-radius: 5px;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #88C71F;
+  cursor: pointer;
+  margin-top: -7px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.3);
+  border: none !important;
+  outline: none !important;
+}
+
+/* 카드 컨테이너 */
+.exercise-log-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 32px 0 60px 0;
+}
+
+.exercise-log-container h1 {
+  text-align: center;
+  font-size: 2em;
+  margin-bottom: 32px;
+  font-weight: bold;
+}
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  padding: 28px 24px 24px 24px;
+  margin-bottom: 28px;
+}
+
+.card h2 {
+  font-size: 1.18em;
+  font-weight: bold;
+  margin-bottom: 6px;
+  margin-top: 0;
+}
+
+.card p {
+  color: #888;
+  font-size: 0.98em;
+  margin-bottom: 18px;
+  margin-top: 0;
+}
+
+/* 2열 레이아웃 */
+.row-2col {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 12px;
+}
+.row-2col > div {
+  flex: 1;
+}
+
+/* 세트 추가 버튼 */
+.set-add-btn {
+  width: 100%;
+  margin-top: 8px;
+  margin-bottom: 0;
+  font-size: 1.05em;
+  font-weight: 500;
+  padding: 10px 0;
+}
+
+/* 제출 버튼 */
+.submit-btn {
+  width: 100%;
+  margin-top: 18px;
+  font-size: 1.1em;
+  font-weight: 600;
+  padding: 13px 0;
+}
+
+/* 세트/반복 입력 행 */
+.set-rep-group {
+  margin-bottom: 0;
+}
+.set-rep-row {
+  margin-bottom: 6px;
+}
+
+/* 슬라이더 그룹 간격 */
+.slider-group {
+  margin: 24px 0 20px 0;
+}
+
+/* 체크박스 그리드 */
+.checkbox-grid {
+  margin-top: 8px;
+  margin-bottom: 12px;
+}
+
+/* 라벨, 인풋, 셀렉트, 텍스트에어 */
+label {
+  font-weight: bold;
+  margin-bottom: 6px;
+  display: block;
+}
+input, select, textarea {
+  margin-bottom: 0;
+}
+.required {
+  color: #F45757;
+  margin-left: 2px;
+  font-weight: bold;
+}

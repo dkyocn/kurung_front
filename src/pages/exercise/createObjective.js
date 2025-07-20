@@ -22,7 +22,7 @@ function getMonthOptions(startYear, startMonth, count) {
   return options;
 }
 
-const monthOptions = getMonthOptions(2024, 7, 12);
+const monthOptions = getMonthOptions(2025, 1, 12);
 
 function CreateObjective() {
   const [form, setForm] = useState({
@@ -75,26 +75,26 @@ function CreateObjective() {
     <div className="objective-container">
       <h1 className="objective-title">운동 목표 설정</h1>
       <form className="objective-form" onSubmit={handleSubmit}>
-        <label htmlFor="title">목표 제목 <span className="required">*</span></label>
+        <label htmlFor="title">목표 제목 <span className="objective-required">*</span></label>
         <input id="title" placeholder="예: 6월 체중 감량 목표" value={form.title} onChange={handleChange} />
 
-        <div className="row-2col">
+        <div className="objective-row-2col">
           <div>
-            <label htmlFor="count">운동 횟수 목표 (회) <span className="required">*</span></label>
+            <label htmlFor="count">운동 횟수 목표 (회) <span className="objective-required">*</span></label>
             <input id="count" placeholder="예: 5" value={form.count} onChange={handleChange} type="number" />
           </div>
           <div>
-            <label htmlFor="duration">운동 시간 목표 (분) <span className="required">*</span></label>
+            <label htmlFor="duration">운동 시간 목표 (분) <span className="objective-required">*</span></label>
             <input id="duration" placeholder="예: 300" value={form.duration} onChange={handleChange} type="number" />
           </div>
         </div>
 
-        <label htmlFor="weight">목표 몸무게 (kg) <span className="required">*</span></label>
+        <label htmlFor="weight">목표 몸무게 (kg) <span className="objective-required">*</span></label>
         <input id="weight" placeholder="예: 65.0" value={form.weight} onChange={handleChange} type="number" />
 
-        <div className="row-2col">
+        <div className="objective-row-2col">
           <div>
-            <label htmlFor="month">시작일 <span className="required">*</span></label>
+            <label htmlFor="month">시작일 <span className="objective-required">*</span></label>
             <select id="month" value={form.month} onChange={handleMonthChange}>
               <option value="">연도-월 선택</option>
               {monthOptions.map(m => (
@@ -103,7 +103,7 @@ function CreateObjective() {
             </select>
           </div>
           <div>
-            <label>종료일 <span className="required">*</span></label>
+            <label>종료일 <span className="objective-required">*</span></label>
             <input value={selectedMonth ? selectedMonth.end : ''} readOnly placeholder="자동 설정" />
           </div>
         </div>

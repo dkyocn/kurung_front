@@ -6,7 +6,7 @@ h1 {
   text-align: center;
   margin-bottom: 30px;
 }
-form {
+.exercise-log-form {
   background-color: #fff;
   padding: 30px;
   border-radius: 10px;
@@ -30,50 +30,50 @@ select, input, textarea {
   font-size: 14px;
   box-sizing: border-box;
 }
-.checkbox-grid {
+.exercise-log-checkbox-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 12px 24px;
   margin-top: 8px;
 }
-.checkbox-grid label {
+.exercise-log-checkbox-grid label {
   display: flex;
   align-items: center;
   gap: 6px;
   font-size: 14px;
   white-space: nowrap;
 }
-.radio-vertical {
+.exercise-log-radio-vertical {
   display: flex;
   justify-content: space-between;
   max-width: 600px;
   margin-top: 12px;
 }
-.radio-vertical label {
+.exercise-log-radio-vertical label {
   display: flex;
   flex-direction: column;
   align-items: center;
   font-size: 14px;
   gap: 4px;
 }
-.set-rep-group {
+.exercise-log-set-rep-group {
   display: flex;
   gap: 16px;
   flex-wrap: wrap;
   margin-top: 8px;
 }
-.set-rep-row {
+.exercise-log-set-rep-row {
   display: flex;
   gap: 10px;
   align-items: center;
   margin-bottom: 8px;
 }
-.set-rep-row input {
+.exercise-log-set-rep-row input {
   width: 80px;
   font-size: 13px;
   padding: 6px;
 }
-.set-rep-row button {
+.exercise-log-set-rep-row button {
   background-color: #88C71F;
   color: white;
   font-size: 12px;
@@ -83,22 +83,22 @@ select, input, textarea {
   cursor: pointer;
   height: 34px;
 }
-.button {
+.exercise-log-button {
   border-radius: 12px;
   padding: 10px 20px;
   font-size: 16px;
   border: none;
   cursor: pointer;
 }
-.button-default, .button-edit {
+.exercise-log-button-default, .exercise-log-button-edit {
   background-color: #88C71F;
   color: #FFFFFF;
 }
-.button-cancel, .button-list {
+.exercise-log-button-cancel, .exercise-log-button-list {
   background-color: #EDEDED;
   color: #000000;
 }
-.button-delete {
+.exercise-log-button-delete {
   background-color: #F45757;
   color: #FFFFFF;
 }
@@ -152,17 +152,17 @@ input[type=range]::-ms-thumb {
   border: none !important;
   outline: none !important;
 }
-.slider-group {
+.exercise-log-slider-group {
   margin: 36px 0 20px 0;
 }
-.slider-row {
+.exercise-log-slider-row {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
   margin: 12px 0 0 0;
 }
-.slider-label {
+.exercise-log-slider-label {
   text-align: center;
   font-weight: bold;
   margin-top: 10px;
@@ -212,7 +212,7 @@ input[type=range]::-webkit-slider-thumb {
   font-weight: bold;
 }
 
-.card {
+.exercise-log-card {
   background: #fff;
   border-radius: 14px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.07);
@@ -220,14 +220,14 @@ input[type=range]::-webkit-slider-thumb {
   margin-bottom: 28px;
 }
 
-.card h2 {
+.exercise-log-card h2 {
   font-size: 1.18em;
   font-weight: bold;
   margin-bottom: 6px;
   margin-top: 0;
 }
 
-.card p {
+.exercise-log-card p {
   color: #888;
   font-size: 0.98em;
   margin-bottom: 18px;
@@ -235,17 +235,17 @@ input[type=range]::-webkit-slider-thumb {
 }
 
 /* 2열 레이아웃 */
-.row-2col {
+.exercise-log-row-2col {
   display: flex;
   gap: 24px;
   margin-bottom: 12px;
 }
-.row-2col > div {
+.exercise-log-row-2col > div {
   flex: 1;
 }
 
 /* 세트 추가 버튼 */
-.set-add-btn {
+.exercise-log-set-add-btn {
   width: 100%;
   margin-top: 8px;
   margin-bottom: 0;
@@ -255,7 +255,7 @@ input[type=range]::-webkit-slider-thumb {
 }
 
 /* 제출 버튼 */
-.submit-btn {
+.exercise-log-submit-btn {
   width: 100%;
   margin-top: 18px;
   font-size: 1.1em;
@@ -264,20 +264,20 @@ input[type=range]::-webkit-slider-thumb {
 }
 
 /* 세트/반복 입력 행 */
-.set-rep-group {
+.exercise-log-set-rep-group {
   margin-bottom: 0;
 }
-.set-rep-row {
+.exercise-log-set-rep-row {
   margin-bottom: 6px;
 }
 
 /* 슬라이더 그룹 간격 */
-.slider-group {
+.exercise-log-slider-group {
   margin: 24px 0 20px 0;
 }
 
 /* 체크박스 그리드 */
-.checkbox-grid {
+.exercise-log-checkbox-grid {
   margin-top: 8px;
   margin-bottom: 12px;
 }
@@ -291,7 +291,7 @@ label {
 input, select, textarea {
   margin-bottom: 0;
 }
-.required {
+.exercise-log-required {
   color: #F45757;
   margin-left: 2px;
   font-weight: bold;

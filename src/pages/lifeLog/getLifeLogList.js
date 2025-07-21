@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import emotionIcons from '../../images/lifeLog/emotionIcons';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../../styles/lifeLog/getLifeLogList.css';
@@ -103,27 +104,24 @@ const LifeLogCalendar = () => {
       const dateKey = localDate.toISOString().slice(0, 10);
       const entry = lifeLogMap[dateKey];
       const emotion = entry?.emotion;
-      const isEmotion = !!emotion;
-      const bgColor = isEmotion ? emotionColors[emotion] : '#ffffff';
 
       return (
-        <div
-          style={{
-            width: '55px',
-            height: '55px',
-            borderRadius: '50%',
-            backgroundColor: bgColor,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            color: isEmotion ? 'white' : '#000',
-            fontWeight: 'bold',
-            fontSize: '16px',
-            margin: 'auto',
-            border: 'none',
-          }}
-        >
-          {date.getDate()}
+        <div className="calendar-day-wrapper">
+          {/* 감정 이미지 (없어도 공간 유지) */}
+          <div className="calendar-icon-wrapper">
+            {emotion ? (
+              <img
+                src={emotionIcons[emotion]}
+                alt={emotion}
+                className="calendar-emotion-icon"
+              />
+            ) : (
+              <div className="calendar-emotion-placeholder" />
+            )}
+          </div>
+
+          {/* 날짜 숫자 */}
+          <div className="calendar-date-number">{date.getDate()}</div>
         </div>
       );
     }
@@ -148,7 +146,7 @@ const LifeLogCalendar = () => {
       </div>
       <div className="calendar-wrapper">
         <Calendar
-          value={value}
+          value={null}
           activeStartDate={viewDate}
           onClickDay={handleDateClick}
           onActiveStartDateChange={handleMonthChange}
@@ -160,6 +158,16 @@ const LifeLogCalendar = () => {
           }
           formatDay={(locale, date) => date.getDate()}
           tileContent={tileContent}
+          showNeighboringMonth={false}
+          tileDisabled={({ date, view }) => {
+            if (view !== 'month') return false;
+
+            const thisMonth = viewDate.getMonth();
+            const thisYear = viewDate.getFullYear();
+            return (
+              date.getMonth() !== thisMonth || date.getFullYear() !== thisYear
+            );
+          }}
         />
       </div>
 

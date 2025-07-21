@@ -16,7 +16,7 @@ const AppRouter = () => {
   return (
     <Routes>
       {exerciseRoutes}
-      {/* {lifeLogRoutes} */}
+      {lifeLogRoutes}
       {/* {boardRoutes}
       {noticeRoutes}
       {memberRoutes}

@@ -3,12 +3,14 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../../styles/lifeLog/updateLifeLog.css';
 import SaveButton from '../../components/buttons/SaveButton';
+import SaveModal from '../../components/common/WarningModal';
 
 const UpdateLifeLog = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const params = new URLSearchParams(location.search);
   const lifelogId = params.get('lifelogId');
+  const [showSaveModal, setShowSaveModal] = useState(false);
 
   const [formData, setFormData] = useState({
     lifelogId: '',
@@ -195,8 +197,16 @@ const UpdateLifeLog = () => {
           >
             취소
           </button>
-          <SaveButton onClick={handleSubmit} />
+          <SaveButton onClick={() => setShowSaveModal(true)} />
         </div>
+
+        {showSaveModal && (
+          <SaveModal
+            message="저장하시겠습니까?"
+            onConfirm={handleSubmit}
+            onClose={() => setShowSaveModal(false)}
+          />
+        )}
       </div>
     </>
   );

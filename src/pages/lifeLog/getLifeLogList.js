@@ -4,6 +4,7 @@ import emotionIcons from '../../images/lifeLog/emotionIcons';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../../styles/lifeLog/getLifeLogList.css';
+import DeleteModal from '../../components/common/Modal';
 
 const emotionColors = {
   행복함: '#28C76F',
@@ -34,6 +35,8 @@ const LifeLogCalendar = () => {
   const [lifeLogMap, setLifeLogMap] = useState({});
   const [selectedLog, setSelectedLog] = useState(null);
   const [noData, setNoData] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [targetDeleteId, setTargetDeleteId] = useState(null);
 
   const userUuid = '2025061401';
 
@@ -95,6 +98,21 @@ const LifeLogCalendar = () => {
 
   const handleMonthChange = ({ activeStartDate }) => {
     setViewDate(activeStartDate);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await fetch(`/api/v1/kurung/lifeLogs/${targetDeleteId}`, {
+        method: 'DELETE',
+      });
+      alert('삭제 성공');
+      setShowDeleteModal(false);
+      setSelectedLog(null);
+      fetchLifeLogs(viewDate.getFullYear(), viewDate.getMonth() + 1); // 다시 로딩
+    } catch (err) {
+      console.error('삭제 실패:', err);
+      alert('삭제 실패');
+    }
   };
 
   const tileContent = ({ date, view }) => {
@@ -253,35 +271,23 @@ const LifeLogCalendar = () => {
             <button
               className="delete-button"
               type="button"
-              onClick={async () => {
-                if (window.confirm('정말 삭제하시겠습니까?')) {
-                  try {
-                    const response = await fetch(
-                      `/api/v1/kurung/lifeLogs/${selectedLog.lifelogId}`,
-                      {
-                        method: 'DELETE',
-                      }
-                    );
-                    if (!response.ok) throw new Error('삭제 실패');
-
-                    alert('삭제되었습니다.');
-                    setSelectedLog(null);
-                    setNoData(true);
-                    fetchLifeLogs(
-                      viewDate.getFullYear(),
-                      viewDate.getMonth() + 1
-                    );
-                  } catch (err) {
-                    console.error('삭제 오류:', err);
-                    alert('삭제 중 오류가 발생했습니다.');
-                  }
-                }
+              onClick={() => {
+                setTargetDeleteId(selectedLog.lifelogId);
+                setShowDeleteModal(true);
               }}
             >
               삭제
             </button>
           </div>
         </div>
+      )}
+      {showDeleteModal && (
+        <DeleteModal
+          message="정말 삭제하시겠습니까?"
+          onConfirm={handleDelete}
+          onCancel={() => setShowDeleteModal(false)}
+          onClose={() => setShowDeleteModal(false)}
+        />
       )}
 
       {noData && (

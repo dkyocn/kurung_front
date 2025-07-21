@@ -5,8 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../../styles/lifeLog/createLifeLog.css';
 import SaveButton from '../../components/buttons/SaveButton';
+import SaveModal from '../../components/common/WarningModal';
 
 const CreateLifLogForm = () => {
+  const [showSaveModal, setShowSaveModal] = useState(false);
   const navigate = useNavigate();
   // 오늘 날짜 (yyyy-MM-dd 형식)
   const today = new Date().toISOString().split('T')[0];
@@ -61,6 +63,7 @@ const CreateLifLogForm = () => {
       };
       await axios.post('/api/v1/kurung/lifeLogs/create', body);
       alert('저장 성공');
+      navigate('/getLifeLogList');
     } catch (e) {
       alert('저장 실패: ' + e.message);
     }
@@ -152,8 +155,16 @@ const CreateLifLogForm = () => {
           >
             취소
           </button>
-          <SaveButton onClick={handleSubmit} />
+          <SaveButton onClick={() => setShowSaveModal(true)} />
         </div>
+
+        {showSaveModal && (
+          <SaveModal
+            message="저장하시겠습니까?"
+            onConfirm={handleSubmit}
+            onClose={() => setShowSaveModal(false)}
+          />
+        )}
       </div>
     </>
   );

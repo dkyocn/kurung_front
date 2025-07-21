@@ -1,5 +1,18 @@
 /* src/styles/lifeLog/lifeLogCalendar.css */
 
+.life-log-page {
+  padding: 24px;
+}
+
+.life-log-title {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  margin-left: 335px;
+  color: #333;
+  text-align: left; /* 중앙 정렬 원하면 추가 */
+}
+
 .calendar-wrapper {
   max-width: 500px;
   margin: 60px auto;
@@ -46,16 +59,16 @@
   display: none;
 }
 
-.life-log-container {
-  max-width: 600px;
-  margin: 0px auto;
+.get-life-log-container {
+  max-width: 900px;
+  margin: -40px auto;
   padding: 10px;
   font-family: 'Arial', sans-serif;
   color: #1f1f1f;
   box-sizing: border-box;
 }
 
-.life-log-container h2 {
+.get-life-log-container h2 {
   font-size: 24px;
   font-weight: 700;
   margin-bottom: 20px;
@@ -87,7 +100,7 @@ label {
   font-size: 14px;
   box-sizing: border-box;
   color: #555;
-  margin-bottom: 8px;
+  margin-bottom: 50px;
   text-align: left;
 }
 
@@ -134,7 +147,7 @@ label {
 }
 
 .button-bottom {
-  margin-top: 24px;
+  margin-top: -10px;
   display: flex;
   justify-content: flex-end;
   gap: 10px;
@@ -152,6 +165,7 @@ label {
 
 .button-top {
   margin-top: 24px;
+  margin-right: 335px;
   display: flex;
   justify-content: flex-end;
   gap: 10px;
@@ -168,11 +182,32 @@ label {
   background-color: #88c71f;
 }
 
-.cancel {
-  background-color: #f4f4f4;
-  color: #444;
+.button-medule {
+  display: flex;
+  margin-bottom: 50px;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
 }
 
-.cancel:hover {
-  background-color: #e0e0e0;
+.update-button {
+  background-color: #88c71f;
+  color: white; /* 글자색 하얀색 */
+  border: none;
+  border-radius: 12px;
+  width: 84px;
+  height: 39px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.delete-button {
+  background-color: #f45757;
+  color: white; /* 글자색 하얀색 */
+  border: none;
+  border-radius: 12px;
+  width: 84px;
+  height: 39px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }

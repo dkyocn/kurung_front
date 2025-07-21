@@ -1,0 +1,46 @@
+.favorites-container {
+  padding: 40px;
+  max-width: 1000px;
+  margin: 0 auto;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.favorites-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 40px;
+  color: #333;
+}
+
+.favorite-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 40px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 20px;
+}
+
+.favorite-text {
+  max-width: 80%;
+}
+
+.favorite-subtitle {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #222;
+}
+
+.favorite-description {
+  font-size: 14px;
+  white-space: pre-line;
+  color: #555;
+}
+
+.favorite-icon img {
+  width: 55px;
+  height: 55px;
+  margin-top: 8px;
+  cursor: pointer;
+}

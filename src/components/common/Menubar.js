@@ -75,8 +75,12 @@ const Menubar = () => {
         {openSection === 'mypage' && (
           <>
             <div className="submenu">내 정보 관리</div>
+            <div className="submenu">
             <Link to="/missions" className="submenu">mission</Link>
-            <div className="submenu">즐겨찾기</div>
+            </div>
+            <div className="submenu">
+            <Link to="/favorites" className="submenu">즐겨찾기</Link>
+            </div>
           </>
         )}
       </div>

@@ -1,18 +1,18 @@
-// // src/lifeLog/createLifeLog.js
-
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import '../../styles/lifeLog/createLifeLog.css';
+// src/lifeLog/UpdateLifeLog.js
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import '../../styles/lifeLog/updateLifeLog.css';
 import SaveButton from '../../components/buttons/SaveButton';
 
-const CreateLifLogForm = () => {
+const UpdateLifeLog = () => {
+  const location = useLocation();
   const navigate = useNavigate();
-  // 오늘 날짜 (yyyy-MM-dd 형식)
-  const today = new Date().toISOString().split('T')[0];
+  const params = new URLSearchParams(location.search);
+  const lifelogId = params.get('lifelogId');
 
   const [formData, setFormData] = useState({
-    lifelogDate: `${today}T00:00:00`,
+    lifelogId: '',
+    lifelogDate: '',
     emotion: '',
     emotionWrite: '',
     bedTime: '',
@@ -34,13 +34,40 @@ const CreateLifLogForm = () => {
     '우울함',
   ];
 
-  const handleSelect = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`/api/v1/kurung/lifeLogs/${lifelogId}`);
+        if (!response.ok) throw new Error('라이프로그 조회 실패');
+        const data = await response.json();
+
+        const datePart = data.lifelogDate?.split('T')[0] || '';
+        const bedTimePart = data.bedTime?.split('T')[1]?.slice(0, 5) || '';
+        const wakeupTimePart =
+          data.wakeupTime?.split('T')[1]?.slice(0, 5) || '';
+
+        setFormData({
+          ...data,
+          lifelogDate: `${datePart}T00:00:00`,
+          bedTime: bedTimePart,
+          wakeupTime: wakeupTimePart,
+        });
+      } catch (err) {
+        console.error('수정 페이지 조회 실패:', err);
+        alert('데이터를 불러오는데 실패했습니다.');
+        navigate('/');
+      }
+    };
+
+    if (lifelogId) fetchData();
+  }, [lifelogId, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleDateChange = (e) => {
@@ -48,6 +75,13 @@ const CreateLifLogForm = () => {
     setFormData((prev) => ({
       ...prev,
       lifelogDate: `${selectedDate}T00:00:00`,
+    }));
+  };
+
+  const handleSelect = (field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
     }));
   };
 
@@ -59,27 +93,36 @@ const CreateLifLogForm = () => {
         bedTime: `${baseDate}T${formData.bedTime}:00`,
         wakeupTime: `${baseDate}T${formData.wakeupTime}:00`,
       };
-      await axios.post('/api/v1/kurung/lifeLogs/create', body);
-      alert('저장 성공');
-    } catch (e) {
-      alert('저장 실패: ' + e.message);
+
+      const response = await fetch('/api/v1/kurung/lifeLogs/update', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!response.ok) throw new Error('수정 실패');
+      alert('수정이 완료되었습니다.');
+      navigate('/getLifeLogList');
+    } catch (err) {
+      console.error('수정 오류:', err);
+      alert('수정 중 오류가 발생했습니다.');
     }
   };
 
   return (
     <>
-      <h2 className="create-life-log-title">Life Log 작성</h2>
+      <h2 className="update-life-log-title">Life Log 수정</h2>
 
-      <div className="create-life-log-container">
-        <div className="form-group">
-          <label className="date-label">Date</label>
-          <input
-            type="date"
-            name="lifelogDate"
-            value={formData.lifelogDate.split('T')[0]}
-            onChange={handleDateChange}
-          />
-        </div>
+      <div className="update-life-log-container">
+        <label>Date</label>
+        <input
+          type="date"
+          name="lifelogDate"
+          value={formData.lifelogDate.split('T')[0]}
+          onChange={handleDateChange}
+        />
 
         <label>Emotional Status</label>
         <div className="button-group">
@@ -159,4 +202,4 @@ const CreateLifLogForm = () => {
   );
 };
 
-export default CreateLifLogForm;
+export default UpdateLifeLog;

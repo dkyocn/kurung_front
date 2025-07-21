@@ -135,35 +135,36 @@ const LifeLogCalendar = () => {
   };
 
   return (
-    <div className="calendar-wrapper">
-      <h2>Life Log</h2>
+    <div className="life-log-page">
+      <h2 className="life-log-title">Life Log</h2>
       <div className="button-top">
         <button
-          className="select"
+          className="select report-button"
           type="button"
           // onClick={() => (window.location.href = '/createLifeLog')}
         >
           월간 리포트 조회
         </button>
       </div>
-
-      <Calendar
-        value={value}
-        activeStartDate={viewDate}
-        onClickDay={handleDateClick}
-        onActiveStartDateChange={handleMonthChange}
-        prevLabel="〈"
-        nextLabel="〉"
-        locale="ko-KR"
-        formatShortWeekday={(locale, date) =>
-          ['일', '월', '화', '수', '목', '금', '토'][date.getDay()]
-        }
-        formatDay={(locale, date) => date.getDate()}
-        tileContent={tileContent}
-      />
+      <div className="calendar-wrapper">
+        <Calendar
+          value={value}
+          activeStartDate={viewDate}
+          onClickDay={handleDateClick}
+          onActiveStartDateChange={handleMonthChange}
+          prevLabel="〈"
+          nextLabel="〉"
+          locale="ko-KR"
+          formatShortWeekday={(locale, date) =>
+            ['일', '월', '화', '수', '목', '금', '토'][date.getDay()]
+          }
+          formatDay={(locale, date) => date.getDate()}
+          tileContent={tileContent}
+        />
+      </div>
 
       {selectedLog && (
-        <div className="life-log-container">
+        <div className="get-life-log-container">
           <h2>{formatDate(value)} 기록</h2>
 
           <label>Emotional Status</label>
@@ -230,12 +231,53 @@ const LifeLogCalendar = () => {
           </div>
 
           <label>Summary</label>
-          <p className="readonly-field">{selectedLog.summary || '없음'}</p>
+          <p className="readonly-field">{selectedLog.memo || '없음'}</p>
+          <div className="button-medule">
+            <button
+              className="update-button"
+              type="button"
+              onClick={() =>
+                (window.location.href = `/updateLifeLog?lifelogId=${selectedLog.lifelogId}`)
+              }
+            >
+              수정
+            </button>
+            <button
+              className="delete-button"
+              type="button"
+              onClick={async () => {
+                if (window.confirm('정말 삭제하시겠습니까?')) {
+                  try {
+                    const response = await fetch(
+                      `/api/v1/kurung/lifeLogs/${selectedLog.lifelogId}`,
+                      {
+                        method: 'DELETE',
+                      }
+                    );
+                    if (!response.ok) throw new Error('삭제 실패');
+
+                    alert('삭제되었습니다.');
+                    setSelectedLog(null);
+                    setNoData(true);
+                    fetchLifeLogs(
+                      viewDate.getFullYear(),
+                      viewDate.getMonth() + 1
+                    );
+                  } catch (err) {
+                    console.error('삭제 오류:', err);
+                    alert('삭제 중 오류가 발생했습니다.');
+                  }
+                }
+              }}
+            >
+              삭제
+            </button>
+          </div>
         </div>
       )}
 
       {noData && (
-        <div className="life-log-container">
+        <div className="get-life-log-container">
           <div className="button-bottom">
             <button
               className="cancel"

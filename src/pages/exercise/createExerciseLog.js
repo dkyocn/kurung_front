@@ -2,14 +2,6 @@ import React, { useState, useEffect } from 'react';
 import '../../styles/exercise/createExerciseLog.css';
 import apiClient from '../../utils/axios';
 
-const exercises = {
-  upper: ['벤치프레스', '푸쉬업', '풀업', '숄더프레스'],
-  lower: ['스쿼트', '런지', '레그프레스', '레그컬'],
-  core: ['플랭크', '레그레이즈', '마운틴 클라이머', '크런치'],
-  full: ['버피테스트', '점핑잭', '케틀벨 스윙'],
-  cardio: ['러닝머신 인터벌 루틴', '싸이클 + 스텝퍼 복합 루틴', '러닝', '공원 순환 서킷 루틴', '실내 계단 오르기 루틴', '마운틴 클라이머']
-};
-
 const bodyLabels = {
   1: '매우 나쁨',
   2: '나쁨',
@@ -26,18 +18,63 @@ const feelingLabels = {
   5: '최고였어요!'
 };
 
+const categoryMap = {
+  'upper': '상체',
+  'lower': '하체',
+  'core': '코어',
+  'full': '전신',
+  'cardio': '유산소'
+};
+
 function CreateExerciseLog() {
+  const [allExercises, setAllExercises] = useState([]);
   const [part, setPart] = useState('upper');
-  const [exercise, setExercise] = useState(exercises['upper'][0]);
+  const [exercise, setExercise] = useState('');
+  const [exerciseId, setExerciseId] = useState(null);
   const [setList, setSetList] = useState([]);
   const [bodyCondition, setBodyCondition] = useState(3);
   const [exerciseFeeling, setExerciseFeeling] = useState(4);
   const [sensation, setSensation] = useState([]);
   const [form, setForm] = useState({});
 
+ useEffect(() => {
+  const fetchExercises = async () => {
+    try {
+      // 변경: /api/v1/kurung/exercise/list
+      const response = await apiClient.get('/exercise/list');
+      setAllExercises(response.data);
+    } catch (err) {
+      alert("운동 목록을 불러오는 데 실패했습니다.");
+    }
+  };
+
+  fetchExercises();
+}, []);
+
   useEffect(() => {
-    setExercise(exercises[part][0]);
-  }, [part]);
+    console.log("-----------[운동 유형 필터링 확인]-----------");
+    if (allExercises.length === 0) {
+      console.log("`allExercises`가 비어있습니다. API 응답을 기다리는 중일 수 있습니다.");
+      return;
+    }
+    console.log("현재 선택된 운동 종목 (영문):", part);
+    
+    const koreanPart = categoryMap[part];
+    console.log("매핑된 운동 종목 (한글):", koreanPart);
+    console.log("필터링에 사용될 전체 운동 배열:", allExercises);
+
+    const availableExercises = allExercises.filter(ex => ex.exerciseCategory === koreanPart);
+    console.log("필터링 후 남은 운동 배열:", availableExercises);
+
+    if (availableExercises.length > 0) {
+      console.log("필터링 성공: 운동 유형 목록을 설정합니다.");
+      setExercise(availableExercises[0].exerciseName);
+      setExerciseId(availableExercises[0].exerciseId);
+    } else {
+      setExercise('');
+      setExerciseId(null);
+    }
+  }, [part, allExercises]);
 
   const handleAddSet = () => {
     setSetList([...setList, { weight: '', reps: '' }]);
@@ -82,7 +119,7 @@ function CreateExerciseLog() {
       !form.intensity ||
       !form.duration ||
       !part ||
-      !exercise ||
+      !exerciseId ||
       !form.pre_condition
     ) {
       alert('필수 입력값을 모두 입력하세요!');
@@ -94,8 +131,8 @@ function CreateExerciseLog() {
 
     // 입력값 수집 → data 만들기
     const newLog = {
-      user: { userUuid: "2025061401" },     // USER_UUID
-      exercise: { exerciseId: 1 },          // EXERCISE_ID (운동명-ID 매핑 필요)
+      user: { userUuid: "2025061401" }, // EXERCISE_ID (운동명-ID 매핑 필요)
+    exercise: { exerciseId: exerciseId },         
       exerciseDate: localDateTimeString,
       preCondition: bodyLabels[bodyCondition], // PRE_CONDITION (ex. "보통")
       duration: Number(form.duration),      // DURATION (예: 30)
@@ -122,7 +159,7 @@ function CreateExerciseLog() {
   };
 
   return (
-    <div className="exercise-log-container">
+    <div className="create-exercise-log-page">
       <h1>운동 기록 입력</h1>
       <form className="exercise-log-form" onSubmit={handleSubmit}>
         {/* 운동 기본 정보 카드 */}
@@ -162,12 +199,20 @@ function CreateExerciseLog() {
             </div>
             <div>
               <label htmlFor="exercise">운동 유형 <span className="exercise-log-required">*</span></label>
-              <select id="exercise" value={exercise} onChange={e => setExercise(e.target.value)}>
-                {exercises[part].map((ex) => (
-                  <option key={ex} value={ex}>{ex}</option>
+             <select
+              id="exercise"
+              value={exerciseId || ''}
+              onChange={e => setExerciseId(Number(e.target.value))}
+            >
+              {allExercises
+                .filter(ex => ex.exerciseCategory === categoryMap[part])
+                .map(ex => (
+                  <option key={ex.exerciseId} value={ex.exerciseId}>
+                    {ex.exerciseName}
+                  </option>
                 ))}
-              </select>
-            </div>
+            </select>
+                        </div>
           </div>
 
           <div className="exercise-log-row-2col">

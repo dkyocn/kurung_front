@@ -1,108 +1,129 @@
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #f9f9f9;
-}
-h1 {
+.create-exercise-log-page h1 {
   text-align: center;
   margin-bottom: 30px;
 }
-.exercise-log-form {
-  background-color: #fff;
-  padding: 30px;
-  border-radius: 10px;
-  max-width: 800px;
+.create-exercise-log-page .exercise-log-form {
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+  max-width: 1250px;
   margin: auto;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  margin-bottom: 60px;
-  margin-top: 30px; 
+  box-shadow: none;
+  margin-bottom: 0;
+  margin-top: 0;
 }
-label {
-  font-weight: bold;
+.create-exercise-log-page label {
+  font-weight: 500;
   display: block;
-  margin-top: 25px;
-  margin-bottom: 10px;
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 1.05em;
+  color: #495057;
 }
-select, input, textarea {
+.create-exercise-log-page select,
+.create-exercise-log-page input[type="date"],
+.create-exercise-log-page input[type="number"],
+.create-exercise-log-page input[type="text"],
+.create-exercise-log-page textarea {
   width: 100%;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 14px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid #DEE2E6;
+  font-size: 1em;
   box-sizing: border-box;
+  background-color: #F8F9FA;
+  transition: all 0.2s ease;
 }
-.exercise-log-checkbox-grid {
+
+.create-exercise-log-page select:focus,
+.create-exercise-log-page input:focus,
+.create-exercise-log-page textarea:focus {
+  outline: none;
+  border-color: #4DBA87;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(77, 186, 135, 0.2);
+}
+.create-exercise-log-page .exercise-log-checkbox-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 12px 24px;
   margin-top: 8px;
+  padding: 10px;
+  background-color: #F8F9FA;
+  border-radius: 10px;
 }
-.exercise-log-checkbox-grid label {
+.create-exercise-log-page .exercise-log-checkbox-grid label {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 14px;
+  gap: 8px;
+  font-size: 1em;
   white-space: nowrap;
+  cursor: pointer;
+  font-weight: 400;
 }
-.exercise-log-radio-vertical {
-  display: flex;
-  justify-content: space-between;
-  max-width: 600px;
-  margin-top: 12px;
+
+.create-exercise-log-page .exercise-log-checkbox-grid input[type="checkbox"] {
+  width: auto;
 }
-.exercise-log-radio-vertical label {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 14px;
-  gap: 4px;
-}
-.exercise-log-set-rep-group {
+.create-exercise-log-page .exercise-log-set-rep-group {
   display: flex;
   gap: 16px;
-  flex-wrap: wrap;
+  flex-direction: column;
   margin-top: 8px;
 }
-.exercise-log-set-rep-row {
+.create-exercise-log-page .exercise-log-set-rep-row {
   display: flex;
   gap: 10px;
   align-items: center;
   margin-bottom: 8px;
 }
-.exercise-log-set-rep-row input {
-  width: 80px;
-  font-size: 13px;
-  padding: 6px;
+.create-exercise-log-page .exercise-log-set-rep-row input {
+  font-size: 1em;
+  padding: 12px 16px;
 }
-.exercise-log-set-rep-row button {
-  background-color: #88C71F;
+.create-exercise-log-page .exercise-log-set-rep-row button {
+  background-color: #FA5252;
   color: white;
-  font-size: 12px;
-  padding: 6px 10px;
+  font-size: 0.9em;
+  padding: 8px 12px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  height: 34px;
+  height: auto;
+  transition: background-color 0.2s ease;
 }
-.exercise-log-button {
+
+.create-exercise-log-page .exercise-log-set-rep-row button:hover {
+  background-color: #E03131;
+}
+
+.create-exercise-log-page .exercise-log-button {
   border-radius: 12px;
-  padding: 10px 20px;
-  font-size: 16px;
+  padding: 15px 20px;
+  font-size: 1.1em;
+  font-weight: 700;
   border: none;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
-.exercise-log-button-default, .exercise-log-button-edit {
+.create-exercise-log-page .exercise-log-button-default {
   background-color: #88C71F;
   color: #FFFFFF;
 }
-.exercise-log-button-cancel, .exercise-log-button-list {
+.create-exercise-log-page .exercise-log-button-default:hover {
+  opacity: 0.9;
+}
+
+.create-exercise-log-page .exercise-log-button-cancel, .create-exercise-log-page .exercise-log-button-list {
   background-color: #EDEDED;
   color: #000000;
+  font-weight: 500;
 }
-.exercise-log-button-delete {
+.create-exercise-log-page .exercise-log-button-delete {
   background-color: #F45757;
   color: #FFFFFF;
 }
-input[type=range] {
+.create-exercise-log-page input[type=range] {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
@@ -110,189 +131,143 @@ input[type=range] {
   border: none !important;
   box-shadow: none !important;
   flex: 1;
-  max-width: 400px;
+  max-width: 1250px;
 }
-input[type=range]::-webkit-slider-runnable-track {
-  height: 6px;
-  background: #88C71F;
-  border-radius: 5px;
+.create-exercise-log-page input[type=range]::-webkit-slider-runnable-track {
+  height: 8px;
+  background: #DEE2E6;
+  border-radius: 4px;
 }
-input[type=range]::-webkit-slider-thumb {
+.create-exercise-log-page input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  height: 20px;
-  width: 20px;
+  height: 24px;
+  width: 24px;
   border-radius: 50%;
-  background: #88C71F;
+  background: #4DBA87;
   cursor: pointer;
-  margin-top: -7px;
-  box-shadow: 0 0 2px rgba(0,0,0,0.3);
+  margin-top: -8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   border: none !important;
   outline: none !important;
 }
-input[type=range]::-moz-range-track {
-  height: 6px;
-  background: #88C71F;
-  border-radius: 5px;
+.create-exercise-log-page input[type=range]::-moz-range-track {
+  height: 8px;
+  background: #DEE2E6;
+  border-radius: 4px;
 }
-input[type=range]::-moz-range-thumb {
-  height: 20px;
-  width: 20px;
+.create-exercise-log-page input[type=range]::-moz-range-thumb {
+  height: 24px;
+  width: 24px;
   border-radius: 50%;
-  background: #88C71F;
-  cursor: pointer;
-  border: none !important;
-  outline: none !important;
-}
-input[type=range]::-ms-thumb {
-  height: 20px;
-  width: 20px;
-  border-radius: 50%;
-  background: #88C71F;
+  background: #4DBA87;
   cursor: pointer;
   border: none !important;
   outline: none !important;
 }
-.exercise-log-slider-group {
+.create-exercise-log-page .exercise-log-slider-group {
   margin: 36px 0 20px 0;
 }
-.exercise-log-slider-row {
+.create-exercise-log-page .exercise-log-slider-row {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 16px;
   margin: 12px 0 0 0;
 }
-.exercise-log-slider-label {
+.create-exercise-log-page .exercise-log-slider-label {
   text-align: center;
-  font-weight: bold;
+  font-weight: 500;
   margin-top: 10px;
   margin-bottom: 10px;
-  font-size: 1.05em;
+  font-size: 1.1em;
+  color: #343A40;
 }
-input[type=range] {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 100%;
-  max-width: 500px;
-  background: transparent;
-  border: none !important;
-  box-shadow: none !important;
-  flex: 1;
-  margin: 0 18px;
-}
-input[type=range]::-webkit-slider-runnable-track {
-  height: 6px;
-  background: #88C71F;
-  border-radius: 5px;
-}
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  height: 20px;
-  width: 20px;
-  border-radius: 50%;
-  background: #88C71F;
-  cursor: pointer;
-  margin-top: -7px;
-  box-shadow: 0 0 2px rgba(0,0,0,0.3);
-  border: none !important;
-  outline: none !important;
+
+.create-exercise-log-page .slider-min,
+.create-exercise-log-page .slider-max {
+  font-size: 0.9em;
+  color: #868E96;
+  font-weight: 500;
 }
 
 /* 카드 컨테이너 */
-.exercise-log-container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 32px 0 60px 0;
+.create-exercise-log-page {
+  max-width: 1250px;
+  margin: 40px auto;
+  padding: 0;
 }
 
-.exercise-log-container h1 {
+.create-exercise-log-page h1 {
   text-align: center;
-  font-size: 2em;
-  margin-bottom: 32px;
-  font-weight: bold;
+  font-size: 2.2em;
+  margin-bottom: 40px;
+  font-weight: 700;
+  color: #343A40;
 }
 
-.exercise-log-card {
+.create-exercise-log-page .exercise-log-card {
   background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-  padding: 28px 24px 24px 24px;
-  margin-bottom: 28px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 32px;
+  margin-bottom: 32px;
+  border: 1px solid #E9ECEF;
 }
 
-.exercise-log-card h2 {
-  font-size: 1.18em;
-  font-weight: bold;
-  margin-bottom: 6px;
+.create-exercise-log-page .exercise-log-card h2 {
+  font-size: 1.5em;
+  font-weight: 700;
+  margin-bottom: 8px;
   margin-top: 0;
+  color: #343A40;
+  border-bottom: 2px solid #F1F3F5;
+  padding-bottom: 12px;
 }
 
-.exercise-log-card p {
-  color: #888;
-  font-size: 0.98em;
-  margin-bottom: 18px;
+.create-exercise-log-page .exercise-log-card p {
+  color: #868E96;
+  font-size: 1em;
+  margin-bottom: 24px;
   margin-top: 0;
 }
 
 /* 2열 레이아웃 */
-.exercise-log-row-2col {
-  display: flex;
+.create-exercise-log-page .exercise-log-row-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 24px;
-  margin-bottom: 12px;
+  margin-bottom: 20px;
 }
-.exercise-log-row-2col > div {
-  flex: 1;
+.create-exercise-log-page .exercise-log-row-2col > div {
+  flex: none; /* remove flex property */
 }
 
 /* 세트 추가 버튼 */
-.exercise-log-set-add-btn {
+.create-exercise-log-page .exercise-log-set-add-btn {
   width: 100%;
   margin-top: 8px;
   margin-bottom: 0;
-  font-size: 1.05em;
+  font-size: 1em;
   font-weight: 500;
-  padding: 10px 0;
+  padding: 12px 0;
+  background-color: #88C71F;
+  color: #ffffff;
+}
+
+.create-exercise-log-page .exercise-log-set-add-btn:hover {
+  opacity: 0.9;
 }
 
 /* 제출 버튼 */
-.exercise-log-submit-btn {
+.create-exercise-log-page .exercise-log-submit-btn {
   width: 100%;
-  margin-top: 18px;
-  font-size: 1.1em;
-  font-weight: 600;
-  padding: 13px 0;
+  margin-top: 24px;
+  font-size: 1.15em;
+  font-weight: 700;
+  padding: 15px 0;
 }
-
-/* 세트/반복 입력 행 */
-.exercise-log-set-rep-group {
-  margin-bottom: 0;
-}
-.exercise-log-set-rep-row {
-  margin-bottom: 6px;
-}
-
-/* 슬라이더 그룹 간격 */
-.exercise-log-slider-group {
-  margin: 24px 0 20px 0;
-}
-
-/* 체크박스 그리드 */
-.exercise-log-checkbox-grid {
-  margin-top: 8px;
-  margin-bottom: 12px;
-}
-
-/* 라벨, 인풋, 셀렉트, 텍스트에어 */
-label {
-  font-weight: bold;
-  margin-bottom: 6px;
-  display: block;
-}
-input, select, textarea {
-  margin-bottom: 0;
-}
-.exercise-log-required {
-  color: #F45757;
-  margin-left: 2px;
+.create-exercise-log-page .exercise-log-required {
+  color: #FA5252;
+  margin-left: 4px;
   font-weight: bold;
 }

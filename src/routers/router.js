@@ -9,7 +9,7 @@ import { Routes, Route } from 'react-router-dom';
 // import boardRoutes from './boardRoutes';
 // import noticeRoutes from './noticeRoutes';
 // import memberRoutes from './memberRoutes';
-import lifeLogRoutes from './lifeLogRoutes';
+// import lifeLogRoutes from './lifeLogRoutes';
 import exerciseRoutes from './exerciseLogRoutes';
 
 const AppRouter = () => {

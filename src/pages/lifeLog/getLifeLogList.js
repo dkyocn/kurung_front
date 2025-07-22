@@ -37,7 +37,7 @@ const LifeLogCalendar = () => {
   const [noData, setNoData] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [targetDeleteId, setTargetDeleteId] = useState(null);
-
+  const navigate = useNavigate();
   const userUuid = '2025061401';
 
   const fetchLifeLogs = async (year, month) => {
@@ -157,7 +157,7 @@ const LifeLogCalendar = () => {
         <button
           className="select report-button"
           type="button"
-          // onClick={() => (window.location.href = '/createLifeLog')}
+          onClick={() => navigate(`/getMonthlyLifeLog`)}
         >
           월간 리포트 조회
         </button>

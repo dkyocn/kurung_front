@@ -1,0 +1,218 @@
+/* src/styles/lifeLog/getMonthlyLifeLog.css */
+
+.monthly-report-page {
+  padding: 24px;
+}
+
+.monthly-report-title {
+  font-size: 32px;
+  font-weight: bold;
+  margin-left: 335px;
+  margin-bottom: 16px;
+  color: #333;
+  text-align: left;
+}
+
+.button-top-monthly {
+  margin-top: 24px;
+  margin-right: 335px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.button-top-monthly button {
+  padding: 8px 16px;
+  font-size: 14px;
+  color: white;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background-color: #88c71f;
+}
+
+.calendar-wrapper {
+  max-width: 500px;
+  margin: 60px auto;
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+}
+
+.react-calendar {
+  border: none;
+  font-size: 16px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+}
+
+.react-calendar__navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.react-calendar__navigation__label {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+.react-calendar__tile--now {
+  background: transparent !important;
+  color: #000;
+  border-radius: 50%;
+}
+
+.react-calendar__tile abbr {
+  display: none;
+}
+
+.react-calendar__tile--neighboringMonth {
+  display: none;
+}
+
+.calendar-day-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+  padding-top: 5px;
+  box-sizing: border-box;
+}
+
+.calendar-icon-wrapper {
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-emotion-icon {
+  width: 45px;
+  height: 45px;
+}
+
+.calendar-emotion-placeholder {
+  width: 35px;
+  height: 35px;
+  background-color: #f0f0f0;
+  border-radius: 50%;
+}
+
+.calendar-date-number {
+  margin-top: 2px;
+  font-size: 10px;
+  font-weight: bold;
+  color: #333;
+}
+
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus {
+  background: none !important;
+  color: inherit !important;
+  border: none !important;
+}
+
+.report-summary {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 16px;
+  font-family: 'Arial', sans-serif;
+}
+
+.report-summary h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.monthly-boxes {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.monthly-item {
+  flex: 1;
+}
+
+.monthly-item label {
+  font-weight: bold;
+  display: block;
+  font-size: 14px;
+  color: black;
+  margin-bottom: 6px;
+}
+
+.monthly-box {
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 20px;
+  background-color: #f8fefb;
+}
+
+.summary-section {
+  margin-top: 24px;
+}
+
+.summary-title {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.summary-box {
+  border: 1px solid #e0e0e0;
+  padding: 16px;
+  border-radius: 8px;
+  background-color: #f8fefb;
+}
+
+.summary-content {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.emotion-stats {
+  margin-top: 12px;
+}
+
+.emotion-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.emotion-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 90px;
+  font-size: 14px;
+}
+
+.emotion-bar-bg {
+  flex: 1;
+  height: 24px;
+  background-color: #e0e0e0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.emotion-bar-fill {
+  height: 100%;
+  line-height: 24px;
+  padding-left: 10px;
+  color: white;
+  font-weight: bold;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  border-radius: 12px;
+}

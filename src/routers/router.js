@@ -11,12 +11,14 @@ import { Routes, Route } from 'react-router-dom';
 // import memberRoutes from './memberRoutes';
 import lifeLogRoutes from './lifeLogRoutes';
 import exerciseRoutes from './exerciseLogRoutes';
+import diagnosisRoutes from './diagnosisLogRoutes';
 
 const AppRouter = () => {
   return (
     <Routes>
       {exerciseRoutes}
       {/* {lifeLogRoutes} */}
+      {diagnosisRoutes}
       {/* {boardRoutes}
       {noticeRoutes}
       {memberRoutes}

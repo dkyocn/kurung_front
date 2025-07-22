@@ -41,12 +41,22 @@
   margin-left: 10px;
 }
 
+.submenu-wrapper {
+  display: flex;
+  flex-direction: column; /* 세로 배치 */
+  gap: 2px; /* 메뉴 간 간격 */
+  margin-left: 12px;
+}
+
 .submenu {
-  margin: 6px 0 6px 10px;
+  margin: 2px 0; 
   padding-left: 10px;
   cursor: pointer;
   color: #ccc;
-  font-size: 15px; /* ✅ submenu도 폰트 크기 맞춰줌 */
+  font-size: 15px; 
+  display: block;
+  padding: 2px 0 2px 10px;
+  text-decoration: none;
 }
 
 .bini-icon {
@@ -61,4 +71,5 @@
 
 .submenu:hover {
   color: #88C71F;
+  text-decoration: underline;
 }

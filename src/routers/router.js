@@ -11,10 +11,12 @@ import { Routes, Route } from 'react-router-dom';
 // import memberRoutes from './memberRoutes';
 import lifeLogRoutes from './lifeLogRoutes';
 import exerciseRoutes from './exerciseLogRoutes';
+import  mypageRoutes  from './mypageRoutes';
 
 const AppRouter = () => {
   return (
     <Routes>
+      {mypageRoutes}
       {exerciseRoutes}
       {lifeLogRoutes}
       {/* {boardRoutes}

@@ -73,11 +73,11 @@ const Menubar = () => {
 
         {renderMenuTitle("마이페이지", "mypage")}
         {openSection === 'mypage' && (
-          <>
-            <div className="submenu">내 정보 관리</div>
+         <div className="submenu-wrapper">
+            <Link to="/mypage" className="submenu">마이페이지</Link>
             <Link to="/missions" className="submenu">mission</Link>
             <div className="submenu">즐겨찾기</div>
-          </>
+          </div>
         )}
       </div>
     </div>

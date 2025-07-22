@@ -63,7 +63,7 @@ const Menubar = () => {
         {openSection === 'health' && (
           <>
             <div className="submenu">건강 리포트</div>
-            <div className="submenu">건강 상태 초기 진단</div>
+            <Link to="/healthQuestion" className="submenu">건강 상태 초기 진단</Link>
           </>
         )}
 

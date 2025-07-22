@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import emotionIcons from '../../images/lifeLog/emotionIcons';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../../styles/lifeLog/getLifeLogList.css';
+import DeleteModal from '../../components/common/Modal';
 
 const emotionColors = {
   행복함: '#28C76F',
@@ -33,6 +35,8 @@ const LifeLogCalendar = () => {
   const [lifeLogMap, setLifeLogMap] = useState({});
   const [selectedLog, setSelectedLog] = useState(null);
   const [noData, setNoData] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [targetDeleteId, setTargetDeleteId] = useState(null);
 
   const userUuid = '2025061401';
 
@@ -96,6 +100,21 @@ const LifeLogCalendar = () => {
     setViewDate(activeStartDate);
   };
 
+  const handleDelete = async () => {
+    try {
+      await fetch(`/api/v1/kurung/lifeLogs/${targetDeleteId}`, {
+        method: 'DELETE',
+      });
+      alert('삭제 성공');
+      setShowDeleteModal(false);
+      setSelectedLog(null);
+      fetchLifeLogs(viewDate.getFullYear(), viewDate.getMonth() + 1); // 다시 로딩
+    } catch (err) {
+      console.error('삭제 실패:', err);
+      alert('삭제 실패');
+    }
+  };
+
   const tileContent = ({ date, view }) => {
     if (view === 'month') {
       const offset = date.getTimezoneOffset() * 60000;
@@ -103,27 +122,24 @@ const LifeLogCalendar = () => {
       const dateKey = localDate.toISOString().slice(0, 10);
       const entry = lifeLogMap[dateKey];
       const emotion = entry?.emotion;
-      const isEmotion = !!emotion;
-      const bgColor = isEmotion ? emotionColors[emotion] : '#ffffff';
 
       return (
-        <div
-          style={{
-            width: '55px',
-            height: '55px',
-            borderRadius: '50%',
-            backgroundColor: bgColor,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            color: isEmotion ? 'white' : '#000',
-            fontWeight: 'bold',
-            fontSize: '16px',
-            margin: 'auto',
-            border: 'none',
-          }}
-        >
-          {date.getDate()}
+        <div className="calendar-day-wrapper">
+          {/* 감정 이미지 (없어도 공간 유지) */}
+          <div className="calendar-icon-wrapper">
+            {emotion ? (
+              <img
+                src={emotionIcons[emotion]}
+                alt={emotion}
+                className="calendar-emotion-icon"
+              />
+            ) : (
+              <div className="calendar-emotion-placeholder" />
+            )}
+          </div>
+
+          {/* 날짜 숫자 */}
+          <div className="calendar-date-number">{date.getDate()}</div>
         </div>
       );
     }
@@ -135,35 +151,46 @@ const LifeLogCalendar = () => {
   };
 
   return (
-    <div className="calendar-wrapper">
-      <h2>Life Log</h2>
+    <div className="life-log-page">
+      <h2 className="life-log-title">Life Log</h2>
       <div className="button-top">
         <button
-          className="select"
+          className="select report-button"
           type="button"
           // onClick={() => (window.location.href = '/createLifeLog')}
         >
           월간 리포트 조회
         </button>
       </div>
+      <div className="calendar-wrapper">
+        <Calendar
+          value={null}
+          activeStartDate={viewDate}
+          onClickDay={handleDateClick}
+          onActiveStartDateChange={handleMonthChange}
+          prevLabel="〈"
+          nextLabel="〉"
+          locale="ko-KR"
+          formatShortWeekday={(locale, date) =>
+            ['일', '월', '화', '수', '목', '금', '토'][date.getDay()]
+          }
+          formatDay={(locale, date) => date.getDate()}
+          tileContent={tileContent}
+          showNeighboringMonth={false}
+          tileDisabled={({ date, view }) => {
+            if (view !== 'month') return false;
 
-      <Calendar
-        value={value}
-        activeStartDate={viewDate}
-        onClickDay={handleDateClick}
-        onActiveStartDateChange={handleMonthChange}
-        prevLabel="〈"
-        nextLabel="〉"
-        locale="ko-KR"
-        formatShortWeekday={(locale, date) =>
-          ['일', '월', '화', '수', '목', '금', '토'][date.getDay()]
-        }
-        formatDay={(locale, date) => date.getDate()}
-        tileContent={tileContent}
-      />
+            const thisMonth = viewDate.getMonth();
+            const thisYear = viewDate.getFullYear();
+            return (
+              date.getMonth() !== thisMonth || date.getFullYear() !== thisYear
+            );
+          }}
+        />
+      </div>
 
       {selectedLog && (
-        <div className="life-log-container">
+        <div className="get-life-log-container">
           <h2>{formatDate(value)} 기록</h2>
 
           <label>Emotional Status</label>
@@ -230,12 +257,41 @@ const LifeLogCalendar = () => {
           </div>
 
           <label>Summary</label>
-          <p className="readonly-field">{selectedLog.summary || '없음'}</p>
+          <p className="readonly-field">{selectedLog.memo || '없음'}</p>
+          <div className="button-medule">
+            <button
+              className="update-button"
+              type="button"
+              onClick={() =>
+                (window.location.href = `/updateLifeLog?lifelogId=${selectedLog.lifelogId}`)
+              }
+            >
+              수정
+            </button>
+            <button
+              className="delete-button"
+              type="button"
+              onClick={() => {
+                setTargetDeleteId(selectedLog.lifelogId);
+                setShowDeleteModal(true);
+              }}
+            >
+              삭제
+            </button>
+          </div>
         </div>
+      )}
+      {showDeleteModal && (
+        <DeleteModal
+          message="정말 삭제하시겠습니까?"
+          onConfirm={handleDelete}
+          onCancel={() => setShowDeleteModal(false)}
+          onClose={() => setShowDeleteModal(false)}
+        />
       )}
 
       {noData && (
-        <div className="life-log-container">
+        <div className="get-life-log-container">
           <div className="button-bottom">
             <button
               className="cancel"

@@ -2,14 +2,6 @@ import React, { useState, useEffect } from 'react';
 import '../../styles/exercise/createExerciseLog.css';
 import apiClient from '../../utils/axios';
 
-const exercises = {
-  upper: ['벤치프레스', '푸쉬업', '풀업', '숄더프레스'],
-  lower: ['스쿼트', '런지', '레그프레스', '레그컬'],
-  core: ['플랭크', '레그레이즈', '마운틴 클라이머', '크런치'],
-  full: ['버피테스트', '점핑잭', '케틀벨 스윙'],
-  cardio: ['러닝머신 인터벌 루틴', '싸이클 + 스텝퍼 복합 루틴', '러닝', '공원 순환 서킷 루틴', '실내 계단 오르기 루틴', '마운틴 클라이머']
-};
-
 const bodyLabels = {
   1: '매우 나쁨',
   2: '나쁨',
@@ -26,18 +18,63 @@ const feelingLabels = {
   5: '최고였어요!'
 };
 
+const categoryMap = {
+  'upper': '상체',
+  'lower': '하체',
+  'core': '코어',
+  'full': '전신',
+  'cardio': '유산소'
+};
+
 function CreateExerciseLog() {
+  const [allExercises, setAllExercises] = useState([]);
   const [part, setPart] = useState('upper');
-  const [exercise, setExercise] = useState(exercises['upper'][0]);
+  const [exercise, setExercise] = useState('');
+  const [exerciseId, setExerciseId] = useState(null);
   const [setList, setSetList] = useState([]);
   const [bodyCondition, setBodyCondition] = useState(3);
   const [exerciseFeeling, setExerciseFeeling] = useState(4);
   const [sensation, setSensation] = useState([]);
   const [form, setForm] = useState({});
 
+ useEffect(() => {
+  const fetchExercises = async () => {
+    try {
+      // 변경: /api/v1/kurung/exercise/list
+      const response = await apiClient.get('/exercise/list');
+      setAllExercises(response.data);
+    } catch (err) {
+      alert("운동 목록을 불러오는 데 실패했습니다.");
+    }
+  };
+
+  fetchExercises();
+}, []);
+
   useEffect(() => {
-    setExercise(exercises[part][0]);
-  }, [part]);
+    console.log("-----------[운동 유형 필터링 확인]-----------");
+    if (allExercises.length === 0) {
+      console.log("`allExercises`가 비어있습니다. API 응답을 기다리는 중일 수 있습니다.");
+      return;
+    }
+    console.log("현재 선택된 운동 종목 (영문):", part);
+    
+    const koreanPart = categoryMap[part];
+    console.log("매핑된 운동 종목 (한글):", koreanPart);
+    console.log("필터링에 사용될 전체 운동 배열:", allExercises);
+
+    const availableExercises = allExercises.filter(ex => ex.exerciseCategory === koreanPart);
+    console.log("필터링 후 남은 운동 배열:", availableExercises);
+
+    if (availableExercises.length > 0) {
+      console.log("필터링 성공: 운동 유형 목록을 설정합니다.");
+      setExercise(availableExercises[0].exerciseName);
+      setExerciseId(availableExercises[0].exerciseId);
+    } else {
+      setExercise('');
+      setExerciseId(null);
+    }
+  }, [part, allExercises]);
 
   const handleAddSet = () => {
     setSetList([...setList, { weight: '', reps: '' }]);
@@ -82,7 +119,7 @@ function CreateExerciseLog() {
       !form.intensity ||
       !form.duration ||
       !part ||
-      !exercise ||
+      !exerciseId ||
       !form.pre_condition
     ) {
       alert('필수 입력값을 모두 입력하세요!');
@@ -94,8 +131,8 @@ function CreateExerciseLog() {
 
     // 입력값 수집 → data 만들기
     const newLog = {
-      user: { userUuid: "2025061401" },     // USER_UUID
-      exercise: { exerciseId: 1 },          // EXERCISE_ID (운동명-ID 매핑 필요)
+      user: { userUuid: "2025061401" }, // EXERCISE_ID (운동명-ID 매핑 필요)
+    exercise: { exerciseId: exerciseId },         
       exerciseDate: localDateTimeString,
       preCondition: bodyLabels[bodyCondition], // PRE_CONDITION (ex. "보통")
       duration: Number(form.duration),      // DURATION (예: 30)
@@ -122,21 +159,21 @@ function CreateExerciseLog() {
   };
 
   return (
-    <div className="exercise-log-container">
+    <div className="create-exercise-log-page">
       <h1>운동 기록 입력</h1>
-      <form onSubmit={handleSubmit}>
+      <form className="exercise-log-form" onSubmit={handleSubmit}>
         {/* 운동 기본 정보 카드 */}
-        <div className="card">
+        <div className="exercise-log-card">
           <h2>운동 기본 정보</h2>
           <p>오늘의 운동에 관한 기본 정보를 입력해주세요.</p>
 
-          <div className="row-2col">
+          <div className="exercise-log-row-2col">
             <div>
-              <label htmlFor="exerciseDate">운동 날짜 <span className="required">*</span></label>
+              <label htmlFor="exerciseDate">운동 날짜 <span className="exercise-log-required">*</span></label>
               <input id="exerciseDate" type="date" onChange={handleChange} />
             </div>
             <div>
-              <label htmlFor="pre_condition">운동 전 컨디션 <span className="required">*</span></label>
+              <label htmlFor="pre_condition">운동 전 컨디션 <span className="exercise-log-required">*</span></label>
               <select id="pre_condition" onChange={handleChange}>
                 <option value="">선택</option>
                 <option value="5">매우 좋음</option>
@@ -148,9 +185,9 @@ function CreateExerciseLog() {
             </div>
           </div>
 
-          <div className="row-2col">
+          <div className="exercise-log-row-2col">
             <div>
-              <label htmlFor="part">운동 종목 <span className="required">*</span></label>
+              <label htmlFor="part">운동 종목 <span className="exercise-log-required">*</span></label>
               <select id="part" value={part} onChange={e => setPart(e.target.value)}>
                 <option value="upper">상체</option>
                 <option value="lower">하체</option>
@@ -161,18 +198,26 @@ function CreateExerciseLog() {
 
             </div>
             <div>
-              <label htmlFor="exercise">운동 유형 <span className="required">*</span></label>
-              <select id="exercise" value={exercise} onChange={e => setExercise(e.target.value)}>
-                {exercises[part].map((ex) => (
-                  <option key={ex} value={ex}>{ex}</option>
+              <label htmlFor="exercise">운동 유형 <span className="exercise-log-required">*</span></label>
+             <select
+              id="exercise"
+              value={exerciseId || ''}
+              onChange={e => setExerciseId(Number(e.target.value))}
+            >
+              {allExercises
+                .filter(ex => ex.exerciseCategory === categoryMap[part])
+                .map(ex => (
+                  <option key={ex.exerciseId} value={ex.exerciseId}>
+                    {ex.exerciseName}
+                  </option>
                 ))}
-              </select>
-            </div>
+            </select>
+                        </div>
           </div>
 
-          <div className="row-2col">
+          <div className="exercise-log-row-2col">
             <div>
-              <label htmlFor="intensity">운동 강도 <span className="required">*</span></label>
+              <label htmlFor="intensity">운동 강도 <span className="exercise-log-required">*</span></label>
               <select id="intensity" onChange={handleChange}>
                 <option value="">선택</option>
                 <option value="약">약</option>
@@ -181,18 +226,18 @@ function CreateExerciseLog() {
               </select>
             </div>
             <div>
-              <label htmlFor="duration">운동 시간 (분) <span className="required">*</span></label>
+              <label htmlFor="duration">운동 시간 (분) <span className="exercise-log-required">*</span></label>
               <input id="duration" placeholder="예: 30" type="number" onChange={handleChange} />
             </div>
           </div>
         </div>
 
         {/* 운동 상세 기록 카드 */}
-        <div className="card">
+        <div className="exercise-log-card">
           <h2>운동 상세 기록</h2>
           <p>선택적으로 추가 정보를 입력할 수 있습니다.</p>
 
-          <div className="row-2col">
+          <div className="exercise-log-row-2col">
             <div>
               <label htmlFor="calories">소모한 칼로리 (kcal)</label>
               <input id="calories" placeholder="예: 420" type="number" onChange={handleChange} />
@@ -203,7 +248,7 @@ function CreateExerciseLog() {
             </div>
           </div>
 
-          <div className="row-2col">
+          <div className="exercise-log-row-2col">
             <div>
               <label htmlFor="setCount">세트 수</label>
               <input id="setCount" type="number" placeholder="세트 수 (예: 3)" onChange={handleChange} />
@@ -215,9 +260,9 @@ function CreateExerciseLog() {
           </div>
 
           <label>세트별 무게 및 반복 입력</label>
-          <div id="setList" className="set-rep-group">
+          <div id="setList" className="exercise-log-set-rep-group">
             {setList.map((set, idx) => (
-              <div className="set-rep-row" key={idx}>
+              <div className="exercise-log-set-rep-row" key={idx}>
                 <input
                   type="number"
                   placeholder="무게(kg)"
@@ -230,21 +275,21 @@ function CreateExerciseLog() {
                   value={set.reps}
                   onChange={e => handleSetChange(idx, 'reps', e.target.value)}
                 />
-                <button className="button button-delete" type="button" onClick={() => handleRemoveSet(idx)}>삭제</button>
+                <button className="exercise-log-button exercise-log-button-delete" type="button" onClick={() => handleRemoveSet(idx)}>삭제</button>
               </div>
             ))}
           </div>
-          <button className="button button-default set-add-btn" type="button" onClick={handleAddSet}>+ 세트 추가</button>
+          <button className="exercise-log-button exercise-log-button-default exercise-log-set-add-btn" type="button" onClick={handleAddSet}>+ 세트 추가</button>
         </div>
 
         {/* 운동 후 컨디션 및 메모 카드 */}
-        <div className="card">
+        <div className="exercise-log-card">
           <h2>운동 후 컨디션 및 메모</h2>
           <p>운동 후 몸 상태와 느낀 점을 기록해주세요.</p>
 
-          <div className="slider-group">
-            <div className="slider-label">오늘 전반적인 몸 상태</div>
-            <div className="slider-row">
+          <div className="exercise-log-slider-group">
+            <div className="exercise-log-slider-label">오늘 전반적인 몸 상태</div>
+            <div className="exercise-log-slider-row">
               <span className="slider-min">매우 나쁨</span>
               <input
                 type="range"
@@ -255,12 +300,12 @@ function CreateExerciseLog() {
               />
               <span className="slider-max">매우 좋음</span>
             </div>
-            <div className="slider-label">{bodyLabels[bodyCondition]}</div>
+            <div className="exercise-log-slider-label">{bodyLabels[bodyCondition]}</div>
           </div>
 
-          <div className="slider-group">
-            <div className="slider-label">운동 후 기분</div>
-            <div className="slider-row">
+          <div className="exercise-log-slider-group">
+            <div className="exercise-log-slider-label">운동 후 기분</div>
+            <div className="exercise-log-slider-row">
               <span className="slider-min">별로</span>
               <input
                 type="range"
@@ -271,11 +316,11 @@ function CreateExerciseLog() {
               />
               <span className="slider-max">최고</span>
             </div>
-            <div className="slider-label">{feelingLabels[exerciseFeeling]}</div>
+            <div className="exercise-log-slider-label">{feelingLabels[exerciseFeeling]}</div>
           </div>
 
           <label>신체적으로 어떤 느낌이 있었나요?</label>
-          <div className="checkbox-grid">
+          <div className="exercise-log-checkbox-grid">
             <label>
               <input type="checkbox" name="sensation" value="근육통 있음" checked={sensation.includes('근육통 있음')} onChange={handleSensationChange} /> 근육통 있음
             </label>
@@ -297,7 +342,7 @@ function CreateExerciseLog() {
           <textarea id="memo" placeholder="예: 허벅지가 당기고 숨이 찼어요." rows="3" onChange={handleChange}></textarea>
         </div>
 
-        <button className="button button-default submit-btn" type="submit">운동 기록 저장하기</button>
+        <button className="exercise-log-button exercise-log-button-default exercise-log-submit-btn" type="submit">운동 기록 저장하기</button>
       </form>
     </div>
   );

@@ -2,11 +2,19 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import CreateExerciseLog from '../pages/exercise/createExerciseLog';
+import CreateObjective from '../pages/exercise/createObjective';
+import ExerciseRecode from '../pages/exercise/exerciseRecode';
+// import UpdateObjective from '../pages/exercise/updateObjective';
+// import UpdateExerciseLog from '../pages/exercise/updateExerciseLog';
 
+// <Route path="/updateExerciseLog" element={<UpdateExerciseLog />} />, */}
 // 여러 개의 route를 반환할 때는 배열로!
 const exerciseLogRoutes = [
+
   <Route path="/createExerciseLog" element={<CreateExerciseLog />} />,
-  // 여기에 다른 운동 기록 관련 Route 추가 가능
+  <Route path="/createObjective" element={<CreateObjective />} />,
+  <Route path="/exerciseRecode" element={<ExerciseRecode />} />,
+ 
 ];
 
 export default exerciseLogRoutes;

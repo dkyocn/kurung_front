@@ -33,10 +33,22 @@ function CreateObjective() {
     month: '',
     memo: '',
   });
+  const [warning, setWarning] = useState('');
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-    setForm({ ...form, [id]: value });
+    const newForm = { ...form, [id]: value };
+    setForm(newForm);
+    // 경고 문구 로직
+    let warn = '';
+    if (id === 'count' && Number(value) > 0 && Number(value) <= 3) {
+      warn = '운동 횟수 목표가 너무 작으면 달성률이 비정상적으로 높게 표시될 수 있습니다.';
+    } else if (id === 'duration' && Number(value) > 0 && Number(value) <= 60) {
+      warn = '운동 시간 목표가 너무 작으면 달성률이 비정상적으로 높게 표시될 수 있습니다.';
+    } else if (id === 'weight' && Number(value) > 0 && Number(value) <= 10) {
+      warn = '목표 몸무게가 너무 작게 설정되었습니다.';
+    }
+    setWarning(warn);
   };
 
   const handleMonthChange = (e) => {
@@ -72,7 +84,7 @@ function CreateObjective() {
   const selectedMonth = monthOptions.find(m => m.label === form.month);
 
   return (
-    <div className="objective-container">
+    <div className="create-objective-page">
       <h1 className="objective-title">운동 목표 설정</h1>
       <form className="objective-form" onSubmit={handleSubmit}>
         <label htmlFor="title">목표 제목 <span className="objective-required">*</span></label>
@@ -82,15 +94,34 @@ function CreateObjective() {
           <div>
             <label htmlFor="count">운동 횟수 목표 (회) <span className="objective-required">*</span></label>
             <input id="count" placeholder="예: 5" value={form.count} onChange={handleChange} type="number" />
+            {form.count && Number(form.count) > 0 && Number(form.count) <= 3 && (
+              <div className="objective-warning">한 달 목표 기준으로 3회 이하는 너무 적을 수 있습니다. 너무 작은 목표는 달성률이 비정상적으로 높게 표시될 수 있습니다.</div>
+            )}
           </div>
           <div>
             <label htmlFor="duration">운동 시간 목표 (분) <span className="objective-required">*</span></label>
             <input id="duration" placeholder="예: 300" value={form.duration} onChange={handleChange} type="number" />
+            {form.duration && Number(form.duration) > 0 && Number(form.duration) <= 60 && (
+              <div className="objective-warning">한 달 목표 기준으로 60분 이하는 너무 적을 수 있습니다. 너무 작은 목표는 달성률이 비정상적으로 높게 표시될 수 있습니다.</div>
+            )}
+            {form.duration && Number(form.duration) > 0 && (
+              <div className="objective-duration-hint">
+                {(() => {
+                  const min = Number(form.duration);
+                  const h = Math.floor(min / 60);
+                  const m = min % 60;
+                  return `${h > 0 ? h + '시간 ' : ''}${m}분`;
+                })()}
+              </div>
+            )}
           </div>
         </div>
 
         <label htmlFor="weight">목표 몸무게 (kg) <span className="objective-required">*</span></label>
         <input id="weight" placeholder="예: 65.0" value={form.weight} onChange={handleChange} type="number" />
+        {form.weight && Number(form.weight) > 0 && Number(form.weight) <= 10 && (
+          <div className="objective-warning">목표 몸무게가 너무 작게 설정되었습니다.</div>
+        )}
 
         <div className="objective-row-2col">
           <div>
@@ -116,5 +147,3 @@ function CreateObjective() {
     </div>
   );
 }
-
-export default CreateObjective; 

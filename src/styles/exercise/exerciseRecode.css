@@ -88,6 +88,7 @@
     background-color: #ffffff;
     padding: 24px;
     border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
@@ -143,6 +144,7 @@
     padding: 24px;
     border-radius: 16px;
     margin-bottom: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
@@ -151,7 +153,7 @@
     font-size: 1.1em;
     color: #495057;
 }
-
+.exercise-recode-page .daily-info p>span {
 .exercise-recode-page .daily-info p > span {
     font-weight: 700;
     color: #212529;
@@ -164,6 +166,7 @@
     background-color: #ffffff;
     border-radius: 16px;
     overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
@@ -193,6 +196,7 @@
     background-color: #ffffff;
     padding: 32px;
     border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
@@ -212,6 +216,24 @@
     border: none;
     cursor: pointer;
 }
+
+.exercise-recode-page .button-default,
+.exercise-recode-page .button-edit {
+    background-color: #88C71F;
+    color: #FFFFFF;
+}
+
+.exercise-recode-page .button-cancel,
+.exercise-recode-page .button-list {
+    background-color: #EDEDED;
+    color: #000000;
+}
+
+.exercise-recode-page .button-delete {
+    background-color: #F45757;
+    color: #FFFFFF;
+}
+
 .exercise-recode-page .button-default, .exercise-recode-page .button-edit {
     background-color: #88C71F;
     color: #FFFFFF;
@@ -224,3 +246,4 @@
     background-color: #F45757;
     color: #FFFFFF;
 } 
+

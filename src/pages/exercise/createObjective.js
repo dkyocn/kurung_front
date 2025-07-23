@@ -94,6 +94,9 @@ function CreateObjective() {
           <div>
             <label htmlFor="count">운동 횟수 목표 (회) <span className="objective-required">*</span></label>
             <input id="count" placeholder="예: 5" value={form.count} onChange={handleChange} type="number" />
+            {form.count && Number(form.count) > 0 && Number(form.count) <= 3 && (
+              <div className="objective-warning">한 달 목표 기준으로 3회 이하는 너무 적을 수 있습니다. 너무 작은 목표는 달성률이 비정상적으로 높게 표시될 수 있습니다.</div>
+
             {form.count && Number(form.count) > 0 && Number(form.count) <= 7 && (
               <div className="objective-warning">한 달 목표 기준으로 7회 이하는 너무 적을 수 있습니다. 너무 작은 목표는 달성률이 비정상적으로 높게 표시될 수 있습니다.</div>
             )}
@@ -101,6 +104,8 @@ function CreateObjective() {
           <div>
             <label htmlFor="duration">운동 시간 목표 (분) <span className="objective-required">*</span></label>
             <input id="duration" placeholder="예: 300" value={form.duration} onChange={handleChange} type="number" />
+            {form.duration && Number(form.duration) > 0 && Number(form.duration) <= 60 && (
+              <div className="objective-warning">한 달 목표 기준으로 60분 이하는 너무 적을 수 있습니다. 너무 작은 목표는 달성률이 비정상적으로 높게 표시될 수 있습니다.</div>
             {form.duration && Number(form.duration) > 0 && Number(form.duration) <= 90 && (
               <div className="objective-warning">너무 작은 목표는 달성률이 비정상적으로 높게 표시될 수 있습니다.</div>
             )}

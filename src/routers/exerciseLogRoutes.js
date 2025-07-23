@@ -1,4 +1,4 @@
-/ src/routers/exerciseLogRoutes.js
+// src/routers/exerciseLogRoutes.js
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import CreateExerciseLog from '../pages/exercise/createExerciseLog';

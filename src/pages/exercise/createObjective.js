@@ -147,3 +147,5 @@ function CreateObjective() {
     </div>
   );
 }
+
+export default CreateObjective; 

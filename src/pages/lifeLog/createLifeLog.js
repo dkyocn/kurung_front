@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../../styles/lifeLog/createLifeLog.css';
 import SaveButton from '../../components/buttons/SaveButton';
-import SaveModal from '../../components/common/WarningModal';
+import SaveModal from '../../components/common/Modal';
 
 const CreateLifLogForm = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
@@ -22,7 +22,6 @@ const CreateLifLogForm = () => {
     activity: '',
     memo: '',
     llPdfPath: null,
-    user: { userUuid: '2025061401' },
   });
 
   const emotions = [
@@ -55,13 +54,51 @@ const CreateLifLogForm = () => {
 
   const handleSubmit = async () => {
     try {
-      const baseDate = formData.lifelogDate.split('T')[0];
+      const lifelogDateOnly = formData.lifelogDate.split('T')[0];
+      const [year, month, day] = lifelogDateOnly.split('-').map(Number);
+      const dateObj = new Date(year, month - 1, day);
+
+      // 기상 시간이 입력되었는지 확인
+      if (!formData.wakeupTime) {
+        alert('기상 시간을 입력해주세요.');
+        return;
+      }
+
+      // wakeupTime이 오전 시간일 경우 다음날로 계산
+      const [wakeHour] = formData.wakeupTime.split(':').map(Number);
+      const isNextDay = wakeHour < 12;
+
+      const wakeDateObj = new Date(dateObj);
+      if (isNextDay) {
+        wakeDateObj.setDate(wakeDateObj.getDate() + 1);
+      }
+      const wakeDateStr = wakeDateObj.toISOString().split('T')[0];
+
+      console.log('wakeDateStr:', wakeDateStr);
+
       const body = {
         ...formData,
-        bedTime: `${baseDate}T${formData.bedTime}:00`,
-        wakeupTime: `${baseDate}T${formData.wakeupTime}:00`,
+        bedTime: `${lifelogDateOnly}T${formData.bedTime}:00`,
+        wakeupTime: `${wakeDateStr}T${formData.wakeupTime}:00`,
+        user: {
+          userUuid: formData.user,
+        },
       };
-      await axios.post('/api/v1/kurung/lifeLogs/create', body);
+
+      console.log('보낼 데이터:', body);
+
+      const response = await axios.post(
+        '/api/v1/kurung/lifeLogs/create',
+        body,
+        {
+          headers: {
+            Authorization:
+              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ5dWppbjAxNDIzQGdtYWlsLmNvbSIsInVzZXJVdWlkIjoiMjAyNTA2MTQwMiIsImNhdGVnb3J5IjoiYWNjZXNzIiwibmFtZSI6IuygleycoOynhCIsInJvbGUiOiJVU0VSIiwiZXhwIjoxNzUzMTg3OTM1fQ.5-yOlfbE4wgWmKFCdp1nFhUVANvF9nS87ol-IfELuo92en7hCSax0plee8xdCZfeO1DkV8PigG0reNd3IiYX7A',
+            RefreshToken:
+              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ5dWppbjAxNDIzQGdtYWlsLmNvbSIsInVzZXJVdWlkIjoiMjAyNTA2MTQwMiIsImNhdGVnb3J5IjoicmVmcmVzaCIsIm5hbWUiOiLsoJXsnKDsp4QiLCJyb2xlIjoiVVNFUiIsImV4cCI6MTc1MzI3MDczNX0.2OXaxRF6Lb7C2h4eqEg1zipmBzZZVBA0lpRcFFcysRarCG9G2AiDpbmu3Owwx6L4qBBNWfleiK0d4GWcN2WLuQ',
+          },
+        }
+      );
       alert('저장 성공');
       navigate('/getLifeLogList');
     } catch (e) {
@@ -109,7 +146,7 @@ const CreateLifLogForm = () => {
           <div>
             <label>Bedtime</label>
             <input
-              type="text"
+              type="time"
               name="bedTime"
               placeholder="22:00"
               value={formData.bedTime}
@@ -119,7 +156,7 @@ const CreateLifLogForm = () => {
           <div>
             <label>Wake Up Time</label>
             <input
-              type="text"
+              type="time"
               name="wakeupTime"
               placeholder="07:00"
               value={formData.wakeupTime}

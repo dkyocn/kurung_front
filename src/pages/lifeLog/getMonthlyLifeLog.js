@@ -14,7 +14,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-
+import axios from 'axios';
 import '../../styles/lifeLog/getMonthlyLifeLog.css';
 
 const emotionColors = {
@@ -44,17 +44,23 @@ const MonthlyLifeLogReport = () => {
   const [monthlyData, setMonthlyData] = useState(null);
   const [lifeLogMap, setLifeLogMap] = useState({});
   const navigate = useNavigate();
-  const userUuid = '2025061401';
   const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
   const fetchMonthlyReport = async (year, month) => {
     const dateParam = `${year}-${String(month).padStart(2, '0')}`;
     try {
-      const response = await fetch(
-        baseUrl + 'lifeLogs/monthly?userUuid=' + userUuid + '&date=' + dateParam
-      );
-      if (!response.ok) throw new Error('조회 실패');
-      const data = await response.json();
+      const response = await axios.get(baseUrl + 'lifeLogs/monthly', {
+        headers: {
+          Authorization:
+            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzMjQzMzM0fQ.hXr2yOahBrremSpR4aVPA9i5ZQTO6CF4sbKXW0XjxgUcMxvb8FnzIIb0uANVf7mqi8H32uAVUhOuChZOFA3tyQ',
+          RefreshToken:
+            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzMyNjEzNH0.Pbj2MQELT1ZaXKIUg3NpqdhuDADiOXlmuiE18pBYI36lBjQ2J7jZIS6R7h8B_H8II3Rfx-n_scGP-G9561Ht-A',
+        },
+        params: {
+          date: dateParam,
+        },
+      });
+      const data = response.data;
 
       if (!data || Object.keys(data).length === 0 || !data.lifeLogList) {
         setLifeLogMap({});

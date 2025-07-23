@@ -2,7 +2,6 @@
   text-align: center;
   margin-bottom: 30px;
 }
-
 .create-exercise-log-page .exercise-log-form {
   background-color: transparent;
   padding: 0;
@@ -13,7 +12,6 @@
   margin-bottom: 0;
   margin-top: 0;
 }
-
 .create-exercise-log-page label {
   font-weight: 500;
   display: block;
@@ -22,7 +20,6 @@
   font-size: 1.05em;
   color: #495057;
 }
-
 .create-exercise-log-page select,
 .create-exercise-log-page input[type="date"],
 .create-exercise-log-page input[type="number"],
@@ -36,6 +33,17 @@
   box-sizing: border-box;
   background-color: #F8F9FA;
   transition: all 0.2s ease;
+}
+
+.create-exercise-log-page select:focus,
+.create-exercise-log-page input:focus,
+.create-exercise-log-page textarea:focus {
+  outline: none;
+  border-color: #4DBA87;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(77, 186, 135, 0.2);
+}
+
 }
 
 .create-exercise-log-page select:focus,
@@ -106,6 +114,14 @@
   background-color: #E03131;
 }
 
+
+}
+
+.create-exercise-log-page .exercise-log-set-rep-row button:hover {
+  background-color: #E03131;
+}
+
+
 .create-exercise-log-page .exercise-log-button {
   border-radius: 12px;
   padding: 15px 20px;
@@ -125,8 +141,10 @@
   opacity: 0.9;
 }
 
+
 .create-exercise-log-page .exercise-log-button-cancel,
 .create-exercise-log-page .exercise-log-button-list {
+.create-exercise-log-page .exercise-log-button-cancel, .create-exercise-log-page .exercise-log-button-list {
   background-color: #EDEDED;
   color: #000000;
   font-weight: 500;
@@ -167,6 +185,11 @@
   outline: none !important;
 }
 
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  border: none !important;
+  outline: none !important;
+}
+
 .create-exercise-log-page input[type=range]::-moz-range-track {
   height: 8px;
   background: #DEE2E6;
@@ -183,6 +206,21 @@
   outline: none !important;
 }
 
+.create-exercise-log-page .exercise-log-slider-group {
+  margin: 36px 0 20px 0;
+}
+
+
+}
+.create-exercise-log-page input[type=range]::-moz-range-thumb {
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  background: #4DBA87;
+  cursor: pointer;
+  border: none !important;
+  outline: none !important;
+}
 .create-exercise-log-page .exercise-log-slider-group {
   margin: 36px 0 20px 0;
 }
@@ -230,6 +268,7 @@
   background: #fff;
   border-radius: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   padding: 32px;
   margin-bottom: 32px;
   border: 1px solid #E9ECEF;
@@ -263,6 +302,8 @@
 .create-exercise-log-page .exercise-log-row-2col>div {
   flex: none;
   /* remove flex property */
+.create-exercise-log-page .exercise-log-row-2col > div {
+  flex: none; /* remove flex property */
 }
 
 /* 세트 추가 버튼 */
@@ -290,6 +331,20 @@
   padding: 15px 0;
 }
 
+}
+
+.create-exercise-log-page .exercise-log-set-add-btn:hover {
+  opacity: 0.9;
+}
+
+/* 제출 버튼 */
+.create-exercise-log-page .exercise-log-submit-btn {
+  width: 100%;
+  margin-top: 24px;
+  font-size: 1.15em;
+  font-weight: 700;
+  padding: 15px 0;
+}
 .create-exercise-log-page .exercise-log-required {
   color: #FA5252;
   margin-left: 4px;

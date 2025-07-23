@@ -96,6 +96,9 @@ function CreateObjective() {
             <input id="count" placeholder="예: 5" value={form.count} onChange={handleChange} type="number" />
             {form.count && Number(form.count) > 0 && Number(form.count) <= 3 && (
               <div className="objective-warning">한 달 목표 기준으로 3회 이하는 너무 적을 수 있습니다. 너무 작은 목표는 달성률이 비정상적으로 높게 표시될 수 있습니다.</div>
+
+            {form.count && Number(form.count) > 0 && Number(form.count) <= 7 && (
+              <div className="objective-warning">한 달 목표 기준으로 7회 이하는 너무 적을 수 있습니다. 너무 작은 목표는 달성률이 비정상적으로 높게 표시될 수 있습니다.</div>
             )}
           </div>
           <div>
@@ -103,6 +106,8 @@ function CreateObjective() {
             <input id="duration" placeholder="예: 300" value={form.duration} onChange={handleChange} type="number" />
             {form.duration && Number(form.duration) > 0 && Number(form.duration) <= 60 && (
               <div className="objective-warning">한 달 목표 기준으로 60분 이하는 너무 적을 수 있습니다. 너무 작은 목표는 달성률이 비정상적으로 높게 표시될 수 있습니다.</div>
+            {form.duration && Number(form.duration) > 0 && Number(form.duration) <= 90 && (
+              <div className="objective-warning">너무 작은 목표는 달성률이 비정상적으로 높게 표시될 수 있습니다.</div>
             )}
             {form.duration && Number(form.duration) > 0 && (
               <div className="objective-duration-hint">

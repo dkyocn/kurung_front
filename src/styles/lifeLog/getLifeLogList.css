@@ -10,7 +10,7 @@
   margin-bottom: 16px;
   margin-left: 335px;
   color: #333;
-  text-align: left; /* 중앙 정렬 원하면 추가 */
+  text-align: left;
 }
 
 .calendar-wrapper {
@@ -32,7 +32,7 @@
   border: none;
   font-size: 16px;
   width: 100%;
-  height: 100%;
+  /* height: 100%; */
   aspect-ratio: 1 / 1;
 }
 
@@ -56,6 +56,10 @@
 }
 
 .react-calendar__tile abbr {
+  display: none;
+}
+
+.react-calendar__tile--neighboringMonth {
   display: none;
 }
 
@@ -210,4 +214,40 @@ label {
   height: 39px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+}
+
+.calendar-day-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+  padding-top: 5px;
+  box-sizing: border-box;
+}
+
+.calendar-icon-wrapper {
+  height: 45px; /* 이미지 공간 높이 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-emotion-icon {
+  width: 45px;
+  height: 45px;
+}
+
+.calendar-date-number {
+  margin-top: 2px;
+  font-size: 10px;
+  font-weight: bold;
+  color: #333;
+}
+
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus {
+  background: none !important;
+  color: inherit !important;
+  border: none !important;
 }

@@ -12,10 +12,12 @@ import { Routes, Route } from 'react-router-dom';
 // import lifeLogRoutes from './lifeLogRoutes';
 import exerciseRoutes from './exerciseLogRoutes';
 import diagnosisRoutes from './diagnosisLogRoutes';
+import chatbotRoutes from './chatbotRoutes';
 
 const AppRouter = () => {
   return (
     <Routes>
+      {chatbotRoutes}
       {exerciseRoutes}
       {/* {lifeLogRoutes} */}
       {diagnosisRoutes}

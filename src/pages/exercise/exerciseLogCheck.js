@@ -70,13 +70,15 @@ function ExerciseLogCheck() {
     <div className="exercise-log-check-page">
       <div className="exercise-log-check-filter-section">
         <label htmlFor="date">날짜 선택:</label>
-        <input
-          type="date"
-          id="date"
-          value={selectedDate}
-          onChange={e => setSelectedDate(e.target.value)}
-          className="exercise-log-check-date-input"
-        />
+        <div className="date-input-wrapper">
+          <input
+            type="date"
+            id="date"
+            value={selectedDate}
+            onChange={e => setSelectedDate(e.target.value)}
+            className="exercise-log-check-date-input"
+          />
+        </div>
       </div>
 
       {/* 내가 입력한 운동 기록 */}

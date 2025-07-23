@@ -7,10 +7,12 @@ import '../styles/Header.css';
 import Modal from './Modal';
 import WarningModal from './WarningModal';
 
-function Header(){
-    const toggleMenubar = () => {
-        // setShowMenubar(!showMenubar);
-    };
+// function Header(){
+//     const toggleMenubar = () => {
+//         // setShowMenubar(!showMenubar);
+//     };
+
+function Header({ toggleMenubar }) {
 
     // modal (비니용)
     const [showModal, setShowModal] = useState(false);

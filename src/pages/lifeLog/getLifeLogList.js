@@ -5,6 +5,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../../styles/lifeLog/getLifeLogList.css';
 import DeleteModal from '../../components/common/Modal';
+import axios from 'axios';
 
 const emotionColors = {
   행복함: '#28C76F',
@@ -37,22 +38,27 @@ const LifeLogCalendar = () => {
   const [noData, setNoData] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [targetDeleteId, setTargetDeleteId] = useState(null);
-
-  const userUuid = '2025061401';
+  const navigate = useNavigate();
+  const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
   const fetchLifeLogs = async (year, month) => {
     const dateParam = `${year}-${String(month).padStart(2, '0')}-01`;
 
     try {
-      const response = await fetch(
-        '/api/v1/kurung/lifeLogs/lifeLogList?userUuid=' +
-          userUuid +
-          '&date=' +
-          dateParam
-      );
-      if (!response.ok) throw new Error('서버 응답 오류');
+      const response = await axios.get(baseUrl + 'lifeLogs/lifeLogList', {
+        headers: {
+          Authorization:
+            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzMjQzMzM0fQ.hXr2yOahBrremSpR4aVPA9i5ZQTO6CF4sbKXW0XjxgUcMxvb8FnzIIb0uANVf7mqi8H32uAVUhOuChZOFA3tyQ',
+          RefreshToken:
+            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzMyNjEzNH0.Pbj2MQELT1ZaXKIUg3NpqdhuDADiOXlmuiE18pBYI36lBjQ2J7jZIS6R7h8B_H8II3Rfx-n_scGP-G9561Ht-A',
+        },
+        params: {
+          date: dateParam,
+        },
+      });
 
-      const data = await response.json();
+      const data = response.data;
+      console.log(data);
       const logMap = {};
       data.forEach((log) => {
         const dateObj = new Date(log.lifelogDate);
@@ -80,9 +86,17 @@ const LifeLogCalendar = () => {
 
     if (log && log.id) {
       try {
-        const response = await fetch(`/api/v1/kurung/lifeLogs/${log.id}`);
-        if (!response.ok) throw new Error('상세 조회 실패');
-        const data = await response.json();
+        console.log('선택된 로그:', log);
+        console.log('요청할 ID:', log.id); // 반드시 숫자!
+        const response = await axios.get(`${baseUrl}lifeLogs/${log.id}`, {
+          headers: {
+            Authorization:
+              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ5dWppbjAxNDIzQGdtYWlsLmNvbSIsInVzZXJVdWlkIjoiMjAyNTA2MTQwMiIsImNhdGVnb3J5IjoiYWNjZXNzIiwibmFtZSI6IuygleycoOynhCIsInJvbGUiOiJVU0VSIiwiZXhwIjoxNzUzMTg3OTM1fQ.5-yOlfbE4wgWmKFCdp1nFhUVANvF9nS87ol-IfELuo92en7hCSax0plee8xdCZfeO1DkV8PigG0reNd3IiYX7A',
+            RefreshToken:
+              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ5dWppbjAxNDIzQGdtYWlsLmNvbSIsInVzZXJVdWlkIjoiMjAyNTA2MTQwMiIsImNhdGVnb3J5IjoicmVmcmVzaCIsIm5hbWUiOiLsoJXsnKDsp4QiLCJyb2xlIjoiVVNFUiIsImV4cCI6MTc1MzI3MDczNX0.2OXaxRF6Lb7C2h4eqEg1zipmBzZZVBA0lpRcFFcysRarCG9G2AiDpbmu3Owwx6L4qBBNWfleiK0d4GWcN2WLuQ',
+          },
+        });
+        const data = response.data;
         setSelectedLog(data);
         setNoData(false);
       } catch (err) {
@@ -104,6 +118,12 @@ const LifeLogCalendar = () => {
     try {
       await fetch(`/api/v1/kurung/lifeLogs/${targetDeleteId}`, {
         method: 'DELETE',
+        headers: {
+          Authorization:
+            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ5dWppbjAxNDIzQGdtYWlsLmNvbSIsInVzZXJVdWlkIjoiMjAyNTA2MTQwMiIsImNhdGVnb3J5IjoiYWNjZXNzIiwibmFtZSI6IuygleycoOynhCIsInJvbGUiOiJVU0VSIiwiZXhwIjoxNzUzMTg3OTM1fQ.5-yOlfbE4wgWmKFCdp1nFhUVANvF9nS87ol-IfELuo92en7hCSax0plee8xdCZfeO1DkV8PigG0reNd3IiYX7A',
+          RefreshToken:
+            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ5dWppbjAxNDIzQGdtYWlsLmNvbSIsInVzZXJVdWlkIjoiMjAyNTA2MTQwMiIsImNhdGVnb3J5IjoicmVmcmVzaCIsIm5hbWUiOiLsoJXsnKDsp4QiLCJyb2xlIjoiVVNFUiIsImV4cCI6MTc1MzI3MDczNX0.2OXaxRF6Lb7C2h4eqEg1zipmBzZZVBA0lpRcFFcysRarCG9G2AiDpbmu3Owwx6L4qBBNWfleiK0d4GWcN2WLuQ',
+        },
       });
       alert('삭제 성공');
       setShowDeleteModal(false);
@@ -157,7 +177,7 @@ const LifeLogCalendar = () => {
         <button
           className="select report-button"
           type="button"
-          // onClick={() => (window.location.href = '/createLifeLog')}
+          onClick={() => navigate(`/getMonthlyLifeLog`)}
         >
           월간 리포트 조회
         </button>

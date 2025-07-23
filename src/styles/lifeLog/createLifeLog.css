@@ -131,3 +131,11 @@ textarea {
   width: 200px;
   font-weight: bold;
 }
+
+input[type='time'] {
+  background-color: #f8fefb;
+  color: #333;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}

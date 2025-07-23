@@ -10,7 +10,7 @@
   margin-bottom: 16px;
   margin-left: 335px;
   color: #333;
-  text-align: left; /* 중앙 정렬 원하면 추가 */
+  text-align: left;
 }
 
 .calendar-wrapper {

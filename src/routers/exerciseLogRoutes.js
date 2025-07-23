@@ -4,6 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 import CreateExerciseLog from '../pages/exercise/createExerciseLog';
 import CreateObjective from '../pages/exercise/createObjective';
 import ExerciseRecode from '../pages/exercise/exerciseRecode';
+import ExerciseLogCheck from '../pages/exercise/exerciseLogCheck';
 // import UpdateObjective from '../pages/exercise/updateObjective';
 // import UpdateExerciseLog from '../pages/exercise/updateExerciseLog';
 
@@ -14,6 +15,7 @@ const exerciseLogRoutes = [
   <Route path="/createExerciseLog" element={<CreateExerciseLog />} />,
   <Route path="/createObjective" element={<CreateObjective />} />,
   <Route path="/exerciseRecode" element={<ExerciseRecode />} />,
+  <Route path="/exerciseLogCheck" element={<ExerciseLogCheck />} />,  
  
 ];
 

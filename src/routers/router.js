@@ -14,10 +14,12 @@ import lifeLogRoutes from './lifeLogRoutes';
 import exerciseRoutes from './exerciseLogRoutes';
 import diagnosisRoutes from './diagnosisLogRoutes';
 import healthReportRoutes from './healthReportRoutes';
+import chatbotRoutes from './chatbotRoutes';
 
 const AppRouter = () => {
   return (
     <Routes>
+      {chatbotRoutes}
       {exerciseRoutes}
       {lifeLogRoutes}
       {dietRouters}

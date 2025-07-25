@@ -1,0 +1,153 @@
+.myinfo-outer {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 160px);
+}
+.myinfo-inner {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fcfcfc;
+  padding-bottom: 40px;
+}
+.myinfo-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 600px;
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.04);
+  padding: 48px 56px 40px 56px;
+}
+.myinfo-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 1.2rem;
+  color: #181818;
+  letter-spacing: 0.5px;
+  text-align: left;
+  width: 100%;
+}
+.myinfo-profile-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2.2rem;
+}
+.myinfo-profile-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 0.7rem;
+}
+.myinfo-profile-label {
+  font-weight: 700;
+  font-size: 1.15rem;
+  margin-bottom: 0.2rem;
+  text-align: center;
+}
+.myinfo-profile-desc {
+  color: #738766;
+  font-size: 1rem;
+  text-align: center;
+}
+.myinfo-form {
+  width: 430px;
+  margin: 0 auto 2.2rem auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+.myinfo-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.myinfo-label {
+  flex: 1;
+  font-weight: 500;
+  color: #181818;
+}
+.myinfo-input {
+  flex: 3;
+  height: 38px;
+  border: none;
+  border-radius: 8px;
+  background: #f5f5f5;
+  font-size: 1rem;
+  padding: 0 1rem;
+  color: #737373;
+  outline: none;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+.myinfo-faceid-btn {
+  width: 48px;
+  height: 48px;
+  border: none;
+  background: #ededed;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #222;
+  cursor: pointer;
+}
+.myinfo-calendar-icon {
+  margin-left: 8px;
+  color: #8dc63f;
+  font-size: 1.3rem;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.myinfo-gender-row {
+  gap: 8px;
+}
+.myinfo-gender-btn {
+  height: 38px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 8px;
+  background: #f5f5f5;
+  color: #222;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.myinfo-btn-row {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  width: 430px;
+}
+.myinfo-cancel-btn {
+  height: 42px;
+  min-width: 120px;
+  padding: 0 32px;
+  border: none;
+  border-radius: 10px;
+  background: #ededed;
+  color: #222;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+.myinfo-save-btn {
+  height: 42px;
+  min-width: 120px;
+  padding: 0 32px;
+  border: none;
+  border-radius: 10px;
+  background: #8dc63f;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+} 

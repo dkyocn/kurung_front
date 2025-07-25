@@ -10,16 +10,23 @@ import { Routes, Route } from 'react-router-dom';
 // import noticeRoutes from './noticeRoutes';
 // import memberRoutes from './memberRoutes';
 // import lifeLogRoutes from './lifeLogRoutes';
-import exerciseRoutes from './exerciseLogRoutes';
-import diagnosisRoutes from './diagnosisLogRoutes';
+// import exerciseRoutes from './exerciseLogRoutes';
+// import diagnosisRoutes from './diagnosisLogRoutes';
+import loginRoutes from './loginRoutes';
+import signupRoutes from './signupRoutes';
+import passwordResetRoutes from './myPageRoutes';
 
 const AppRouter = () => {
   return (
     <Routes>
-      {exerciseRoutes}
+      {loginRoutes}
+      {signupRoutes}
+      {passwordResetRoutes}
+      {/* {exerciseRoutes} */}
       {/* {lifeLogRoutes} */}
-      {diagnosisRoutes}
-      {/* {boardRoutes}
+      {/*diagnosisRoutes} 
+      {/* 
+      {boardRoutes}
       {noticeRoutes}
       {memberRoutes}
       <Route path="/" element={<Home />} />

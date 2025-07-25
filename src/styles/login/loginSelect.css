@@ -1,0 +1,143 @@
+body, html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #fcfcfc;
+  font-family: 'Pretendard', 'Noto Sans KR', Arial, sans-serif;
+}
+
+.page-outer {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 160px);
+}
+
+.page-inner {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fcfcfc;
+  padding-bottom: 40px;
+  padding-top: 20px;
+}
+
+/* 로그인 박스 */
+.login-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 600px;
+  max-width: 600px;
+  min-width: 600px;
+  margin: 0 auto;
+}
+
+/* 타이틀 */
+.login-title {
+  font-size: 2.9rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: #181818;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+.login-subtitle {
+  color: #8dc63f;
+  font-size: 1.45rem;
+  margin-bottom: 1.0rem;  /* ← 2.2rem에서 1.0rem으로 변경 */
+  font-weight: 700;
+}
+
+.login-buttons {
+  display: flex;
+  gap: 1.1rem;
+  margin-bottom: 1.1rem;
+}
+
+.login-btn {
+  width: 64px;
+  height: 64px;
+  border: none;
+  border-radius: 16px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+  transition: box-shadow 0.2s;
+  background: #fff;
+  position: relative;
+  outline: none;
+  border: 2px solid transparent;
+}
+
+.login-btn .icon {
+  font-size: 2rem;
+  margin-bottom: 0.1rem;
+}
+
+.login-btn .btn-text {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.login-btn.kakao {
+  background: #ffe812;
+  color: #181818;
+}
+
+.login-btn.kakao .btn-text {
+  font-family: 'Arial Black', 'Noto Sans KR', sans-serif;
+  font-size: 1.05rem;
+  margin-top: 0.1rem;
+}
+
+.login-btn.naver {
+  background: #03c75a;
+  color: #fff;
+  border: 2px solid #03c75a;
+}
+
+.login-btn.naver .btn-text {
+  font-size: 1.4rem;
+  font-weight: 800;
+  font-family: 'Arial Black', 'Noto Sans KR', sans-serif;
+}
+
+.login-btn.school {
+  background: #ededed;
+  color: #222;
+  border: none;
+}
+
+.login-btn.mail {
+  background: #ededed;
+  color: #222;
+  border: none;
+  font-size: 1.05rem;
+}
+
+.login-bottom-text {
+  margin-top: 0.7rem;
+  font-size: 1rem;
+  color: #181818;
+  text-align: center;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+.login-icon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  margin-bottom: 0.1rem;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+} 

@@ -12,7 +12,7 @@ const Footer = ({ isLoggedIn, user }) => {
         <Link to="/diet">식단</Link>
         <a href="#">운동</a>
         <a href="#">멘탈케어</a>
-        <a href="#">건강관리</a>
+        <Link to="/getHealthReport">건강 관리</Link>
         <a href="#">약물 상호작용 확인</a>
         <a href="#">커뮤니티 보드</a>
         <a href="#">{isLoggedIn ? '마이페이지' : '마이페이지'}</a>

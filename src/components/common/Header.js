@@ -6,15 +6,10 @@ import { Link } from 'react-router-dom';
 import '../styles/Header.css';
 import Modal from './Modal';
 import WarningModal from './WarningModal';
-import Menubar from '../common/Menubar';
-import useClickOutside from './useClickOutside';
 
 function Header() {
-  const [showMenubar, setShowMenubar] = useState(false);
-  const menuRef = useClickOutside(() => setShowMenubar(false));
-
   const toggleMenubar = () => {
-    setShowMenubar(!showMenubar);
+    // setShowMenubar(!showMenubar);
   };
 
   // modal (비니용)
@@ -49,7 +44,6 @@ function Header() {
     <header className="header">
       <div className="container">
         <div className="leftWrapper">
-          {showMenubar && <Menubar ref={menuRef} />}
           <button type="button" onClick={toggleMenubar} className="menuButton">
             ☰
           </button>

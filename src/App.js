@@ -13,7 +13,7 @@ function App() {
   return (
     <Router>
       <Header />
-      <Menubar />
+      {/* <Menubar /> */}
       <AppRouter />
       <Footer />
     </Router>

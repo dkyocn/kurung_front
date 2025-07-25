@@ -15,7 +15,7 @@ function formatMinutesToHourMin(minutes) {
 }
 
 // [수정] 테스트를 위해 today를 2025-06-30으로 강제 세팅
-const today = dayjs('2025-06-30');
+const today = dayjs('2025-12-31');
 const dateList = Array.from({ length: 30 }).map((_, i) =>
   today.subtract(i, 'day').format('YYYY-MM-DD')
 );
@@ -40,10 +40,16 @@ function ExerciseRecode() {
     setLoading(true);
     setError('');
     if (tab === 'daily') {
-      axios.get(`/api/v1/kurung/exercise/summary/daily/${USER_UUID}`, {
-        params: { date: selectedDate }
-        })
-            .then(res => {
+      axios.get(`/api/v1/kurung/exercise/summary/daily`, {
+        params: { date: selectedDate },
+        headers: {
+          Authorization:
+            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA2ODg5fQ.5ZYVum2-jopUE8h4jC784qTsKYMd8M3OSjCjDLkjCbKoCgBIr2VpAfiiqICMcTCfxQLr0B2bCb0oXwQgFN50Xw',
+          RefreshToken:
+            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4OTY4OX0.dxeRiuXKqvnt2QkalIKZX2cUpKg8-KwI9uCfrbYFGnQBtDsCqlxe5OpN9fA1OCnppv8o2rKq_tviWJSBQlH5nw',
+        },
+      })
+        .then(res => {
           setDailyInfo(res.data);
           console.log('dailyInfo:', res.data);
         })
@@ -51,7 +57,15 @@ function ExerciseRecode() {
         .finally(() => setLoading(false));
     } else {
       axios
-        .get(`/api/v1/kurung/exercise/summary/monthly/${USER_UUID}`, { params: { month: selectedMonth } })
+        .get(`/api/v1/kurung/exercise/summary/monthly`, { 
+          params: { month: selectedMonth },
+          headers: {
+            Authorization:
+              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA2ODg5fQ.5ZYVum2-jopUE8h4jC784qTsKYMd8M3OSjCjDLkjCbKoCgBIr2VpAfiiqICMcTCfxQLr0B2bCb0oXwQgFN50Xw',
+            RefreshToken:
+              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4OTY4OX0.dxeRiuXKqvnt2QkalIKZX2cUpKg8-KwI9uCfrbYFGnQBtDsCqlxe5OpN9fA1OCnppv8o2rKq_tviWJSBQlH5nw',
+          },
+        })
         .then(res => setMonthlyStats(res.data))
         .catch(() => setError('월간 통계 데이터를 불러오지 못했습니다.'))
         .finally(() => setLoading(false));

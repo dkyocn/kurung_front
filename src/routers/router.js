@@ -9,9 +9,12 @@ import { Routes, Route } from 'react-router-dom';
 // import boardRoutes from './boardRoutes';
 // import noticeRoutes from './noticeRoutes';
 // import memberRoutes from './memberRoutes';
-// import lifeLogRoutes from './lifeLogRoutes';
-// import exerciseRoutes from './exerciseLogRoutes';
-// import diagnosisRoutes from './diagnosisLogRoutes';
+
+import dietRouters from './dietRouters';
+import lifeLogRoutes from './lifeLogRoutes';
+import exerciseRoutes from './exerciseLogRoutes';
+import diagnosisRoutes from './diagnosisLogRoutes';
+import healthReportRoutes from './healthReportRoutes';
 import loginRoutes from './loginRoutes';
 import signupRoutes from './signupRoutes';
 import passwordResetRoutes from './myPageRoutes';
@@ -19,14 +22,15 @@ import passwordResetRoutes from './myPageRoutes';
 const AppRouter = () => {
   return (
     <Routes>
+      {exerciseRoutes}
+      {lifeLogRoutes}
+      {dietRouters}
+      {diagnosisRoutes}
+      {healthReportRoutes}
+      {/* {boardRoutes}
       {loginRoutes}
       {signupRoutes}
       {passwordResetRoutes}
-      {/* {exerciseRoutes} */}
-      {/* {lifeLogRoutes} */}
-      {/*diagnosisRoutes} 
-      {/* 
-      {boardRoutes}
       {noticeRoutes}
       {memberRoutes}
       <Route path="/" element={<Home />} />

@@ -70,13 +70,15 @@ function ExerciseLogCheck() {
     <div className="exercise-log-check-page">
       <div className="exercise-log-check-filter-section">
         <label htmlFor="date">날짜 선택:</label>
-        <input
-          type="date"
-          id="date"
-          value={selectedDate}
-          onChange={e => setSelectedDate(e.target.value)}
-          className="exercise-log-check-date-input"
-        />
+        <div className="date-input-wrapper">
+          <input
+            type="date"
+            id="date"
+            value={selectedDate}
+            onChange={e => setSelectedDate(e.target.value)}
+            className="exercise-log-check-date-input"
+          />
+        </div>
       </div>
 
       {/* 내가 입력한 운동 기록 */}
@@ -92,7 +94,12 @@ function ExerciseLogCheck() {
           ) : myRecords.map(log => (
             <div className="exercise-log-check-card" key={log.exerciseLogsId}>
               <div className="exercise-log-check-card-actions">
-                <button className="exercise-log-check-edit-btn">수정</button>
+                <button
+                  className="exercise-log-check-edit-btn"
+                  onClick={() => navigate(`/updateExerciseLog/${log.exerciseLogsId}`)}
+                >
+                  수정
+                </button>
                 <button
                   className="exercise-log-check-delete-btn"
                   onClick={() => openDeleteModal('log', log.exerciseLogsId)}

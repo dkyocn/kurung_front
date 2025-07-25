@@ -1,5 +1,5 @@
 .exercise-log-check-page {
-  max-width: 900px;
+  max-width: 1250px;
   margin: 40px auto;
   background: #fafbfc;
   min-height: 100vh;
@@ -143,4 +143,29 @@
   font-size: 1em;
   margin: 0;
   margin-top: 2px;
+}
+
+.date-input-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.exercise-log-check-date-input {
+  border: 1.5px solid #dbe4ec;
+  background: #f7fafb;
+  color: #444;
+  font-size: 1.15em;
+  border-radius: 10px;
+  padding: 8px 38px 8px 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  transition: border 0.2s, box-shadow 0.2s;
+  outline: none;
+  width: 170px;
+  font-family: inherit;
+}
+.exercise-log-check-date-input:focus {
+  border: 2px solid #88C71F;
+  background: #fff;
+  box-shadow: 0 2px 16px rgba(136, 199, 31, 0.09);
 }

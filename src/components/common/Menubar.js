@@ -11,7 +11,7 @@ const Menubar = ({ isOpen }) => {
   const [openSection, setOpenSection] = useState(null);
 
   const toggleSection = (section) => {
-    setOpenSection(prev => (prev === section ? null : section));
+    setOpenSection((prev) => (prev === section ? null : section));
   };
 
   const renderMenuTitle = (title, sectionKey) => (
@@ -33,12 +33,17 @@ const Menubar = ({ isOpen }) => {
         {renderMenuTitle("식단", "life")}
         {openSection === 'life' && (
           <>
-            <div className="submenu">식단 기록</div>
-            <div className="submenu">식단 추천</div>
+            {/* <div className="submenu">
+              <Link to="/diet" className="submenu">식단 기록</Link>
+            </div> */}
+            <Link to="/diet" className="submenu">
+              식단 기록
+            </Link>
+            <div className="submenu">추천 래시피</div>
           </>
         )}
 
-        {renderMenuTitle("운동", "exercise")}
+        {renderMenuTitle('운동', 'exercise')}
         {openSection === 'exercise' && (
           <>
             <Link to="/createExerciseLog" className="submenu">운동 기록</Link>
@@ -68,7 +73,7 @@ const Menubar = ({ isOpen }) => {
         <div className="menu-title">약물 상호작용 확인</div>
         <div className="menu-title">커뮤니티 보드</div>
 
-        {renderMenuTitle("마이페이지", "mypage")}
+        {renderMenuTitle('마이페이지', 'mypage')}
         {openSection === 'mypage' && (
           <>
             <div className="submenu">내 정보 관리</div>

@@ -9,11 +9,15 @@ import { Routes, Route } from 'react-router-dom';
 // import boardRoutes from './boardRoutes';
 // import noticeRoutes from './noticeRoutes';
 // import memberRoutes from './memberRoutes';
+
 import dietRouters from './dietRouters';
 import lifeLogRoutes from './lifeLogRoutes';
 import exerciseRoutes from './exerciseLogRoutes';
 import diagnosisRoutes from './diagnosisLogRoutes';
 import healthReportRoutes from './healthReportRoutes';
+import loginRoutes from './loginRoutes';
+import signupRoutes from './signupRoutes';
+import passwordResetRoutes from './myPageRoutes';
 
 const AppRouter = () => {
   return (
@@ -23,11 +27,14 @@ const AppRouter = () => {
       {dietRouters}
       {diagnosisRoutes}
       {healthReportRoutes}
-      {/* {boardRoutes}
-      {noticeRoutes}
-      {memberRoutes}
-      <Route path="/" element={<Home />} />
-      <Route path="/about" element={<About />} /> */}
+      {/* {boardRoutes} */}
+      {loginRoutes}
+      {signupRoutes}
+      {passwordResetRoutes}
+      {/* {noticeRoutes} */}
+      {/* {memberRoutes} */}
+      {/* <Route path="/" element={<Home />} />
+      <Route path="/about" element={<About />} /> */} */}
     </Routes>
   );
 };

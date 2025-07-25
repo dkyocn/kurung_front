@@ -1,0 +1,138 @@
+body, html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #fcfcfc;
+  font-family: 'Pretendard', 'Noto Sans KR', Arial, sans-serif;
+}
+
+.page-outer {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 160px);
+}
+
+.page-inner {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fcfcfc;
+  padding-bottom: 40px;
+}
+
+.signup-box {
+  background: #fff;
+  border-radius: 32px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.04);
+  padding: 64px 72px 56px 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 600px;
+  min-height: 700px;
+  position: relative;
+}
+
+.signup-title {
+  font-size: 2.4rem;
+  font-weight: 800;
+  margin-bottom: 2.2rem;
+  color: #181818;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+.signup-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.signup-row {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 0;
+  margin-bottom: 0.2rem;
+  justify-content: flex-start;
+}
+
+.signup-label {
+  width: 110px;
+  font-size: 1.08rem;
+  color: #181818;
+  font-weight: 700;
+  text-align: right;
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+}
+
+.signup-input {
+  flex: 1;
+  height: 38px;
+  border: 1px solid #dbe4ea;
+  border-radius: 10px;
+  background: #f8fafb;
+  font-size: 1.01rem;
+  padding: 0 1rem;
+  color: #222;
+  outline: none;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: inherit;
+  transition: border 0.2s;
+
+  min-width: 200px;
+  max-width: 1000px;
+}
+
+.signup-input:focus {
+  border: 1.5px solid #8dc63f;
+  background: #f5fbe9;
+}
+
+.signup-btn {
+  height: 38px;
+  padding: 0 8px;
+  border: none;
+  border-radius: 10px;
+  background: #8dc63f;
+  color: #fff;
+  font-size: 1.01rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+  margin-left: 12px;
+  min-width: 70px;
+  width: auto;
+}
+
+.signup-btn:hover {
+  background: #7bb32e;
+}
+
+.signup-btn-submit {
+  width: 220px;
+  height: 44px;
+  border: none;
+  border-radius: 10px;
+  background: #8dc63f;
+  color: #fff;
+  font-size: 1.08rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 2.2rem;
+  transition: background 0.2s;
+  display: block;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.signup-btn-submit:hover {
+  background: #7bb32e;
+}
+
+

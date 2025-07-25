@@ -1,3 +1,5 @@
+// src/components/common/Menubar.js
+
 import React, { useState } from 'react';
 import '../styles/Menubar.css';
 import BiniImg from '../../assets/bini.png';
@@ -5,7 +7,7 @@ import ArrowDown from '../../assets/arrow-down.png';
 import ArrowUp from '../../assets/arrow-up.png'
 import { Link } from 'react-router-dom';
 
-const Menubar = () => {
+const Menubar = ({ isOpen }) => {
   const [openSection, setOpenSection] = useState(null);
 
   const toggleSection = (section) => {
@@ -24,13 +26,11 @@ const Menubar = () => {
   );
 
   return (
-    <div className="sidebar">
-      <div className="logo">KURUNG</div>
-
-      <div className="menu-title">라이프 로그</div>
-
+    <div className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
+      <div className="menu-title menu-title-lifelog">라이프 로그</div>
+      
       <div className="menu-section">
-        {renderMenuTitle('식단', 'life')}
+        {renderMenuTitle("식단", "life")}
         {openSection === 'life' && (
           <>
             {/* <div className="submenu">
@@ -51,7 +51,7 @@ const Menubar = () => {
           </>
         )}
 
-        {renderMenuTitle('멘탈 케어', 'mental')}
+        {renderMenuTitle("멘탈 케어", "mental")}
         {openSection === 'mental' && (
           <>
             <div className="submenu">
@@ -62,11 +62,11 @@ const Menubar = () => {
           </>
         )}
 
-        {renderMenuTitle('건강 관리', 'health')}
+        {renderMenuTitle("건강 관리", "health")}
         {openSection === 'health' && (
           <>
             <div className="submenu">건강 리포트</div>
-            <div className="submenu">건강 상태 초기 진단</div>
+            <Link to="/healthQuestion" className="submenu">건강 상태 초기 진단</Link>
           </>
         )}
 

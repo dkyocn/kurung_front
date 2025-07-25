@@ -1,4 +1,6 @@
-.create-life-log-container {
+/* src/styles/lifeLog/updateLifeLog.css */
+
+.update-life-log-container {
   max-width: 900px;
   margin: 40px auto;
   padding: 20px;
@@ -7,10 +9,11 @@
   box-sizing: border-box;
 }
 
-.create-life-log-container h2 {
-  font-size: 24px;
-  font-weight: 700;
+.update-life-log-title {
+  text-align: left;
+  margin-left: 335px;
   margin-bottom: 20px;
+  font-size: 24px;
 }
 
 label {
@@ -91,7 +94,7 @@ textarea {
   gap: 10px;
 }
 
-.button-bottom .cancel-button {
+.button-bottom cancle-button {
   background-color: #f45757;
   color: white; /* 글자색 하얀색 */
   border: none;
@@ -102,40 +105,9 @@ textarea {
   transition: background-color 0.2s ease;
 }
 
-.temp-save {
-  background-color: #88c71f;
-  color: white; /* 글자색 하얀색 */
-  border: none;
-  border-radius: 12px;
-  width: 84px;
-  height: 39px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.temp-save:hover {
-  background-color: #c4df8b;
-}
-
-/* 제목 스타일 */
-.create-life-log-title {
-  text-align: left;
-  margin-left: 335px;
-  margin-bottom: 20px;
-  font-size: 24px;
-}
-
-/* date 라벨만 선택 */
+/* date 라벨만 선택하고 싶을 때 */
 .date-label {
   display: inline-block;
   width: 200px;
   font-weight: bold;
-}
-
-input[type='time'] {
-  background-color: #f8fefb;
-  color: #333;
-  padding: 6px 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
 }

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import '../../styles/exercise/createExerciseLog.css';
 import apiClient from '../../utils/axios';
 
+// bodyLabels, feelingLabels, categoryMap 기존과 동일
 const bodyLabels = {
   1: '매우 나쁨',
   2: '나쁨',
@@ -26,7 +28,22 @@ const categoryMap = {
   'cardio': '유산소'
 };
 
-function CreateExerciseLog() {
+const reverseCategoryMap = Object.fromEntries(
+  Object.entries(categoryMap).map(([en, ko]) => [ko, en])
+);
+
+function labelToValue(obj, label) {
+  // label을 숫자값으로 변환(없으면 3)
+  for (let [key, val] of Object.entries(obj)) {
+    if (val === label) return Number(key);
+  }
+  return 3;
+}
+
+function UpdateExerciseLog() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
   const [allExercises, setAllExercises] = useState([]);
   const [part, setPart] = useState('upper');
   const [exercise, setExercise] = useState('');
@@ -37,37 +54,58 @@ function CreateExerciseLog() {
   const [sensation, setSensation] = useState([]);
   const [form, setForm] = useState({});
 
- useEffect(() => {
-  const fetchExercises = async () => {
-    try {
-      // 변경: /api/v1/kurung/exercise/list
-      const response = await apiClient.get('/exercise/list');
-      setAllExercises(response.data);
-    } catch (err) {
-      alert("운동 목록을 불러오는 데 실패했습니다.");
-    }
-  };
-
-  fetchExercises();
-}, []);
-
+  // 운동 목록 불러오기
   useEffect(() => {
-    console.log("-----------[운동 유형 필터링 확인]-----------");
-    if (allExercises.length === 0) {
-      console.log("`allExercises`가 비어있습니다. API 응답을 기다리는 중일 수 있습니다.");
-      return;
-    }
-    console.log("현재 선택된 운동 종목 (영문):", part);
-    
-    const koreanPart = categoryMap[part];
-    console.log("매핑된 운동 종목 (한글):", koreanPart);
-    console.log("필터링에 사용될 전체 운동 배열:", allExercises);
+    const fetchExercises = async () => {
+      try {
+        const response = await apiClient.get('/exercise/list');
+        setAllExercises(response.data);
+      } catch (err) {
+        alert("운동 목록을 불러오는 데 실패했습니다.");
+      }
+    };
+    fetchExercises();
+  }, []);
 
-    const availableExercises = allExercises.filter(ex => ex.exerciseCategory === koreanPart);
-    console.log("필터링 후 남은 운동 배열:", availableExercises);
+  // 기존 운동 기록 불러오기 및 state 세팅
+  useEffect(() => {
+    const fetchLog = async () => {
+      try {
+        const res = await apiClient.get(`/exercise/log/select/${id}`);
+        const data = res.data;
+        setForm({
+          exerciseDate: data.exerciseDate?.split('T')[0] || "",
+          intensity: data.intensity || "",
+          duration: data.duration || "",
+          calories: data.calories || "",
+          heartrate: data.heartRate || "",
+          setCount: data.setCount || "",
+          repCount: data.repCount || "",
+          pre_condition: labelToValue(bodyLabels, data.preCondition) || 3,
+          memo: data.memo || "",
+        });
+        setBodyCondition(labelToValue(bodyLabels, data.bodyCondition));
+        setExerciseFeeling(labelToValue(feelingLabels, data.postFeeling));
+        setSensation(data.physicalNote ? data.physicalNote.split(',').map(s => s.trim()) : []);
+        setSetList(data.setList || []);
+        // 운동종류 세팅
+        if (data.exercise) {
+          setExerciseId(data.exercise.exerciseId);
+          setExercise(data.exercise.exerciseName);
+          setPart(reverseCategoryMap[data.exercise.exerciseCategory] || "upper");
+        }
+      } catch (e) {
+        alert('기존 기록 불러오기 실패');
+      }
+    };
+    fetchLog();
+  }, [id]);
 
+  // 운동 부위 선택 변경 시 운동 이름/ID 세팅
+  useEffect(() => {
+    if (allExercises.length === 0) return;
+    const availableExercises = allExercises.filter(ex => ex.exerciseCategory === categoryMap[part]);
     if (availableExercises.length > 0) {
-      console.log("필터링 성공: 운동 유형 목록을 설정합니다.");
       setExercise(availableExercises[0].exerciseName);
       setExerciseId(availableExercises[0].exerciseId);
     } else {
@@ -76,21 +114,21 @@ function CreateExerciseLog() {
     }
   }, [part, allExercises]);
 
+  // 세트 추가/삭제/변경
   const handleAddSet = () => {
     setSetList([...setList, { weight: '', reps: '' }]);
   };
-
   const handleSetChange = (idx, field, value) => {
     const newSetList = setList.map((set, i) =>
       i === idx ? { ...set, [field]: value } : set
     );
     setSetList(newSetList);
   };
-
   const handleRemoveSet = (idx) => {
     setSetList(setList.filter((_, i) => i !== idx));
   };
 
+  // 감각 체크박스
   const handleSensationChange = (e) => {
     const { value, checked } = e.target;
     setSensation(checked
@@ -99,83 +137,74 @@ function CreateExerciseLog() {
     );
   };
 
+  // input change
   const handleChange = (e) => {
     const { id, value } = e.target;
     setForm({ ...form, [id]: value });
   };
 
-  /* const handleSubmit = (e) => {
+  // === [핵심] 수정 버튼 ===
+  const handleUpdate = async (e) => {
     e.preventDefault();
-    // 제출 로직 구현
-    alert('운동 기록이 저장되었습니다!');
-  }; */
-
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    // 필수값 체크
     if (
       !form.exerciseDate ||
       !form.intensity ||
       !form.duration ||
       !part ||
-      !exerciseId ||
-      !form.pre_condition
+      !exerciseId
     ) {
       alert('필수 입력값을 모두 입력하세요!');
       return;
     }
-
-    const dateString = form.exerciseDate; // "2025-07-19"
-    const localDateTimeString = dateString ? `${dateString}T00:00:00` : null;
-
-    // 입력값 수집 → data 만들기
-    const newLog = {
-      user: { userUuid: "2025061401" }, // EXERCISE_ID (운동명-ID 매핑 필요)
-    exercise: { exerciseId: exerciseId },         
+    const localDateTimeString = form.exerciseDate ? `${form.exerciseDate}T00:00:00` : null;
+    const updateLog = {
+      exerciseLogsId: id, 
+      user: { userUuid: "2025061401" }, // 실제 로그인 사용자 UUID로 대체
+      exercise: { exerciseId: exerciseId },
       exerciseDate: localDateTimeString,
-      preCondition: bodyLabels[bodyCondition], // PRE_CONDITION (ex. "보통")
-      duration: Number(form.duration),      // DURATION (예: 30)
-      intensity: form.intensity,            // INTENSITY ("low"/"medium"/"high")
-      // 나머지는 선택사항(칼로리, 심박수 등)
-      calories: Number(form.calories),      // (옵션)
-      heartRate: Number(form.heartrate),    // (옵션)
-      setCount: Number(form.setCount),      // (옵션)
-      repCount: Number(form.repCount),      // (옵션)
-      bodyCondition: bodyLabels[bodyCondition],  // (옵션)
-      postFeeling: feelingLabels[exerciseFeeling], // (옵션)
+      preCondition: bodyLabels[bodyCondition],
+      duration: Number(form.duration),
+      intensity: form.intensity,
+      calories: Number(form.calories),
+      heartRate: Number(form.heartrate),
+      setCount: Number(form.setCount),
+      repCount: Number(form.repCount),
+      bodyCondition: bodyLabels[bodyCondition],
+      postFeeling: feelingLabels[exerciseFeeling],
       physicalNote: sensation.join(', '),
-      memo: form.memo,   // (옵션)
+      memo: form.memo,
+      setList: setList
     };
-
     try {
-      await apiClient.post('/exercise/log/create', newLog);
-      alert('운동 기록 저장 완료!');
-      // 폼 초기화 등 추가 가능
+      await apiClient.post(`/exercise/log/update`, updateLog);
+      alert('수정 완료!');
+      navigate(-1);
     } catch (err) {
-      alert('운동 기록 저장 실패!');
-      console.error(err);
+      alert('수정 실패!');
     }
+  };
+
+  // === 취소 ===
+  const handleCancel = () => {
+    navigate(-1);
   };
 
   return (
     <div className="create-exercise-log-page">
-      <h1>운동 기록 입력</h1>
-      <form className="exercise-log-form" onSubmit={handleSubmit}>
+      <h1>운동 기록 수정</h1>
+      <form className="exercise-log-form" onSubmit={handleUpdate}>
         {/* 운동 기본 정보 카드 */}
         <div className="exercise-log-card">
           <h2>운동 기본 정보</h2>
           <p>오늘의 운동에 관한 기본 정보를 입력해주세요.</p>
-
           <div className="exercise-log-row-2col">
             <div>
               <label htmlFor="exerciseDate">운동 날짜 <span className="exercise-log-required">*</span></label>
-              <input id="exerciseDate" type="date" onChange={handleChange} />
+              <input id="exerciseDate" type="date" value={form.exerciseDate || ""} onChange={handleChange} />
             </div>
             <div>
               <label htmlFor="pre_condition">운동 전 컨디션 <span className="exercise-log-required">*</span></label>
-              <select id="pre_condition" onChange={handleChange}>
-                <option value="">선택</option>
+              <select id="pre_condition" value={bodyCondition} onChange={e => setBodyCondition(Number(e.target.value))}>
                 <option value="5">매우 좋음</option>
                 <option value="4">좋음</option>
                 <option value="3">보통</option>
@@ -184,7 +213,6 @@ function CreateExerciseLog() {
               </select>
             </div>
           </div>
-
           <div className="exercise-log-row-2col">
             <div>
               <label htmlFor="part">운동 종목 <span className="exercise-log-required">*</span></label>
@@ -195,30 +223,28 @@ function CreateExerciseLog() {
                 <option value="full">전신</option>
                 <option value="cardio">유산소</option>
               </select>
-
             </div>
             <div>
               <label htmlFor="exercise">운동 유형 <span className="exercise-log-required">*</span></label>
-             <select
-              id="exercise"
-              value={exerciseId || ''}
-              onChange={e => setExerciseId(Number(e.target.value))}
-            >
-              {allExercises
-                .filter(ex => ex.exerciseCategory === categoryMap[part])
-                .map(ex => (
-                  <option key={ex.exerciseId} value={ex.exerciseId}>
-                    {ex.exerciseName}
-                  </option>
-                ))}
-            </select>
-                        </div>
+              <select
+                id="exercise"
+                value={exerciseId || ''}
+                onChange={e => setExerciseId(Number(e.target.value))}
+              >
+                {allExercises
+                  .filter(ex => ex.exerciseCategory === categoryMap[part])
+                  .map(ex => (
+                    <option key={ex.exerciseId} value={ex.exerciseId}>
+                      {ex.exerciseName}
+                    </option>
+                  ))}
+              </select>
+            </div>
           </div>
-
           <div className="exercise-log-row-2col">
             <div>
               <label htmlFor="intensity">운동 강도 <span className="exercise-log-required">*</span></label>
-              <select id="intensity" onChange={handleChange}>
+              <select id="intensity" value={form.intensity || ""} onChange={handleChange}>
                 <option value="">선택</option>
                 <option value="약">약</option>
                 <option value="중">중</option>
@@ -227,7 +253,7 @@ function CreateExerciseLog() {
             </div>
             <div>
               <label htmlFor="duration">운동 시간 (분) <span className="exercise-log-required">*</span></label>
-              <input id="duration" placeholder="예: 30" type="number" onChange={handleChange} />
+              <input id="duration" type="number" value={form.duration || ""} placeholder="예: 30" onChange={handleChange} />
             </div>
           </div>
         </div>
@@ -236,29 +262,26 @@ function CreateExerciseLog() {
         <div className="exercise-log-card">
           <h2>운동 상세 기록</h2>
           <p>선택적으로 추가 정보를 입력할 수 있습니다.</p>
-
           <div className="exercise-log-row-2col">
             <div>
               <label htmlFor="calories">소모한 칼로리 (kcal)</label>
-              <input id="calories" placeholder="예: 420" type="number" onChange={handleChange} />
+              <input id="calories" type="number" value={form.calories || ""} placeholder="예: 420" onChange={handleChange} />
             </div>
             <div>
               <label htmlFor="heartrate">평균 심박수 (bpm)</label>
-              <input id="heartrate" placeholder="예: 130" type="number" onChange={handleChange} />
+              <input id="heartrate" type="number" value={form.heartrate || ""} placeholder="예: 130" onChange={handleChange} />
             </div>
           </div>
-
           <div className="exercise-log-row-2col">
             <div>
               <label htmlFor="setCount">세트 수</label>
-              <input id="setCount" type="number" placeholder="세트 수 (예: 3)" onChange={handleChange} />
+              <input id="setCount" type="number" value={form.setCount || ""} placeholder="세트 수 (예: 3)" onChange={handleChange} />
             </div>
             <div>
               <label htmlFor="repCount">반복 수</label>
-              <input id="repCount" type="number" placeholder="반복 수 (예: 12)" onChange={handleChange} />
+              <input id="repCount" type="number" value={form.repCount || ""} placeholder="반복 수 (예: 12)" onChange={handleChange} />
             </div>
           </div>
-
           <label>세트별 무게 및 반복 입력</label>
           <div id="setList" className="exercise-log-set-rep-group">
             {setList.map((set, idx) => (
@@ -286,7 +309,6 @@ function CreateExerciseLog() {
         <div className="exercise-log-card">
           <h2>운동 후 컨디션 및 메모</h2>
           <p>운동 후 몸 상태와 느낀 점을 기록해주세요.</p>
-
           <div className="exercise-log-slider-group">
             <div className="exercise-log-slider-label">오늘 전반적인 몸 상태</div>
             <div className="exercise-log-slider-row">
@@ -302,7 +324,6 @@ function CreateExerciseLog() {
             </div>
             <div className="exercise-log-slider-label">{bodyLabels[bodyCondition]}</div>
           </div>
-
           <div className="exercise-log-slider-group">
             <div className="exercise-log-slider-label">운동 후 기분</div>
             <div className="exercise-log-slider-row">
@@ -318,7 +339,6 @@ function CreateExerciseLog() {
             </div>
             <div className="exercise-log-slider-label">{feelingLabels[exerciseFeeling]}</div>
           </div>
-
           <label>신체적으로 어떤 느낌이 있었나요?</label>
           <div className="exercise-log-checkbox-grid">
             <label>
@@ -337,15 +357,30 @@ function CreateExerciseLog() {
               <input type="checkbox" name="sensation" value="특별한 증상 없음" checked={sensation.includes('특별한 증상 없음')} onChange={handleSensationChange} /> 특별한 증상 없음
             </label>
           </div>
-
           <label htmlFor="memo">기타 느낀 점 (선택)</label>
-          <textarea id="memo" placeholder="예: 허벅지가 당기고 숨이 찼어요." rows="3" onChange={handleChange}></textarea>
+          <textarea id="memo" placeholder="예: 허벅지가 당기고 숨이 찼어요." rows="3" value={form.memo || ""} onChange={handleChange}></textarea>
         </div>
 
-        <button className="exercise-log-button exercise-log-button-default exercise-log-submit-btn" type="submit">운동 기록 저장하기</button>
+        {/* 버튼 영역 */}
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", marginTop: "24px" }}>
+          <button
+            className="exercise-log-button exercise-log-button-default"
+            type="submit"
+            style={{ backgroundColor: '#88C71F' }}
+          >
+            수정
+          </button>
+          <button
+            className="exercise-log-button exercise-log-button-cancel"
+            type="button"
+            onClick={handleCancel}
+          >
+            취소
+          </button>
+        </div>
       </form>
     </div>
   );
 }
 
-export default CreateExerciseLog; 
+export default UpdateExerciseLog;

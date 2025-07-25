@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../styles/exercise/createObjective.css';
 import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
 
+// 월 옵션 생성 함수
 function getMonthOptions(startYear, startMonth, count) {
   const options = [];
   let year = startYear;
@@ -21,10 +23,12 @@ function getMonthOptions(startYear, startMonth, count) {
   }
   return options;
 }
-
 const monthOptions = getMonthOptions(2025, 1, 12);
 
-function CreateObjective() {
+function UpdateObjective() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     title: '',
     count: '',
@@ -35,10 +39,48 @@ function CreateObjective() {
   });
   const [warning, setWarning] = useState('');
 
+  // 1. 기존 목표 데이터 불러오기
+  useEffect(() => {
+    async function fetchObjective() {
+      try {
+        // 단일조회 API 경로(명세서 확인 필요, select/:id 구조)
+        const res = await axios.get(`/api/v1/kurung/exercise/objective/select/${id}`, {
+          headers: {
+            Authorization:
+              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA2ODg5fQ.5ZYVum2-jopUE8h4jC784qTsKYMd8M3OSjCjDLkjCbKoCgBIr2VpAfiiqICMcTCfxQLr0B2bCb0oXwQgFN50Xw',
+            RefreshToken:
+              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4OTY4OX0.dxeRiuXKqvnt2QkalIKZX2cUpKg8-KwI9uCfrbYFGnQBtDsCqlxe5OpN9fA1OCnppv8o2rKq_tviWJSBQlH5nw',
+          },
+        });
+        const data = res.data;
+
+        // 월 자동 매칭
+        const matchedMonth = monthOptions.find(
+          m => data.startDate && m.start === data.startDate.slice(0, 10)
+        );
+
+        setForm({
+          title: data.objectiveTitle || '',
+          count: data.objectiveCount || '',
+          duration: data.objectiveDuration || '',
+          weight: data.objectiveWeight || '',
+          month: matchedMonth ? matchedMonth.label : '',
+          memo: data.memo || '',
+        });
+      } catch (e) {
+        console.error('목표 불러오기 실패:', e);
+        alert('기존 목표 불러오기 실패');
+      }
+    }
+    fetchObjective();
+  }, [id]);
+
+  // input 변경 핸들러
   const handleChange = (e) => {
     const { id, value } = e.target;
     const newForm = { ...form, [id]: value };
     setForm(newForm);
+
     // 경고 문구 로직
     let warn = '';
     if (id === 'count' && Number(value) > 0 && Number(value) <= 3) {
@@ -55,7 +97,8 @@ function CreateObjective() {
     setForm({ ...form, month: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  // 수정(업데이트) 제출
+  const handleUpdate = async (e) => {
     e.preventDefault();
     if (!form.title || !form.count || !form.duration || !form.weight || !form.month) {
       alert('필수 입력값을 모두 입력하세요!');
@@ -63,6 +106,7 @@ function CreateObjective() {
     }
     const selectedMonth = monthOptions.find(m => m.label === form.month);
     const data = {
+      objectiveId: id, // 필수! (백엔드에서 수정대상 식별용)
       user: { userUuid: '2025061401' },
       objectiveTitle: form.title,
       objectiveCount: Number(form.count),
@@ -71,10 +115,9 @@ function CreateObjective() {
       startDate: selectedMonth.start + 'T00:00:00',
       endDate: selectedMonth.end + 'T00:00:00',
       memo: form.memo,
-      // isActive: true // 필요시 주석 해제
     };
     try {
-      await axios.post('/api/v1/kurung/exercise/objective/created', data, {
+      await axios.post('/api/v1/kurung/exercise/objective/updated', data, {
         headers: {
           Authorization:
             'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA2ODg5fQ.5ZYVum2-jopUE8h4jC784qTsKYMd8M3OSjCjDLkjCbKoCgBIr2VpAfiiqICMcTCfxQLr0B2bCb0oXwQgFN50Xw',
@@ -82,9 +125,11 @@ function CreateObjective() {
             'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4OTY4OX0.dxeRiuXKqvnt2QkalIKZX2cUpKg8-KwI9uCfrbYFGnQBtDsCqlxe5OpN9fA1OCnppv8o2rKq_tviWJSBQlH5nw',
         },
       });
-      alert('목표가 저장되었습니다!');
+      alert('목표가 수정되었습니다!');
+      navigate(-1);
     } catch (err) {
-      alert('저장 실패!');
+      console.error('수정 실패:', err.response?.data || err);
+      alert('수정 실패!');
     }
   };
 
@@ -92,8 +137,8 @@ function CreateObjective() {
 
   return (
     <div className="create-objective-page">
-      <h1 className="objective-title">운동 목표 설정</h1>
-      <form className="objective-form" onSubmit={handleSubmit}>
+      <h1 className="objective-title">운동 목표 수정</h1>
+      <form className="objective-form" onSubmit={handleUpdate}>
         <label htmlFor="title">목표 제목 <span className="objective-required">*</span></label>
         <input id="title" placeholder="예: 6월 체중 감량 목표" value={form.title} onChange={handleChange} />
 
@@ -149,10 +194,12 @@ function CreateObjective() {
         <label htmlFor="memo">메모 (선택)</label>
         <textarea id="memo" placeholder="이 목표를 설정한 이유나 계획을 적어보세요." value={form.memo} onChange={handleChange} rows={3}></textarea>
 
-        <button className="button objective-btn" type="submit">목표 저장하기</button>
+        {warning && <div className="objective-warning">{warning}</div>}
+
+        <button className="button objective-btn" type="submit">목표 수정하기</button>
       </form>
     </div>
   );
 }
 
-export default CreateObjective; 
+export default UpdateObjective;

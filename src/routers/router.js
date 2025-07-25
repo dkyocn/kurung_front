@@ -9,9 +9,11 @@ import { Routes, Route } from 'react-router-dom';
 // import boardRoutes from './boardRoutes';
 // import noticeRoutes from './noticeRoutes';
 // import memberRoutes from './memberRoutes';
-// import lifeLogRoutes from './lifeLogRoutes';
+import dietRouters from './dietRouters';
+import lifeLogRoutes from './lifeLogRoutes';
 import exerciseRoutes from './exerciseLogRoutes';
 import diagnosisRoutes from './diagnosisLogRoutes';
+import healthReportRoutes from './healthReportRoutes';
 import chatbotRoutes from './chatbotRoutes';
 
 const AppRouter = () => {
@@ -19,8 +21,10 @@ const AppRouter = () => {
     <Routes>
       {chatbotRoutes}
       {exerciseRoutes}
-      {/* {lifeLogRoutes} */}
+      {lifeLogRoutes}
+      {dietRouters}
       {diagnosisRoutes}
+      {healthReportRoutes}
       {/* {boardRoutes}
       {noticeRoutes}
       {memberRoutes}

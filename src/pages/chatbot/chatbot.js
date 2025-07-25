@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import '../../styles/chatbot/chatbot.css';
 import biniImage from '../../assets/bini.png';
 
 const Chatbot = () => {
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState('');
+  const bottomRef = useRef(null);
 
   const sendMessage = async () => {
     if (!userInput.trim()) return;
@@ -18,33 +20,42 @@ const Chatbot = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer YOUR_API_KEY`, // <-- 여기에 본인 API 키 입력
+          Authorization: ``,
         },
         body: JSON.stringify({
-          model: 'gpt-4o-mini',
+          model: 'gpt-4.1-mini',
           messages: [
-            { role: 'system', content: '친절한 건강 상담 챗봇입니다.' },
+            { role: 'system', content: '당신은 친절한 건강 상담 챗봇입니다.' },
             ...newMessages.map(msg => ({
               role: msg.sender === 'user' ? 'user' : 'assistant',
               content: msg.text,
             })),
           ],
+          temperature: 0.1,
         }),
       });
 
       const data = await response.json();
-      const reply = data.choices[0].message.content;
+      console.log('🔍 GPT 응답:', data);
 
+      if (data.error) {
+        throw new Error(data.error.message);
+      }
+
+      const reply = data.choices?.[0]?.message?.content || '❓ 예상치 못한 응답입니다.';
       setMessages(prev => [...prev, { sender: 'bot', text: reply }]);
     } catch (error) {
-      setMessages(prev => [...prev, { sender: 'bot', text: '오류가 발생했어요. 다시 시도해주세요.' }]);
-      console.error(error);
+      console.error('🚨 GPT 호출 오류:', error);
+      setMessages(prev => [...prev, {
+        sender: 'bot',
+        text: `❌ 오류 발생: ${error.message}`,
+      }]);
     }
   };
 
-   const handleKeyDown = (e) => {
+  const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault(); // 줄바꿈 방지
+      e.preventDefault();
       sendMessage();
     }
   };
@@ -54,17 +65,19 @@ const Chatbot = () => {
       <div className="chat-header">
         <img src={biniImage} alt="bini" className="chat-avatar" />
         <h2>KURUNG</h2>
-        <div className="chat-tags">
-        </div>
+        <div className="chat-tags"></div>
       </div>
 
       <div className="chat-box">
         {messages.map((msg, idx) => (
           <div key={idx} className={`chat-message ${msg.sender}`}>
-            {msg.sender === 'bot' && <img src={biniImage} alt="bini" className="chat-avatar-small" />}
+            {msg.sender === 'bot' && (
+              <img src={biniImage} alt="bini" className="chat-avatar-small" />
+            )}
             <div className="message-bubble">{msg.text}</div>
           </div>
         ))}
+        <div ref={bottomRef}></div>
       </div>
 
       <div className="chat-input">

@@ -8,21 +8,25 @@ import { Routes, Route } from 'react-router-dom';
 // 기능별로 작성한 라우터를 불러오기
 // import boardRoutes from './boardRoutes';
 // import noticeRoutes from './noticeRoutes';
-
+// import memberRoutes from './memberRoutes';
 import dietRouters from './dietRouters';
 import recipeRoutes from './recipeRoutes';
 import lifeLogRoutes from './lifeLogRoutes';
 import exerciseRoutes from './exerciseLogRoutes';
 import diagnosisRoutes from './diagnosisLogRoutes';
+import healthReportRoutes from './healthReportRoutes';
+import chatbotRoutes from './chatbotRoutes';
 
 const AppRouter = () => {
   return (
     <Routes>
+      {chatbotRoutes}
       {exerciseRoutes}
+      {lifeLogRoutes}
       {dietRouters}
-      {/* {lifeLogRoutes} */}
       {diagnosisRoutes}
       {recipeRoutes}
+      {healthReportRoutes}
       {/* {boardRoutes}
       {noticeRoutes}
       {memberRoutes}

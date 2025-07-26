@@ -55,10 +55,10 @@ const Menubar = ({ isOpen }) => {
         {renderMenuTitle('멘탈 케어', 'mental')}
         {openSection === 'mental' && (
           <>
-            <div className="submenu">
-              <img src={BiniImg} alt="비니" className="bini-icon" />
-              비니
-            </div>
+            <Link to="/chatbot" className="submenu" style={{ display: 'flex', alignItems: 'center' }}>
+              <img src={BiniImg} alt="비니" className="bini-icon" style={{ marginRight: '8px' }} />
+               비니
+            </Link>
             <div className="submenu">스트레스 해소 추천</div>
           </>
         )}

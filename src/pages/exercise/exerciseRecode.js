@@ -14,13 +14,250 @@ function formatMinutesToHourMin(minutes) {
   return h > 0 ? `${h}시간 ${m}분` : `${m}분`;
 }
 
-// [수정] 테스트를 위해 today를 2025-06-30으로 강제 세팅
+// 개선된 일일 메시지 생성 함수
+function generateDailyMessage(dailyInfo) {
+  if (!dailyInfo) return {
+    title: "오늘도 화이팅! 💪",
+    subtitle: "운동은 건강한 삶의 시작입니다.",
+    detail: "오늘 하루도 파이팅!",
+    routine: "작은 실천이 큰 변화를 만들어요! 🌟"
+  };
+
+  const { totalDuration, totalKcal, routineCount, exerciseList } = dailyInfo;
+  
+  // 운동 강도 분석
+  const highIntensityCount = exerciseList?.filter(ex => ex.intensity === '고강도').length || 0;
+  const mediumIntensityCount = exerciseList?.filter(ex => ex.intensity === '중강도').length || 0;
+  const lowIntensityCount = exerciseList?.filter(ex => ex.intensity === '저강도').length || 0;
+  
+  // 운동 종류 분석
+  const cardioCount = exerciseList?.filter(ex => 
+    ex.exercise?.exerciseCategory === '유산소' || 
+    ex.exercise?.effect === '유산소'
+  ).length || 0;
+  const strengthCount = exerciseList?.filter(ex => 
+    ex.exercise?.exerciseCategory === '근력' || 
+    ex.exercise?.effect === '근력'
+  ).length || 0;
+  
+  // 제목 생성
+  let title = "오늘의 운동 완료! 🏃‍♂️";
+  if (totalDuration >= 90) {
+    title = "정말 대단해요! 오늘도 최고! 🎉";
+  } else if (totalDuration >= 60) {
+    title = "오늘도 정말 대단해요! ⚡";
+  } else if (totalDuration >= 30) {
+    title = "오늘도 화이팅! 💪";
+  } else if (totalDuration > 0) {
+    title = "오늘도 수고하셨어요! 🌟";
+  } else {
+    title = "오늘은 휴식의 날! 😌";
+  }
+  
+  // 부제목 생성 (시간 기반)
+  let subtitle = "";
+  if (totalDuration >= 90) {
+    subtitle = "1시간 30분 이상! 정말 열심히 하셨네요!";
+  } else if (totalDuration >= 60) {
+    subtitle = "1시간 이상 운동하셨네요! 대단합니다!";
+  } else if (totalDuration >= 45) {
+    subtitle = "45분 이상 꾸준히 운동하셨네요!";
+  } else if (totalDuration >= 30) {
+    subtitle = "30분 이상 운동하셨네요! 훌륭해요!";
+  } else if (totalDuration >= 15) {
+    subtitle = "15분 이상 운동하셨네요! 좋아요!";
+  } else if (totalDuration > 0) {
+    subtitle = "오늘도 운동하셨네요! 시작이 반이에요!";
+  } else {
+    subtitle = "오늘은 휴식을 취하셨네요. 내일 더 힘내세요!";
+  }
+  
+  // 상세 메시지 생성 (칼로리 + 운동 종류)
+  let detail = "";
+  if (totalKcal >= 800) {
+    detail = `${totalKcal}kcal 소모! 정말 열심히 운동하셨네요! 🔥`;
+  } else if (totalKcal >= 500) {
+    detail = `${totalKcal}kcal 소모! 대단한 성과예요! ⚡`;
+  } else if (totalKcal >= 300) {
+    detail = `${totalKcal}kcal 소모! 꾸준함이 최고의 운동이에요! 💪`;
+  } else if (totalKcal >= 100) {
+    detail = `${totalKcal}kcal 소모! 작은 실천이 큰 변화를 만들어요! 🌟`;
+  } else if (totalKcal > 0) {
+    detail = `${totalKcal}kcal 소모! 오늘도 수고하셨어요! 😊`;
+  } else {
+    detail = "오늘은 휴식을 취하셨네요. 내일 더 힘내세요! 💪";
+  }
+  
+  // 운동 종류별 추가 메시지
+  if (cardioCount > 0 && strengthCount > 0) {
+    detail += " 유산소와 근력운동을 균형있게 하셨네요!";
+  } else if (cardioCount > 0) {
+    detail += " 유산소운동으로 심폐지구력을 키우고 계시네요!";
+  } else if (strengthCount > 0) {
+    detail += " 근력운동으로 근육을 키우고 계시네요!";
+  }
+  
+  // 루틴 조언 생성 (운동 횟수 + 강도)
+  let routine = "";
+  if (routineCount >= 6) {
+    routine = `${routineCount}개의 운동을 완료하셨네요! 정말 대단합니다! 🏆`;
+  } else if (routineCount >= 4) {
+    routine = `${routineCount}개의 운동을 해내셨네요! 꾸준함이 최고예요! 🌟`;
+  } else if (routineCount >= 2) {
+    routine = `${routineCount}개의 운동을 완료하셨네요! 시작이 반이에요! 💪`;
+  } else if (routineCount > 0) {
+    routine = `${routineCount}개의 운동을 하셨네요! 오늘도 수고하셨어요! 😊`;
+  } else {
+    routine = "오늘은 휴식의 날이었나요? 내일은 함께 운동해요! 💪";
+  }
+  
+  // 강도별 추가 조언
+  if (highIntensityCount > 0) {
+    routine += " 고강도 운동도 잘 해내고 계시네요! 더 강해지고 있어요! 🔥";
+  } else if (mediumIntensityCount > 0) {
+    routine += " 중강도 운동으로 균형잡힌 체력 향상을 하고 계시네요! ⚖️";
+  } else if (lowIntensityCount > 0) {
+    routine += " 저강도 운동으로 부상 없이 꾸준히 하고 계시네요! 🛡️";
+  }
+
+  return {
+    title,
+    subtitle,
+    detail,
+    routine
+  };
+}
+
+// 개선된 월간 메시지 생성 함수
+function generateMonthlyMessage(monthlyStats) {
+  if (!monthlyStats) return {
+    title: "한 달간의 기록 📊",
+    subtitle: "꾸준함이 최고의 운동이에요!",
+    detail: "새로운 한 달을 시작해보세요!",
+    calorie: "작은 실천이 큰 변화를 만들어요! 🌟",
+    pattern: "꾸준함의 힘을 믿어보세요! 💪"
+  };
+
+  const { totalDuration, totalKcal, routineCount, goalAchievementRate, weeklyRoutineCounts, weeklyDurations } = monthlyStats;
+  
+  // 주차별 운동 패턴 분석
+  const activeWeeks = weeklyRoutineCounts?.filter(count => count > 0).length || 0;
+  const totalWeeks = weeklyRoutineCounts?.length || 4;
+  const consistencyRate = (activeWeeks / totalWeeks) * 100;
+  
+  // 평균 주간 운동 시간
+  const avgWeeklyDuration = totalDuration / totalWeeks;
+  
+  // 제목 생성 (목표 달성률 기반)
+  let title = "한 달간의 달성 기록 📊";
+  if (goalAchievementRate >= 100) {
+    title = "목표 100% 달성! 정말 대단해요! 🏆";
+  } else if (goalAchievementRate >= 90) {
+    title = "목표 90% 이상 달성! 거의 완벽해요! 🎯";
+  } else if (goalAchievementRate >= 80) {
+    title = "목표 80% 이상 달성! 훌륭해요! ⭐";
+  } else if (goalAchievementRate >= 60) {
+    title = "목표 60% 이상 달성! 잘 하고 있어요! 💪";
+  } else if (goalAchievementRate > 0) {
+    title = "목표 달성 중! 꾸준히 해보세요! 🌟";
+  } else {
+    title = "새로운 시작! 이번 달엔 더 잘해보세요! 🚀";
+  }
+  
+  // 부제목 생성 (목표 달성률)
+  let subtitle = "";
+  if (goalAchievementRate >= 100) {
+    subtitle = "목표를 100% 달성하셨네요! 정말 대단합니다!";
+  } else if (goalAchievementRate >= 80) {
+    subtitle = `목표의 ${goalAchievementRate}%를 달성하셨네요! 거의 다 왔어요!`;
+  } else if (goalAchievementRate >= 60) {
+    subtitle = `목표의 ${goalAchievementRate}%를 달성하셨네요! 꾸준히 잘 하고 있어요!`;
+  } else if (goalAchievementRate >= 40) {
+    subtitle = `목표의 ${goalAchievementRate}%를 달성하셨네요! 절반을 넘어섰어요!`;
+  } else if (goalAchievementRate > 0) {
+    subtitle = `목표의 ${goalAchievementRate}%를 달성하셨네요! 다음 달엔 더 잘할 수 있어요!`;
+  } else {
+    subtitle = "새로운 시작을 위한 준비가 되었어요! 이번 달엔 목표를 세워보세요!";
+  }
+  
+  // 상세 메시지 생성 (총 운동 시간)
+  let detail = "";
+  if (totalDuration >= 3600) { // 60시간 이상
+    detail = `${formatMinutesToHourMin(totalDuration)} 운동하셨네요! 정말 열심히 하셨습니다! 🔥`;
+  } else if (totalDuration >= 2400) { // 40시간 이상
+    detail = `${formatMinutesToHourMin(totalDuration)} 운동하셨네요! 대단한 한 달이었어요! ⚡`;
+  } else if (totalDuration >= 1800) { // 30시간 이상
+    detail = `${formatMinutesToHourMin(totalDuration)} 운동하셨네요! 훌륭한 성과예요! 💪`;
+  } else if (totalDuration >= 1200) { // 20시간 이상
+    detail = `${formatMinutesToHourMin(totalDuration)} 운동하셨네요! 꾸준함이 최고예요! 🌟`;
+  } else if (totalDuration >= 600) { // 10시간 이상
+    detail = `${formatMinutesToHourMin(totalDuration)} 운동하셨네요! 시작이 반이에요! 😊`;
+  } else if (totalDuration > 0) {
+    detail = `${formatMinutesToHourMin(totalDuration)} 운동하셨네요! 작은 실천이 큰 변화를 만들어요! 💪`;
+  } else {
+    detail = "새로운 한 달의 시작을 준비해요! 이번 달엔 운동을 시작해보세요! 🚀";
+  }
+  
+  // 칼로리 메시지 생성
+  let calorie = "";
+  if (totalKcal >= 20000) {
+    calorie = `${totalKcal}kcal 소모! 정말 대단한 한 달이었어요! 🔥`;
+  } else if (totalKcal >= 15000) {
+    calorie = `${totalKcal}kcal 소모! 훌륭한 성과를 거두셨네요! ⚡`;
+  } else if (totalKcal >= 10000) {
+    calorie = `${totalKcal}kcal 소모! 대단한 한 달이었어요! 💪`;
+  } else if (totalKcal >= 5000) {
+    calorie = `${totalKcal}kcal 소모! 꾸준함이 최고의 운동이에요! 🌟`;
+  } else if (totalKcal >= 2000) {
+    calorie = `${totalKcal}kcal 소모! 작은 실천이 큰 변화를 만들어요! 😊`;
+  } else if (totalKcal > 0) {
+    calorie = `${totalKcal}kcal 소모! 오늘도 수고하셨어요! 💪`;
+  } else {
+    calorie = "새로운 시작을 위한 준비가 되었어요! 이번 달엔 칼로리도 소모해보세요! 🚀";
+  }
+  
+  // 운동 패턴 분석 메시지
+  let pattern = "";
+  if (consistencyRate >= 100) {
+    pattern = "매주 꾸준히 운동하고 계시네요! 정말 인상적입니다! 🏆";
+  } else if (consistencyRate >= 75) {
+    pattern = "3주 이상 꾸준히 운동하고 계시네요! 훌륭한 습관이에요! ⭐";
+  } else if (consistencyRate >= 50) {
+    pattern = "절반 이상의 주에 운동하고 계시네요! 좋은 습관을 만들어가고 있어요! 💪";
+  } else if (consistencyRate >= 25) {
+    pattern = "일부 주에 운동하고 계시네요! 더 꾸준히 해보세요! 🌟";
+  } else if (consistencyRate > 0) {
+    pattern = "운동을 시작하셨네요! 더 자주 해보세요! 😊";
+  } else {
+    pattern = "새로운 시작을 위한 준비가 되었어요! 이번 달엔 운동을 시작해보세요! 🚀";
+  }
+  
+  // 평균 주간 운동 시간 추가 정보
+  if (avgWeeklyDuration >= 300) { // 주 5시간 이상
+    pattern += " 주 평균 5시간 이상 운동하고 계시네요! 정말 대단해요! 🔥";
+  } else if (avgWeeklyDuration >= 180) { // 주 3시간 이상
+    pattern += " 주 평균 3시간 이상 운동하고 계시네요! 훌륭해요! ⚡";
+  } else if (avgWeeklyDuration >= 120) { // 주 2시간 이상
+    pattern += " 주 평균 2시간 이상 운동하고 계시네요! 꾸준함이 최고예요! 💪";
+  }
+
+  return {
+    title,
+    subtitle,
+    detail,
+    calorie,
+    pattern
+  };
+}
+
+// [수정] 테스트를 위해 today를 2025-05-31으로 강제 세팅
 const today = dayjs('2025-06-30');
 const dateList = Array.from({ length: 30 }).map((_, i) =>
   today.subtract(i, 'day').format('YYYY-MM-DD')
 );
+const month = dayjs('2025-12-31');
 const monthList = Array.from({ length: 12 }).map((_, i) =>
-  today.subtract(i, 'month').format('YYYY-MM')
+  month.subtract(i, 'month').format('YYYY-MM')
 );
 
 // 백엔드에서 날짜 포맷이 YY/MM/DD이면 아래 함수 사용
@@ -40,10 +277,16 @@ function ExerciseRecode() {
     setLoading(true);
     setError('');
     if (tab === 'daily') {
-      axios.get(`/api/v1/kurung/exercise/summary/daily/${USER_UUID}`, {
-        params: { date: selectedDate }
-        })
-            .then(res => {
+      axios.get(`/api/v1/kurung/exercise/summary/daily`, {
+        params: { date: selectedDate },
+        headers: {
+          Authorization:
+            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA2ODg5fQ.5ZYVum2-jopUE8h4jC784qTsKYMd8M3OSjCjDLkjCbKoCgBIr2VpAfiiqICMcTCfxQLr0B2bCb0oXwQgFN50Xw',
+          RefreshToken:
+            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4OTY4OX0.dxeRiuXKqvnt2QkalIKZX2cUpKg8-KwI9uCfrbYFGnQBtDsCqlxe5OpN9fA1OCnppv8o2rKq_tviWJSBQlH5nw',
+        },
+      })
+        .then(res => {
           setDailyInfo(res.data);
           console.log('dailyInfo:', res.data);
         })
@@ -51,7 +294,15 @@ function ExerciseRecode() {
         .finally(() => setLoading(false));
     } else {
       axios
-        .get(`/api/v1/kurung/exercise/summary/monthly/${USER_UUID}`, { params: { month: selectedMonth } })
+        .get(`/api/v1/kurung/exercise/summary/monthly`, { 
+          params: { month: selectedMonth },
+          headers: {
+            Authorization:
+              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA2ODg5fQ.5ZYVum2-jopUE8h4jC784qTsKYMd8M3OSjCjDLkjCbKoCgBIr2VpAfiiqICMcTCfxQLr0B2bCb0oXwQgFN50Xw',
+            RefreshToken:
+              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4OTY4OX0.dxeRiuXKqvnt2QkalIKZX2cUpKg8-KwI9uCfrbYFGnQBtDsCqlxe5OpN9fA1OCnppv8o2rKq_tviWJSBQlH5nw',
+          },
+        })
         .then(res => setMonthlyStats(res.data))
         .catch(() => setError('월간 통계 데이터를 불러오지 못했습니다.'))
         .finally(() => setLoading(false));
@@ -77,8 +328,17 @@ function ExerciseRecode() {
       {tab === 'daily' && (
         <div className="content active">
           <div className="message-box">
-            <p>"인간적인 마음과 건강한 마음을 가진 것, 이것이 삶의 목적입니다!"</p>
-            <p>"무엇보다 최고의 운동복은, 나만의 땀을 담아내는 것!"</p>
+            {(() => {
+              const message = generateDailyMessage(dailyInfo);
+              return (
+                <>
+                  <p style={{ fontWeight: 'bold', fontSize: '1.1em', marginBottom: '8px' }}>{message.title}</p>
+                  <p>{message.subtitle}</p>
+                  {message.detail && <p>{message.detail}</p>}
+                  {message.routine && <p>{message.routine}</p>}
+                </>
+              );
+            })()}
           </div>
           <h2>일일 운동 요약</h2>
           <p style={{ color: '#666', margin: '10px 0' }}>오늘의 운동 결과를 확인해보세요!</p>
@@ -155,9 +415,17 @@ function ExerciseRecode() {
             </div>
           </div>
           <div className="message-box">
-            <p>한 달간의 달성한!</p>
-            <p>"규칙적 운동이 자유로워진다! 이번 달도 정말 잘 해내셨어요."</p>
-            <p>"상쾌한 조직되어 달성한 누적에서 나왔네요. 다음 달도 화이팅!"</p>
+            {(() => {
+              const message = generateMonthlyMessage(monthlyStats);
+              return (
+                <>
+                  <p style={{ fontWeight: 'bold', fontSize: '1.1em', marginBottom: '8px' }}>{message.title}</p>
+                  <p>{message.subtitle}</p>
+                  {message.detail && <p>{message.detail}</p>}
+                  {message.calorie && <p>{message.calorie}</p>}
+                </>
+              );
+            })()}
           </div>
           <select value={selectedMonth} onChange={e => setSelectedMonth(e.target.value)} style={{ margin: '10px 0' }}>
             {monthList.map(month => (

@@ -10,6 +10,7 @@ import { Routes, Route } from 'react-router-dom';
 // import noticeRoutes from './noticeRoutes';
 
 import dietRouters from './dietRouters';
+import recipeRoutes from './recipeRoutes';
 import lifeLogRoutes from './lifeLogRoutes';
 import exerciseRoutes from './exerciseLogRoutes';
 import diagnosisRoutes from './diagnosisLogRoutes';
@@ -21,6 +22,7 @@ const AppRouter = () => {
       {dietRouters}
       {/* {lifeLogRoutes} */}
       {diagnosisRoutes}
+      {recipeRoutes}
       {/* {boardRoutes}
       {noticeRoutes}
       {memberRoutes}

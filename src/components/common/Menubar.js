@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import '../styles/Menubar.css';
 import BiniImg from '../../assets/bini.png';
 import ArrowDown from '../../assets/arrow-down.png';
-import ArrowUp from '../../assets/arrow-up.png'
+import ArrowUp from '../../assets/arrow-up.png';
 import { Link } from 'react-router-dom';
 
 const Menubar = ({ isOpen }) => {
@@ -28,30 +28,31 @@ const Menubar = ({ isOpen }) => {
   return (
     <div className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
       <div className="menu-title menu-title-lifelog">라이프 로그</div>
-      
+
       <div className="menu-section">
-        {renderMenuTitle("식단", "life")}
+        {renderMenuTitle('식단', 'life')}
         {openSection === 'life' && (
           <>
-            {/* <div className="submenu">
-              <Link to="/diet" className="submenu">식단 기록</Link>
-            </div> */}
             <Link to="/diet" className="submenu">
               식단 기록
             </Link>
-            <div className="submenu">추천 래시피</div>
+            <Link to="/recipe" className="submenu">
+              추천 래시피
+            </Link>
           </>
         )}
 
         {renderMenuTitle('운동', 'exercise')}
         {openSection === 'exercise' && (
           <>
-            <Link to="/createExerciseLog" className="submenu">운동 기록</Link>
+            <Link to="/createExerciseLog" className="submenu">
+              운동 기록
+            </Link>
             <div className="submenu">운동 추천</div>
           </>
         )}
 
-        {renderMenuTitle("멘탈 케어", "mental")}
+        {renderMenuTitle('멘탈 케어', 'mental')}
         {openSection === 'mental' && (
           <>
             <div className="submenu">
@@ -62,11 +63,13 @@ const Menubar = ({ isOpen }) => {
           </>
         )}
 
-        {renderMenuTitle("건강 관리", "health")}
+        {renderMenuTitle('건강 관리', 'health')}
         {openSection === 'health' && (
           <>
             <div className="submenu">건강 리포트</div>
-            <Link to="/healthQuestion" className="submenu">건강 상태 초기 진단</Link>
+            <Link to="/healthQuestion" className="submenu">
+              건강 상태 초기 진단
+            </Link>
           </>
         )}
 
@@ -77,7 +80,9 @@ const Menubar = ({ isOpen }) => {
         {openSection === 'mypage' && (
           <>
             <div className="submenu">내 정보 관리</div>
-            <Link to="/missions" className="submenu">mission</Link>
+            <Link to="/missions" className="submenu">
+              mission
+            </Link>
             <div className="submenu">즐겨찾기</div>
           </>
         )}

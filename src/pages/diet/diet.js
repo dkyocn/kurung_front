@@ -123,9 +123,9 @@ const DietForm = () => {
       const response = await axios.get(baseUrl + 'diet', {
         headers: {
           Authorization:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA2ODg5fQ.5ZYVum2-jopUE8h4jC784qTsKYMd8M3OSjCjDLkjCbKoCgBIr2VpAfiiqICMcTCfxQLr0B2bCb0oXwQgFN50Xw',
+            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNTAxMTc1fQ.eGqQT8W9GehLETGFwhYtUvdq304GEEVeMGRXoEeIEtmo7LtZNWonidm6ZiL1jW2XmunhBQ0fPmwbHnq3DB7PDA',
           RefreshToken:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4OTY4OX0.dxeRiuXKqvnt2QkalIKZX2cUpKg8-KwI9uCfrbYFGnQBtDsCqlxe5OpN9fA1OCnppv8o2rKq_tviWJSBQlH5nw',
+            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzU4Mzk3NX0.Zks4sE2Wex6rYay4tubdv4Qdxx-i17dRcLPRxlKXCh440FMeHsDrNQhzVZirtp3ZzyTZqCt5QMD4ZkGmMaGIqg',
         },
         params: {
           currentDate: new Date(+date + timeZone).toISOString().split('.')[0],
@@ -135,12 +135,49 @@ const DietForm = () => {
       const data = response.data;
       if (data && data.foodList) {
         initializeDietDTO(data);
-        setFoods(
-          data.foodList.map((food) => ({
-            ...food,
-            isFavorite: false, // 즐겨찾기 상태 추가
-          }))
-        );
+
+        // 즐겨찾기 상태 불러오기
+        try {
+          const favoritesRes = await axios.get(baseUrl + 'favorites/list', {
+            headers: {
+              Authorization:
+                'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNTAxMTc1fQ.eGqQT8W9GehLETGFwhYtUvdq304GEEVeMGRXoEeIEtmo7LtZNWonidm6ZiL1jW2XmunhBQ0fPmwbHnq3DB7PDA',
+              RefreshToken:
+                'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzU4Mzk3NX0.Zks4sE2Wex6rYay4tubdv4Qdxx-i17dRcLPRxlKXCh440FMeHsDrNQhzVZirtp3ZzyTZqCt5QMD4ZkGmMaGIqg',
+            },
+            params: {
+              favoritesType: 'RECIPE',
+            },
+          });
+
+          const favorites = favoritesRes.data || [];
+          const favoriteIds = favorites
+            .map((fav) => fav.recipeId)
+            .filter((id) => id != null);
+
+          // 음식에 즐겨찾기 상태 추가
+          const foodsWithFavorites = data.foodList.map((food) => {
+            const favoriteRecord = favorites.find(
+              (fav) => fav.recipeId === food.foodId
+            );
+            return {
+              ...food,
+              isFavorite: favoriteIds.includes(food.foodId),
+              favoritesId: favoriteRecord ? favoriteRecord.favoritesId : null,
+            };
+          });
+
+          setFoods(foodsWithFavorites);
+        } catch (error) {
+          console.error('즐겨찾기 목록 불러오기 실패:', error);
+          // 즐겨찾기 불러오기 실패 시 기본 상태로 설정
+          setFoods(
+            data.foodList.map((food) => ({
+              ...food,
+              isFavorite: false,
+            }))
+          );
+        }
       } else {
         setFoods([]);
       }
@@ -157,9 +194,9 @@ const DietForm = () => {
       const response = await axios.get(baseUrl + 'diet/today', {
         headers: {
           Authorization:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA2ODg5fQ.5ZYVum2-jopUE8h4jC784qTsKYMd8M3OSjCjDLkjCbKoCgBIr2VpAfiiqICMcTCfxQLr0B2bCb0oXwQgFN50Xw',
+            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNTAxMTc1fQ.eGqQT8W9GehLETGFwhYtUvdq304GEEVeMGRXoEeIEtmo7LtZNWonidm6ZiL1jW2XmunhBQ0fPmwbHnq3DB7PDA',
           RefreshToken:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4OTY4OX0.dxeRiuXKqvnt2QkalIKZX2cUpKg8-KwI9uCfrbYFGnQBtDsCqlxe5OpN9fA1OCnppv8o2rKq_tviWJSBQlH5nw',
+            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzU4Mzk3NX0.Zks4sE2Wex6rYay4tubdv4Qdxx-i17dRcLPRxlKXCh440FMeHsDrNQhzVZirtp3ZzyTZqCt5QMD4ZkGmMaGIqg',
         },
         params: {
           currentDate: new Date(+date + timeZone).toISOString().split('.')[0],
@@ -181,9 +218,9 @@ const DietForm = () => {
       const response = await axios.get(baseUrl + 'diet/food', {
         headers: {
           Authorization:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA2ODg5fQ.5ZYVum2-jopUE8h4jC784qTsKYMd8M3OSjCjDLkjCbKoCgBIr2VpAfiiqICMcTCfxQLr0B2bCb0oXwQgFN50Xw',
+            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNTAxMTc1fQ.eGqQT8W9GehLETGFwhYtUvdq304GEEVeMGRXoEeIEtmo7LtZNWonidm6ZiL1jW2XmunhBQ0fPmwbHnq3DB7PDA',
           RefreshToken:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4OTY4OX0.dxeRiuXKqvnt2QkalIKZX2cUpKg8-KwI9uCfrbYFGnQBtDsCqlxe5OpN9fA1OCnppv8o2rKq_tviWJSBQlH5nw',
+            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzU4Mzk3NX0.Zks4sE2Wex6rYay4tubdv4Qdxx-i17dRcLPRxlKXCh440FMeHsDrNQhzVZirtp3ZzyTZqCt5QMD4ZkGmMaGIqg',
         },
         params: {
           keyword: searchInput,
@@ -207,9 +244,9 @@ const DietForm = () => {
       const response = await axios.post(baseUrl + 'diet/update', dietDTO, {
         headers: {
           Authorization:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA2ODg5fQ.5ZYVum2-jopUE8h4jC784qTsKYMd8M3OSjCjDLkjCbKoCgBIr2VpAfiiqICMcTCfxQLr0B2bCb0oXwQgFN50Xw',
+            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNTAxMTc1fQ.eGqQT8W9GehLETGFwhYtUvdq304GEEVeMGRXoEeIEtmo7LtZNWonidm6ZiL1jW2XmunhBQ0fPmwbHnq3DB7PDA',
           RefreshToken:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4OTY4OX0.dxeRiuXKqvnt2QkalIKZX2cUpKg8-KwI9uCfrbYFGnQBtDsCqlxe5OpN9fA1OCnppv8o2rKq_tviWJSBQlH5nw',
+            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzU4Mzk3NX0.Zks4sE2Wex6rYay4tubdv4Qdxx-i17dRcLPRxlKXCh440FMeHsDrNQhzVZirtp3ZzyTZqCt5QMD4ZkGmMaGIqg',
         },
       });
     } catch (error) {
@@ -259,13 +296,61 @@ const DietForm = () => {
   };
 
   // 즐겨찾기 토글
-  const toggleFavorite = (index) => {
-    setFoods(
-      foods.map((food, i) => ({
-        ...food,
-        isFavorite: i === index ? !food.isFavorite : food.isFavorite,
-      }))
-    );
+  const toggleFavorite = async (index) => {
+    const food = foods[index];
+    if (!food) return;
+
+    try {
+      if (!food.isFavorite) {
+        // 즐겨찾기 추가
+        const response = await axios.post(
+          baseUrl + 'favorites/create',
+          {
+            recipeId: food.foodId,
+          },
+          {
+            headers: {
+              Authorization:
+                'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNTAxMTc1fQ.eGqQT8W9GehLETGFwhYtUvdq304GEEVeMGRXoEeIEtmo7LtZNWonidm6ZiL1jW2XmunhBQ0fPmwbHnq3DB7PDA',
+              RefreshToken:
+                'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzU4Mzk3NX0.Zks4sE2Wex6rYay4tubdv4Qdxx-i17dRcLPRxlKXCh440FMeHsDrNQhzVZirtp3ZzyTZqCt5QMD4ZkGmMaGIqg',
+            },
+          }
+        );
+
+        // 응답에서 favoritesId를 받아서 업데이트
+        const newFavoritesId = response.data?.favoritesId;
+        setFoods(
+          foods.map((f, i) => ({
+            ...f,
+            isFavorite: i === index ? true : f.isFavorite,
+            favoritesId: i === index ? newFavoritesId : f.favoritesId,
+          }))
+        );
+      } else {
+        // 즐겨찾기 해제 - favoritesId 사용
+        if (food.favoritesId) {
+          await axios.delete(baseUrl + `favorites/${food.favoritesId}`, {
+            headers: {
+              Authorization:
+                'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNTAxMTc1fQ.eGqQT8W9GehLETGFwhYtUvdq304GEEVeMGRXoEeIEtmo7LtZNWonidm6ZiL1jW2XmunhBQ0fPmwbHnq3DB7PDA',
+              RefreshToken:
+                'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzU4Mzk3NX0.Zks4sE2Wex6rYay4tubdv4Qdxx-i17dRcLPRxlKXCh440FMeHsDrNQhzVZirtp3ZzyTZqCt5QMD4ZkGmMaGIqg',
+            },
+          });
+        }
+
+        setFoods(
+          foods.map((f, i) => ({
+            ...f,
+            isFavorite: i === index ? false : f.isFavorite,
+            favoritesId: i === index ? null : f.favoritesId,
+          }))
+        );
+      }
+    } catch (error) {
+      console.error('즐겨찾기 토글 실패:', error);
+    }
   };
 
   // 음식 삭제
@@ -578,7 +663,13 @@ const DietForm = () => {
                 alt={food.foodName}
                 className="food-image"
               />
-              <button className="delete-btn" onClick={() => deleteFood(index)}>
+              <button
+                className="delete-btn"
+                onClick={() => {
+                  deleteFood(index);
+                  setSelectedFood(null);
+                }}
+              >
                 X
               </button>
               <div className="food-details">
@@ -588,7 +679,11 @@ const DietForm = () => {
                     src={food.isFavorite ? starFilledIcon : starIcon}
                     alt="Favorite"
                     className="favorite-btn"
-                    onClick={() => toggleFavorite(index)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFavorite(index);
+                      setSelectedFood(null);
+                    }}
                   />
                 </div>
                 <span className="food-calories">

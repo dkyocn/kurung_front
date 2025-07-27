@@ -9,16 +9,24 @@ import { Routes, Route } from 'react-router-dom';
 // import boardRoutes from './boardRoutes';
 // import noticeRoutes from './noticeRoutes';
 // import memberRoutes from './memberRoutes';
+import dietRouters from './dietRouters';
 import lifeLogRoutes from './lifeLogRoutes';
 import exerciseRoutes from './exerciseLogRoutes';
+import diagnosisRoutes from './diagnosisLogRoutes';
+import healthReportRoutes from './healthReportRoutes';
+import chatbotRoutes from './chatbotRoutes';
 import  mypageRoutes  from './mypageRoutes';
 
 const AppRouter = () => {
   return (
     <Routes>
       {mypageRoutes}
+      {chatbotRoutes}
       {exerciseRoutes}
       {lifeLogRoutes}
+      {dietRouters}
+      {diagnosisRoutes}
+      {healthReportRoutes}
       {/* {boardRoutes}
       {noticeRoutes}
       {memberRoutes}

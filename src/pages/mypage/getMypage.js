@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useRef } from 'react';
 import '../../styles/mypage/getMypage.css';
 import { useNavigate } from 'react-router-dom';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import Modal from '../../components/common/Modal'; 
-import axios from 'axios';
+import apiClient from '../../utils/axios';
 
 const GetMypage = () => {
   const navigate = useNavigate();
@@ -14,11 +15,56 @@ const GetMypage = () => {
   const [activeTab, setActiveTab] = useState('스트레스');
   const [missions, setMissions] = useState([]);
   const [bodyInfo, setBodyInfo] = useState({
-    height: '170cm',
-    weight: '65kg',
-    fat: '25%',
-    muscle: '32kg',
-  });
+  height: '',
+  weight: '',
+  fat: '',
+  muscle: '',
+});
+
+useEffect(() => {
+  const fetchHealthInfo = async () => {
+    try {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      const targetDate = `${yyyy}-${mm}-${dd}T00:00:00`; // ← 여기만 사용
+
+      console.log("요청 targetDate:", targetDate);
+      console.log('📤 요청 URL:', '/healthinfo/list');
+      console.log('📤 요청 params:', { targetDate });
+      console.log('📤 요청 headers:', {
+        });
+  
+      
+
+      const response = await apiClient.get('http://localhost:8081/api/v1/kurung/healthinfo/list?targetDate=2025-06-14T00:00:00', {
+        params: {targetDate },
+        headers: {
+          Authorization:
+            "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNTE2NzI0fQ.PSMtzpeniZda2Q5BpB9liHNYQMmqWGyaUU7mQjx51VktOAI5l5ugjYHW2boozwoj-mc58f-dq31rv-l1Pzwn7g",
+          RefreshToken:
+            "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzU5OTUyNH0.svNXSTjLC1aJLAo9jsVHcPMKLG-QuyTKjnnL9UrfAFSHb4EHPpZcQ38CG0o6pei4vSQQdLHj_99_5zp1pFyVEg"
+        }
+      });
+
+      if (Array.isArray(response.data) && response.data.length > 0) {
+        const latest = response.data[0]; // 가장 최근 값 1개만 가져온다고 가정
+        setBodyInfo({
+          height: latest.height || '',
+          weight: latest.weight || '',
+          fat: latest.bodyFat || '',
+          muscle: latest.muscleMass || '',
+        });
+      } 
+    } catch (err) {
+      alert("건강정보 목록을 불러오는데 실패했습니다.");
+      console.error('🔴 서버 응답 오류:', err.response?.status, err.response?.data);
+    }
+  };
+
+  fetchHealthInfo();
+}, []);
 
   const calculateBMI = () => {
     const heightMeter = parseFloat(bodyInfo.height) / 100;

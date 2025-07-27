@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../../utils/axios';
 import '../styles/SearchModal.css';
 
 /**
@@ -13,6 +13,8 @@ import '../styles/SearchModal.css';
  * - selected: array of {label, value} (currently selected items)
  * - onRemove: function (called with item to remove)
  * - placeholder: string
+ * - itemKey: string (key for unique identification, default: 'foodId')
+ * - itemLabel: string (key for display label, default: 'foodName')
  */
 export default function SearchModal({
   open,
@@ -24,6 +26,8 @@ export default function SearchModal({
   selected = [],
   onRemove,
   placeholder = 'Search...',
+  itemKey = 'foodId',
+  itemLabel = 'foodName',
 }) {
   const baseUrl = process.env.REACT_APP_API_BASE_URL;
   const [search, setSearch] = useState('');
@@ -42,12 +46,6 @@ export default function SearchModal({
       setLoading(true);
       axios
         .get(baseUrl + api, {
-          headers: {
-            Authorization:
-              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNTAxMTc1fQ.eGqQT8W9GehLETGFwhYtUvdq304GEEVeMGRXoEeIEtmo7LtZNWonidm6ZiL1jW2XmunhBQ0fPmwbHnq3DB7PDA',
-            RefreshToken:
-              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzU4Mzk3NX0.Zks4sE2Wex6rYay4tubdv4Qdxx-i17dRcLPRxlKXCh440FMeHsDrNQhzVZirtp3ZzyTZqCt5QMD4ZkGmMaGIqg',
-          },
           params: {
             keyword: search,
           },
@@ -82,8 +80,11 @@ export default function SearchModal({
           {selected && selected.length > 0 && (
             <div className="searchModalSelectedList">
               {selected.map((item) => (
-                <span className="searchModalSelectedPill" key={item.value}>
-                  {item.label}
+                <span
+                  className="searchModalSelectedPill"
+                  key={item[itemKey] || item.value}
+                >
+                  {item[itemLabel] || item.label}
                   {onRemove && (
                     <button
                       className="searchModalSelectedRemove"
@@ -112,8 +113,13 @@ export default function SearchModal({
             <div className="searchModalNoResult">Loading...</div>
           ) : displayResults && displayResults.length > 0 ? (
             displayResults.map((item) => (
-              <div className="searchModalResultRow" key={item.foodId}>
-                <span className="searchModalResultLabel">{item.foodName}</span>
+              <div
+                className="searchModalResultRow"
+                key={item[itemKey] || item.value}
+              >
+                <span className="searchModalResultLabel">
+                  {item[itemLabel] || item.label}
+                </span>
                 <button
                   className="searchModalResultAdd"
                   onClick={() => onSelect(item)}

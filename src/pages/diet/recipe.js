@@ -26,7 +26,7 @@ export default function RecipePage() {
   const handleAllergySelect = (item) => {
     setShowAllergyModal(false);
     setSelectedAllergies((prev) =>
-      prev.find((f) => f.foodId === item.foodId) ? prev : [...prev, item]
+      prev.find((f) => f.allergyId === item.allergyId) ? prev : [...prev, item]
     );
   };
   const handleFridgeSelect = (item) => {
@@ -40,7 +40,7 @@ export default function RecipePage() {
   };
   const handleAllergyRemove = (item) => {
     setSelectedAllergies((prev) =>
-      prev.filter((f) => f.foodId !== item.foodId)
+      prev.filter((f) => f.allergyId !== item.allergyId)
     );
   };
   const handleFridgeRemove = (item) => {
@@ -136,8 +136,8 @@ export default function RecipePage() {
         <div className="filterRow">
           <span>알러지 :</span>
           {selectedAllergies.map((item) => (
-            <span className="filterPill" key={item.foodId}>
-              {item.foodName}
+            <span className="filterPill" key={item.allergyId}>
+              {item.allergyName}
               <button
                 className="filterPillRemove"
                 onClick={() => handleAllergyRemove(item)}
@@ -233,6 +233,8 @@ export default function RecipePage() {
           onClose={() => setSelectedRecipe(null)}
         />
       )}
+
+      {/* Search Modals */}
       <SearchModal
         open={showFoodModal}
         onClose={() => setShowFoodModal(false)}
@@ -240,7 +242,9 @@ export default function RecipePage() {
         onSelect={handleFoodSelect}
         selected={selectedFoods}
         onRemove={handleFoodRemove}
-        placeholder="Search  for foods"
+        placeholder="Search for foods"
+        itemKey="foodId"
+        itemLabel="foodName"
       />
       <SearchModal
         open={showAllergyModal}
@@ -250,6 +254,8 @@ export default function RecipePage() {
         selected={selectedAllergies}
         onRemove={handleAllergyRemove}
         placeholder="Search for allergies"
+        itemKey="allergyId"
+        itemLabel="allergyName"
       />
       <SearchModal
         open={showFridgeModal}
@@ -259,6 +265,8 @@ export default function RecipePage() {
         selected={selectedFridge}
         onRemove={handleFridgeRemove}
         placeholder="Search for fridge items"
+        itemKey="foodId"
+        itemLabel="foodName"
       />
     </div>
   );

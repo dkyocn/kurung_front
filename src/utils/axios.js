@@ -35,6 +35,23 @@ apiClient.interceptors.response.use(
   (error) => {
     // 요청이 실패했을 때 공통 처리
     console.error('Axios 응답 에러 : ', error);
+    
+    // 토큰 만료 처리
+    if (error.response?.status === 401) {
+      const tokenExpired = error.response.headers['token-expired'];
+      
+      if (tokenExpired === 'Both' || tokenExpired === 'RefreshToken') {
+        // 토큰이 만료되었으므로 로컬 스토리지에서 제거
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        
+        // 로그인 페이지로 리다이렉트 (현재 페이지가 로그인 페이지가 아닌 경우)
+        if (window.location.pathname !== '/login' && window.location.pathname !== '/') {
+          window.location.href = '/login';
+        }
+      }
+    }
+    
     return Promise.reject(error);
   }
 );

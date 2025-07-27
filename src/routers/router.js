@@ -11,6 +11,7 @@ import { Routes, Route } from 'react-router-dom';
 // import memberRoutes from './memberRoutes';
 
 import dietRouters from './dietRouters';
+import recipeRoutes from './recipeRoutes';
 import lifeLogRoutes from './lifeLogRoutes';
 import exerciseRoutes from './exerciseLogRoutes';
 import diagnosisRoutes from './diagnosisLogRoutes';
@@ -18,14 +19,17 @@ import healthReportRoutes from './healthReportRoutes';
 import loginRoutes from './loginRoutes';
 import signupRoutes from './signupRoutes';
 import passwordResetRoutes from './myPageRoutes';
+import chatbotRoutes from './chatbotRoutes';
 
 const AppRouter = () => {
   return (
     <Routes>
+      {chatbotRoutes}
       {exerciseRoutes}
       {lifeLogRoutes}
       {dietRouters}
       {diagnosisRoutes}
+      {recipeRoutes}
       {healthReportRoutes}
       {/* {boardRoutes} */}
       {loginRoutes}

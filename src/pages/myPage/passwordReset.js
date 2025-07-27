@@ -53,7 +53,8 @@ function PasswordReset() {
       setLoading(true);
       setMessage('');
       const response = await authApi.post('/api/v1/kurung/user/send-verification-code', {
-        email: formData.email
+        email: formData.email,
+        verificationType: "PASSWORD_RESET"  // ✅ 추가
       });
       setMessage('인증번호가 이메일로 발송되었습니다.');
       setIsEmailVerified(true);
@@ -132,7 +133,8 @@ function PasswordReset() {
       const response = await authApi.post('/api/v1/kurung/user/reset-password-by-email', {
         email: formData.email,
         verificationCode: formData.verificationCode,
-        newPassword: formData.newPassword
+        newPassword: formData.newPassword,
+        confirmPassword: formData.confirmPassword  // ✅ 추가
       });
       setMessage('비밀번호가 성공적으로 재설정되었습니다.');
       

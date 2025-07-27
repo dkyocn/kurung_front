@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from '../../utils/axios';
+import axios from 'axios';
 import '../../styles/login/loginPage.css';
 
 function LoginPage() {
@@ -19,12 +19,21 @@ function LoginPage() {
     console.log('로그인 페이지: 기존 토큰 제거됨');
   }, []);
 
+  // 로그인용 axios 인스턴스 (baseURL 직접 지정)
+  const loginApi = axios.create({
+    baseURL: 'http://localhost:8081',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    withCredentials: true,
+  });
+
   // === 로그인 요청 처리 ===
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     try {
-      const res = await axios.post('/api/v1/kurung/user/login', {
+      const res = await loginApi.post('/api/v1/kurung/user/login', {
         userId: email,
         userPwd: password
       });
@@ -52,6 +61,8 @@ function LoginPage() {
         errorMessage = '아이디와 비밀번호를 다시 확인해 주세요.';
       } else if (err.response?.status === 500) {
         errorMessage = '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+      } else if (err.code === 'ERR_NETWORK') {
+        errorMessage = '서버에 연결할 수 없습니다. 백엔드 서버가 실행 중인지 확인해주세요.';
       }
       
       setError(errorMessage);

@@ -3,7 +3,7 @@ import '../../styles/diet/recipe.css';
 import SearchModal from '../../components/common/SearchModal';
 import starIcon from '../../assets/icons/star.png';
 import starFilledIcon from '../../assets/icons/starFilled.png';
-import axios from 'axios';
+import axios from '../../utils/axios';
 
 export default function RecipePage() {
   const baseUrl = process.env.REACT_APP_API_BASE_URL;
@@ -97,29 +97,11 @@ export default function RecipePage() {
     try {
       if (!favoriteRecipes.includes(id)) {
         // 즐겨찾기 추가
-        await axios.post(
-          baseUrl + 'favorites/create',
-          { recipeId: id },
-          {
-            headers: {
-              Authorization:
-                'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNTAxMTc1fQ.eGqQT8W9GehLETGFwhYtUvdq304GEEVeMGRXoEeIEtmo7LtZNWonidm6ZiL1jW2XmunhBQ0fPmwbHnq3DB7PDA',
-              RefreshToken:
-                'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzU4Mzk3NX0.Zks4sE2Wex6rYay4tubdv4Qdxx-i17dRcLPRxlKXCh440FMeHsDrNQhzVZirtp3ZzyTZqCt5QMD4ZkGmMaGIqg',
-            },
-          }
-        );
+        await axios.post(baseUrl + 'favorites/create', { recipeId: id });
         setFavoriteRecipes((prev) => [...prev, id]);
       } else {
         // 즐겨찾기 해제
-        await axios.delete(baseUrl + `favorites/${id}`, {
-          headers: {
-            Authorization:
-              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNTAxMTc1fQ.eGqQT8W9GehLETGFwhYtUvdq304GEEVeMGRXoEeIEtmo7LtZNWonidm6ZiL1jW2XmunhBQ0fPmwbHnq3DB7PDA',
-            RefreshToken:
-              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzU4Mzk3NX0.Zks4sE2Wex6rYay4tubdv4Qdxx-i17dRcLPRxlKXCh440FMeHsDrNQhzVZirtp3ZzyTZqCt5QMD4ZkGmMaGIqg',
-          },
-        });
+        await axios.delete(baseUrl + `favorites/${id}`);
         setFavoriteRecipes((prev) => prev.filter((fid) => fid !== id));
       }
     } catch (e) {
@@ -290,14 +272,7 @@ function RecipeDetailModal({ recipe, onClose }) {
   useEffect(() => {
     setLoading(true);
     axios
-      .get(baseUrl + `diet/food/1`, {
-        headers: {
-          Authorization:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNTAxMTc1fQ.eGqQT8W9GehLETGFwhYtUvdq304GEEVeMGRXoEeIEtmo7LtZNWonidm6ZiL1jW2XmunhBQ0fPmwbHnq3DB7PDA',
-          RefreshToken:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzU4Mzk3NX0.Zks4sE2Wex6rYay4tubdv4Qdxx-i17dRcLPRxlKXCh440FMeHsDrNQhzVZirtp3ZzyTZqCt5QMD4ZkGmMaGIqg',
-        },
-      })
+      .get(baseUrl + `diet/food/1`)
       .then((res) => setData(res.data))
       .finally(() => setLoading(false));
   }, [recipe.foodId, baseUrl]);

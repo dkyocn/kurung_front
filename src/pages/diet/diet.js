@@ -8,7 +8,7 @@ import starIcon from '../../assets/icons/star.png';
 import starFilledIcon from '../../assets/icons/starFilled.png';
 import SaveButton from '../../components/buttons/SaveButton';
 import SaveModal from '../../components/common/Modal';
-import axios from 'axios';
+import axios from '../../utils/axios';
 import {
   PieChart,
   Pie,
@@ -121,12 +121,6 @@ const DietForm = () => {
   const fetchDietData = async (date, meal) => {
     try {
       const response = await axios.get(baseUrl + 'diet', {
-        headers: {
-          Authorization:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNTAxMTc1fQ.eGqQT8W9GehLETGFwhYtUvdq304GEEVeMGRXoEeIEtmo7LtZNWonidm6ZiL1jW2XmunhBQ0fPmwbHnq3DB7PDA',
-          RefreshToken:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzU4Mzk3NX0.Zks4sE2Wex6rYay4tubdv4Qdxx-i17dRcLPRxlKXCh440FMeHsDrNQhzVZirtp3ZzyTZqCt5QMD4ZkGmMaGIqg',
-        },
         params: {
           currentDate: new Date(+date + timeZone).toISOString().split('.')[0],
           meal: meal,
@@ -139,12 +133,6 @@ const DietForm = () => {
         // 즐겨찾기 상태 불러오기
         try {
           const favoritesRes = await axios.get(baseUrl + 'favorites/list', {
-            headers: {
-              Authorization:
-                'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNTAxMTc1fQ.eGqQT8W9GehLETGFwhYtUvdq304GEEVeMGRXoEeIEtmo7LtZNWonidm6ZiL1jW2XmunhBQ0fPmwbHnq3DB7PDA',
-              RefreshToken:
-                'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzU4Mzk3NX0.Zks4sE2Wex6rYay4tubdv4Qdxx-i17dRcLPRxlKXCh440FMeHsDrNQhzVZirtp3ZzyTZqCt5QMD4ZkGmMaGIqg',
-            },
             params: {
               favoritesType: 'RECIPE',
             },
@@ -192,12 +180,6 @@ const DietForm = () => {
   const fetchTodayNutrition = async (date) => {
     try {
       const response = await axios.get(baseUrl + 'diet/today', {
-        headers: {
-          Authorization:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNTAxMTc1fQ.eGqQT8W9GehLETGFwhYtUvdq304GEEVeMGRXoEeIEtmo7LtZNWonidm6ZiL1jW2XmunhBQ0fPmwbHnq3DB7PDA',
-          RefreshToken:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzU4Mzk3NX0.Zks4sE2Wex6rYay4tubdv4Qdxx-i17dRcLPRxlKXCh440FMeHsDrNQhzVZirtp3ZzyTZqCt5QMD4ZkGmMaGIqg',
-        },
         params: {
           currentDate: new Date(+date + timeZone).toISOString().split('.')[0],
         },
@@ -216,12 +198,6 @@ const DietForm = () => {
   const addFoodApi = async (searchInput) => {
     try {
       const response = await axios.get(baseUrl + 'diet/food', {
-        headers: {
-          Authorization:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNTAxMTc1fQ.eGqQT8W9GehLETGFwhYtUvdq304GEEVeMGRXoEeIEtmo7LtZNWonidm6ZiL1jW2XmunhBQ0fPmwbHnq3DB7PDA',
-          RefreshToken:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzU4Mzk3NX0.Zks4sE2Wex6rYay4tubdv4Qdxx-i17dRcLPRxlKXCh440FMeHsDrNQhzVZirtp3ZzyTZqCt5QMD4ZkGmMaGIqg',
-        },
         params: {
           keyword: searchInput,
         },
@@ -241,14 +217,7 @@ const DietForm = () => {
 
   const updateFoodApi = async () => {
     try {
-      const response = await axios.post(baseUrl + 'diet/update', dietDTO, {
-        headers: {
-          Authorization:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNTAxMTc1fQ.eGqQT8W9GehLETGFwhYtUvdq304GEEVeMGRXoEeIEtmo7LtZNWonidm6ZiL1jW2XmunhBQ0fPmwbHnq3DB7PDA',
-          RefreshToken:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzU4Mzk3NX0.Zks4sE2Wex6rYay4tubdv4Qdxx-i17dRcLPRxlKXCh440FMeHsDrNQhzVZirtp3ZzyTZqCt5QMD4ZkGmMaGIqg',
-        },
-      });
+      const response = await axios.post(baseUrl + 'diet/update', dietDTO);
     } catch (error) {
       console.error('UPDATE Error:', error);
     }
@@ -303,20 +272,9 @@ const DietForm = () => {
     try {
       if (!food.isFavorite) {
         // 즐겨찾기 추가
-        const response = await axios.post(
-          baseUrl + 'favorites/create',
-          {
-            recipeId: food.foodId,
-          },
-          {
-            headers: {
-              Authorization:
-                'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNTAxMTc1fQ.eGqQT8W9GehLETGFwhYtUvdq304GEEVeMGRXoEeIEtmo7LtZNWonidm6ZiL1jW2XmunhBQ0fPmwbHnq3DB7PDA',
-              RefreshToken:
-                'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzU4Mzk3NX0.Zks4sE2Wex6rYay4tubdv4Qdxx-i17dRcLPRxlKXCh440FMeHsDrNQhzVZirtp3ZzyTZqCt5QMD4ZkGmMaGIqg',
-            },
-          }
-        );
+        const response = await axios.post(baseUrl + 'favorites/create', {
+          recipeId: food.foodId,
+        });
 
         // 응답에서 favoritesId를 받아서 업데이트
         const newFavoritesId = response.data?.favoritesId;
@@ -330,14 +288,7 @@ const DietForm = () => {
       } else {
         // 즐겨찾기 해제 - favoritesId 사용
         if (food.favoritesId) {
-          await axios.delete(baseUrl + `favorites/${food.favoritesId}`, {
-            headers: {
-              Authorization:
-                'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNTAxMTc1fQ.eGqQT8W9GehLETGFwhYtUvdq304GEEVeMGRXoEeIEtmo7LtZNWonidm6ZiL1jW2XmunhBQ0fPmwbHnq3DB7PDA',
-              RefreshToken:
-                'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzU4Mzk3NX0.Zks4sE2Wex6rYay4tubdv4Qdxx-i17dRcLPRxlKXCh440FMeHsDrNQhzVZirtp3ZzyTZqCt5QMD4ZkGmMaGIqg',
-            },
-          });
+          await axios.delete(baseUrl + `favorites/${food.favoritesId}`);
         }
 
         setFoods(

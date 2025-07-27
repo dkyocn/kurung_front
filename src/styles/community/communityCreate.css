@@ -1,0 +1,256 @@
+.communityCreateContainer {
+  min-height: 100vh;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+}
+
+.communityCreateContent {
+  max-width: 1250px;
+  width: 100%;
+  background: #fff;
+}
+
+.communityCreateTitle {
+  font-size: 32px;
+  font-weight: 700;
+  color: #222;
+  margin: 0 0 32px 0;
+  text-align: left;
+}
+
+.communityCreateForm {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.communityCreateSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.communityCreateLabel {
+  font-size: 16px;
+  font-weight: 500;
+  color: #222;
+  margin-bottom: 4px;
+}
+
+.communityCreateTitleInput {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  color: #333;
+  background: #fff;
+  background-color: #fff !important;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.communityCreateTitleInput:focus {
+  outline: none;
+  border-color: #88c71f;
+}
+
+.communityCreateTitleInput::placeholder {
+  color: #999;
+}
+
+.communityCreateEditor {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.communityCreateTextarea {
+  width: 100%;
+  min-height: 400px;
+  border: none;
+  outline: none;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+/* Summernote custom styling */
+.note-editor.note-frame {
+  border: none;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.note-editor.note-frame .note-editing-area {
+  background: #fff;
+}
+
+.note-editor.note-frame .note-status-output {
+  display: none;
+}
+
+.note-editor.note-frame .note-resizebar {
+  display: none;
+}
+
+.note-toolbar {
+  background: #f8f9fa;
+  border-bottom: 1px solid #ddd;
+  padding: 8px;
+}
+
+.note-btn {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 6px 10px;
+  margin: 2px;
+  transition: all 0.2s;
+}
+
+.note-btn:hover {
+  background: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.note-editable {
+  padding: 16px;
+  min-height: 300px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #333;
+}
+
+.note-editable:focus {
+  outline: none;
+}
+
+.communityCreateActions {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #eee;
+}
+
+.communityCreateCancelBtn {
+  padding: 12px 24px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #f8f9fa;
+  color: #666;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.communityCreateCancelBtn:hover:not(:disabled) {
+  background: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.communityCreateCancelBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.communityCreateSubmitBtn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  background: #88c71f;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.communityCreateSubmitBtn:hover:not(:disabled) {
+  background: #7ab318;
+}
+
+.communityCreateSubmitBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.communityCreateCategorySelect {
+  width: 200px;
+  padding: 12px 16px;
+  border: 1px solid #e0e3db;
+  border-radius: 8px;
+  font-size: 16px;
+  color: #333;
+  background-color: #fff;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+.communityCreateCategorySelect:focus {
+  outline: none;
+  border-color: #88c71f;
+  box-shadow: 0 0 0 2px rgba(136, 199, 31, 0.1);
+}
+
+.communityCreateCategorySelect:hover {
+  border-color: #88c71f;
+}
+
+/* Select options styling */
+.communityCreateCategorySelect option {
+  padding: 12px 16px;
+  font-size: 16px;
+  color: #333;
+  background-color: #fff;
+  border: none;
+}
+
+.communityCreateCategorySelect option:hover {
+  background-color: #f8f9fa;
+}
+
+.communityCreateCategorySelect option:checked {
+  background-color: #88c71f;
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .communityCreateContainer {
+    padding: 20px 16px;
+  }
+
+  .communityCreateTitle {
+    font-size: 24px;
+    margin-bottom: 24px;
+  }
+
+  .communityCreateForm {
+    gap: 20px;
+  }
+
+  .communityCreateActions {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .communityCreateCancelBtn,
+  .communityCreateSubmitBtn {
+    width: 100%;
+    padding: 14px 24px;
+  }
+}

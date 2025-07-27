@@ -20,6 +20,7 @@ import loginRoutes from './loginRoutes';
 import signupRoutes from './signupRoutes';
 import passwordResetRoutes from './myPageRoutes';
 import chatbotRoutes from './chatbotRoutes';
+import communityRoutes from './communityRoutes';
 
 const AppRouter = () => {
   return (
@@ -31,14 +32,14 @@ const AppRouter = () => {
       {diagnosisRoutes}
       {recipeRoutes}
       {healthReportRoutes}
-      {/* {boardRoutes} */}
+      {communityRoutes}
       {loginRoutes}
       {signupRoutes}
       {passwordResetRoutes}
       {/* {noticeRoutes} */}
       {/* {memberRoutes} */}
       {/* <Route path="/" element={<Home />} />
-      <Route path="/about" element={<About />} /> */} */}
+      <Route path="/about" element={<About />} /> */}
     </Routes>
   );
 };

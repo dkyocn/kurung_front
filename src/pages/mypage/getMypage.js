@@ -125,7 +125,7 @@ useEffect(() => {
     const numeric = (val) => parseFloat(val.toString().replace(/[^0-9.]/g, ''));
 
     const requestData = {
-      healthInfoId: bodyInfo.healthInfoId,
+      healthinfoId: bodyInfo.healthInfoId,
       height: numeric(bodyInfo.height),
       weight: numeric(bodyInfo.weight),
       bodyfatpercent: numeric(bodyInfo.fat),   // ← 소문자 snake_case
@@ -144,8 +144,8 @@ useEffect(() => {
       const formatted = {
         height: `${requestData.height}cm`,
         weight: `${requestData.weight}kg`,
-        fat: `${requestData.bodyFatPercent}%`,
-        muscle: `${requestData.muscleMass}kg`,
+        fat: `${requestData.bodyfatpercent}%`,
+        muscle: `${requestData.muscle_mass}kg`,
       };
       setBodyInfo(formatted);
       setEditable(false);

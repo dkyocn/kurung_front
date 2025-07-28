@@ -1,25 +1,31 @@
 import React, { useState, useEffect, useRef } from 'react';
-import '../../styles/login/loginSelect.css';
-import '../../styles/login/faceLogin.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import kakaologo from '../../images/login/kakaologo.png';
-import naverlogo from '../../images/login/naverlogo.png';
-import faceLogo from '../../images/login/FaceLogin.png';
+import '../../styles/login/loginPage.css';
+import './faceLogin.css'; // Face ID 스타일 추가
 
-function LoginSelect() {
-  const navigate = useNavigate();
-  
-  // === Face ID 관련 상태 ===
+function LoginPage() {
+
+  // === 상태 관리 및 네비게이션 ===
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const [isFaceLogin, setIsFaceLogin] = useState(false);
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
-  const [error, setError] = useState('');
+  const navigate = useNavigate();
   
   // === 카메라 관련 ref ===
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const streamRef = useRef(null);
+
+  // === 로그인 페이지 접속 시 만료된 토큰 제거 ===
+  useEffect(() => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    console.log('로그인 페이지: 기존 토큰 제거됨');
+  }, []);
 
   // === 카메라 정리 ===
   useEffect(() => {
@@ -30,9 +36,19 @@ function LoginSelect() {
     };
   }, []);
 
-  // Face ID 로그인용 axios 인스턴스
+  // 로그인용 axios 인스턴스 (baseURL 직접 지정)
+  const loginApi = axios.create({
+    baseURL: 'http://localhost:8081',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    withCredentials: true,
+  });
+
+  // Face ID 로그인용 axios 인스턴스 (수정됨)
   const faceLoginApi = axios.create({
     baseURL: 'http://localhost:8000', // FastAPI 서버
+    // headers 제거 (FormData는 자동으로 설정됨)
   });
 
   // === 카메라 시작 ===
@@ -172,8 +188,8 @@ function LoginSelect() {
         }
 
         const formData = new FormData();
-        formData.append('username', 'default_user');
-        formData.append('password', 'default_password');
+        formData.append('username', email || 'default_user');
+        formData.append('password', password || 'default_password');
         formData.append('face_image', blob, 'face.jpg');
 
         try {
@@ -207,13 +223,45 @@ function LoginSelect() {
     }
   };
 
-  // === Face ID 로그인 핸들러 ===
-  const handleFaceLogin = () => {
-    setIsFaceLogin(true);
-    // 약간의 지연 후 카메라 시작
-    setTimeout(() => {
-      startCamera();
-    }, 500);
+  // === 기존 로그인 요청 처리 ===
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    try {
+      const res = await loginApi.post('/api/v1/kurung/user/login', {
+        userId: email,
+        userPwd: password
+      });
+      localStorage.setItem('accessToken', res.data.accessToken);
+      localStorage.setItem('refreshToken', res.data.refreshToken);
+      navigate('/main'); // 성공 시 이동할 경로
+    } catch (err) {
+      console.error('로그인 오류:', err);
+      
+      // 더 구체적인 오류 메시지 처리
+      let errorMessage = '로그인에 실패했습니다.';
+      
+      if (err.response?.data?.error) {
+        const serverError = err.response.data.error;
+        if (serverError.includes('password cannot be null')) {
+          errorMessage = '비밀번호가 설정되지 않았습니다. 비밀번호 재설정을 다시 시도해주세요.';
+        } else if (serverError.includes('Bad credentials')) {
+          errorMessage = '아이디와 비밀번호를 다시 확인해 주세요.';
+        } else if (serverError.includes('사용자를 찾을 수 없습니다')) {
+          errorMessage = '존재하지 않는 사용자입니다.';
+        } else {
+          errorMessage = serverError;
+        }
+      } else if (err.response?.status === 401) {
+        errorMessage = '아이디와 비밀번호를 다시 확인해 주세요.';
+      } else if (err.response?.status === 500) {
+        errorMessage = '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+      } else if (err.code === 'ERR_NETWORK') {
+        errorMessage = '서버에 연결할 수 없습니다. 백엔드 서버가 실행 중인지 확인해주세요.';
+      }
+      
+      setError(errorMessage);
+    }
   };
 
   return (
@@ -272,21 +320,35 @@ function LoginSelect() {
               </div>
             </div>
           ) : (
-            /* === 기존 로그인 버튼들 (디자인 유지) === */
-            <div className="login-buttons">
-              <button className="login-btn kakao">
-                <img src={kakaologo} alt="Kakao" className="login-icon" />
+            /* === 기존 로그인 폼 === */
+            <form className="login-form" onSubmit={handleSubmit}>
+              <input
+                className="login-input"
+                type="text"
+                placeholder="Email"
+                autoComplete="username"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+              />
+              <input
+                className="login-input"
+                type="password"
+                placeholder="Password"
+                autoComplete="current-password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+              />
+              <button className="login-btn-submit" type="submit">Log In</button>
+              
+              {/* === Face ID 로그인 버튼 === */}
+              <button 
+                type="button"
+                className="face-login-toggle-btn"
+                onClick={() => setIsFaceLogin(true)}
+              >
+                Face ID로 로그인
               </button>
-              <button className="login-btn naver">
-                <img src={naverlogo} alt="Naver" className="login-icon" />
-              </button>
-              <button className="login-btn school" onClick={handleFaceLogin}>
-                <img src={faceLogo} alt="Face Login" className="login-icon" />
-              </button>
-              <Link to="/loginPage" className="login-btn mail">
-                <span className="btn-text">Mail</span>
-              </Link>
-            </div>
+            </form>
           )}
           
           {/* === 에러 메시지 표시 === */}
@@ -306,11 +368,11 @@ function LoginSelect() {
             </button>
           )}
           
-          <Link to="/signupPage" className="login-bottom-text">이메일로 회원가입</Link>
+          <Link to="/passwordReset" className="login-bottom-text">비밀번호 재설정</Link>
         </div>
       </div>
     </div>
   );
 }
 
-export default LoginSelect; 
+export default LoginPage; 

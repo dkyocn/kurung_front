@@ -17,6 +17,7 @@ const QuestionCard = ({
   category,
   disabled = false,
   onAnswer,
+  onTextChange,
   answer,
 }) => {
   const { questionCode, questionText, isMultiple, options = [] } = question;
@@ -37,6 +38,15 @@ const QuestionCard = ({
     }
 
     onAnswer && onAnswer(category, questionCode, newSelected);
+
+    // 선택 해제 시 텍스트 제거
+    if (!checked && onTextChange) {
+      onTextChange(category, questionCode, stringValue, '');
+    }
+  };
+
+  const handleTextChange = (optId, value) => {
+    onTextChange && onTextChange(category, questionCode, String(optId), value);
   };
 
   return (
@@ -49,8 +59,10 @@ const QuestionCard = ({
         {options.map((opt, optIndex) => {
           const optValue = String(opt.optionId);
           const isChecked = isMultiple
-            ? Array.isArray(answer) && answer.includes(optValue)
-            : answer === optValue;
+            ? Array.isArray(answer?.selected) &&
+              answer.selected.includes(optValue)
+            : answer?.selected === optValue;
+          const textAnswer = answer?.textAnswers?.[optValue] || '';
 
           return (
             <label key={opt.optionId} className="option-label custom-option">
@@ -76,6 +88,10 @@ const QuestionCard = ({
                       placeholder="내용을 입력해 주세요"
                       className="inline-textbox"
                       disabled={!isChecked || disabled}
+                      value={textAnswer}
+                      onChange={(e) =>
+                        handleTextChange(opt.optionId, e.target.value)
+                      }
                     />
                   </>
                 )}
@@ -125,7 +141,14 @@ const HealthQuestion = () => {
   // API 요청 : 질문 목록 불러오기
   useEffect(() => {
     axios
-      .get('/api/v1/kurung/diagnosis/questions')
+      .get('/api/v1/kurung/diagnosis/questions', {
+        headers: {
+          Authorization:
+            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNTE3ODgwfQ.fqW3EodeRL9zYj4A2KdQaLDIHrt5Souu5K3e9OBqbOjyXCPlj_pxe91Fa_yRkCIgPvePpOND3iX9RFy_B1Zj1w',
+          RefreshToken:
+            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzYwMDY4MH0.u-I6qQ1qbq9pulAQ_4Jr4Tl0W9_XK7Yw9dMqoVtF_9CHkX86FdhA3tXZKpwYnobVBQ2V8i750yoT1SWq2wjXsw',
+        },
+      })
       .then((res) => {
         console.log('✅ 응답:', res.data);
         setQuestions(res.data);
@@ -144,14 +167,60 @@ const HealthQuestion = () => {
   // 하위에서 응답 변경 시 호출됨
   const handleAnswerChange = (category, questionCode, selected) => {
     const key = `${category}_${questionCode}`;
+    const question = questions.find(
+      (q) => q.category === category && q.questionCode === questionCode
+    );
+
+    const optionMap = {};
+    if (Array.isArray(selected)) {
+      selected.forEach((optId) => {
+        const option = question?.options.find(
+          (opt) => String(opt.optionId) === optId
+        );
+        if (option) optionMap[optId] = option;
+      });
+    } else {
+      const option = question?.options.find(
+        (opt) => String(opt.optionId) === selected
+      );
+      if (option) optionMap[selected] = option;
+    }
+
     setAnswers((prev) => ({
       ...prev,
-      [key]: { category, questionCode, selected },
+      [key]: {
+        category,
+        questionCode,
+        questionId: question?.questionId, // ✅ 필요한 경우 백엔드에 넘길 questionId도 여기서 같이 저장
+        selected,
+        optionMap,
+        textAnswers: prev[key]?.textAnswers || {},
+      },
     }));
   };
 
+  const handleTextChange = (category, questionCode, optionId, value) => {
+    const key = `${category}_${questionCode}`;
+    setAnswers((prev) => {
+      const existing = prev[key] || { textAnswers: {} };
+      return {
+        ...prev,
+        [key]: {
+          ...existing,
+          category,
+          questionCode,
+          selected: existing.selected,
+          textAnswers: {
+            ...existing.textAnswers,
+            [optionId]: value,
+          },
+        },
+      };
+    });
+  };
+
   // 제출 버튼 클릭 시 유효성 검사
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const unanswered = questions.filter((q) => {
       const key = `${q.category}_${q.questionCode}`;
       const ans = answers[key];
@@ -172,9 +241,33 @@ const HealthQuestion = () => {
       return;
     }
 
-    console.log('✅ 응답 완료:', answers);
-    // 다음 단계로 이동 or 저장 처리
-    navigate('/healthResult');
+    // ✅ 1. AnswerDTO 변환
+    const formattedAnswers = Object.values(answers).flatMap((ans) => {
+      const selected = Array.isArray(ans.selected)
+        ? ans.selected
+        : [ans.selected];
+
+      return selected.map((optId) => ({
+        questionId: ans.questionId,
+        option: ans.optionMap?.[optId],
+        textAnswer: ans.textAnswers?.[optId] || '',
+      }));
+    });
+
+    try {
+      await axios.post('/api/v1/kurung/diagnosis/answers', formattedAnswers, {
+        headers: {
+          Authorization:
+            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNTE3ODgwfQ.fqW3EodeRL9zYj4A2KdQaLDIHrt5Souu5K3e9OBqbOjyXCPlj_pxe91Fa_yRkCIgPvePpOND3iX9RFy_B1Zj1w',
+          RefreshToken:
+            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzYwMDY4MH0.u-I6qQ1qbq9pulAQ_4Jr4Tl0W9_XK7Yw9dMqoVtF_9CHkX86FdhA3tXZKpwYnobVBQ2V8i750yoT1SWq2wjXsw',
+        },
+      });
+      navigate('/healthResult');
+    } catch (err) {
+      console.error('❌ 응답 저장 실패:', err);
+      alert('응답 저장에 실패했습니다.');
+    }
   };
 
   return (
@@ -215,7 +308,8 @@ const HealthQuestion = () => {
                   category={category}
                   disabled={disabledCategories[category]}
                   onAnswer={handleAnswerChange}
-                  answer={answers[`${category}_${q.questionCode}`]?.selected}
+                  onTextChange={handleTextChange}
+                  answer={answers[`${category}_${q.questionCode}`]}
                 />
               ))}
             </div>

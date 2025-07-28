@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import Modal from '../../components/common/Modal'; 
-import apiClient from '../../utils/axios';
+import axios from '../../utils/axios'; 
 
 const GetMypage = () => {
   const navigate = useNavigate();
@@ -28,43 +28,52 @@ useEffect(() => {
       const yyyy = today.getFullYear();
       const mm = String(today.getMonth() + 1).padStart(2, '0');
       const dd = String(today.getDate()).padStart(2, '0');
-      const targetDate = `${yyyy}-${mm}-${dd}T00:00:00`; // ← 여기만 사용
+      const currentDate = `${yyyy}-${mm}-${dd}T00:00:00`;
+      const accessToken = localStorage.getItem('accessToken');
+      const headers = {
+        Authorization: `Bearer ${accessToken}`,
+      };
 
-      console.log("요청 targetDate:", targetDate);
-      console.log('📤 요청 URL:', '/healthinfo/list');
-      console.log('📤 요청 params:', { targetDate });
-      console.log('📤 요청 headers:', {
-        });
-  
-      
 
-      const response = await apiClient.get('http://localhost:8081/api/v1/kurung/healthinfo/list?targetDate=2025-06-14T00:00:00', {
-        params: {targetDate },
-        headers: {
-          Authorization:
-            "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNTE2NzI0fQ.PSMtzpeniZda2Q5BpB9liHNYQMmqWGyaUU7mQjx51VktOAI5l5ugjYHW2boozwoj-mc58f-dq31rv-l1Pzwn7g",
-          RefreshToken:
-            "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzU5OTUyNH0.svNXSTjLC1aJLAo9jsVHcPMKLG-QuyTKjnnL9UrfAFSHb4EHPpZcQ38CG0o6pei4vSQQdLHj_99_5zp1pFyVEg"
+      console.log("📤 요청 currentDate:", currentDate);
+      console.log("📤 요청 headers:", headers);
+
+      const response = await axios.get(
+        'http://localhost:8081/api/v1/kurung/healthinfo/list?currentDate=2025-07-28T00:00:00',
+        {
+          params: { currentDate },
+          headers,
+          validateStatus: function (status) {
+            return status >= 200 && status < 500; // 4xx도 catch로 안가게
+          }
         }
-      });
+      );
 
-      if (Array.isArray(response.data) && response.data.length > 0) {
-        const latest = response.data[0]; // 가장 최근 값 1개만 가져온다고 가정
-        setBodyInfo({
-          height: latest.height || '',
-          weight: latest.weight || '',
-          fat: latest.bodyFat || '',
-          muscle: latest.muscleMass || '',
-        });
-      } 
+      if (response.status === 204 || !response.data || response.data.length === 0) {
+        console.warn("📭 건강정보가 없습니다.");
+        return;
+      }
+
+      const result = response?.data?.result || response?.data || {}; 
+      setBodyInfo({
+        healthInfoId: result.healthinfoId, 
+        height: result.height ? result.height + 'cm' : '',
+        weight: result.weight ? result.weight + 'kg' : '',
+        fat: result.bodyfatpercent != null ? result.bodyfatpercent + '%' : '',
+        muscle: result.musclemass != null ? result.musclemass + 'kg' : '',
+      });
     } catch (err) {
       alert("건강정보 목록을 불러오는데 실패했습니다.");
-      console.error('🔴 서버 응답 오류:', err.response?.status, err.response?.data);
+      console.error('🔴 서버 응답 오류:', err.response?.status, err.response?.data || err.message);
     }
   };
 
   fetchHealthInfo();
 }, []);
+
+
+
+
 
   const calculateBMI = () => {
     const heightMeter = parseFloat(bodyInfo.height) / 100;
@@ -101,22 +110,55 @@ useEffect(() => {
     setBodyInfo((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
-  const formatUnit = (value, unit) => {
-    const numeric = value.replace(/[^0-9.]/g, '');
-    return numeric ? numeric + unit : '';
-  };
 
-  const formatted = {
-    height: formatUnit(bodyInfo.height, 'cm'),
-    weight: formatUnit(bodyInfo.weight, 'kg'),
-    fat: formatUnit(bodyInfo.fat, '%'),
-    muscle: formatUnit(bodyInfo.muscle, 'kg'),
-  };
 
-  setBodyInfo(formatted);
-  setEditable(false);
+  const handleSave = async () => {
+  try {
+    
+    const userUuid = localStorage.getItem('userUuid');
+    const token = localStorage.getItem('accessToken');
+    const now = new Date();
+    const isoDateTime = now.toISOString().split('.')[0]; // "2025-07-28T00:00:00"
+
+   
+
+    const numeric = (val) => parseFloat(val.toString().replace(/[^0-9.]/g, ''));
+
+    const requestData = {
+      healthInfoId: bodyInfo.healthInfoId,
+      height: numeric(bodyInfo.height),
+      weight: numeric(bodyInfo.weight),
+      bodyfatpercent: numeric(bodyInfo.fat),   // ← 소문자 snake_case
+      muscle_mass: numeric(bodyInfo.muscle), 
+      user: { userUuid }
+    };
+
+    const response = await axios.post('/healthinfo/update', requestData, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    if (response.status === 200) {
+      alert('신체 정보가 성공적으로 수정되었습니다!');
+      
+      // ✅ 성공 후 포맷 적용
+      const formatted = {
+        height: `${requestData.height}cm`,
+        weight: `${requestData.weight}kg`,
+        fat: `${requestData.bodyFatPercent}%`,
+        muscle: `${requestData.muscleMass}kg`,
+      };
+      setBodyInfo(formatted);
+      setEditable(false);
+    } else {
+      alert('수정에 실패했습니다. 상태 코드: ' + response.status);
+    }
+  } catch (err) {
+    console.error('❌ 수정 실패:', err);
+    alert('수정 중 오류가 발생했습니다.');
+  }
 };
+
+
 
 
 const favoritesData = {
@@ -217,6 +259,9 @@ const Modal = ({ children, onClose }) => {
           />
         </div>
       </section>
+
+
+      
 
       {/* ✅ 신체 정보 수정 가능 영역 */}
       <section className="body-info-section">

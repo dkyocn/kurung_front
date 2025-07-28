@@ -3,6 +3,44 @@ import { useNavigate, useParams } from 'react-router-dom';
 import '../../styles/exercise/createExerciseLog.css';
 import apiClient from '../../utils/axios';
 
+// accessToken에서 userUuid 추출 (JWT 전용)
+const getUserUuidFromToken = () => {
+  try {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) {
+      return null;
+    }
+
+    if (accessToken && accessToken.split('.').length === 3) {
+      const base64Url = accessToken.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+      const payload = JSON.parse(jsonPayload);
+      return payload.userUuid;
+    }
+  } catch (e) {
+    return null;
+  }
+  return null;
+};
+
+// 토큰 자동 검증 및 리다이렉트
+const checkAndRedirectIfNeeded = () => {
+  const accessToken = localStorage.getItem('accessToken');
+
+  if (!accessToken) {
+    alert('로그인이 필요합니다.');
+    window.location.href = '/loginpage';
+    return false;
+  }
+  return true;
+};
+
 // bodyLabels, feelingLabels, categoryMap 기존과 동일
 const bodyLabels = {
   1: '매우 나쁨',
@@ -57,18 +95,18 @@ function UpdateExerciseLog() {
   // 운동 목록 불러오기
   useEffect(() => {
     const fetchExercises = async () => {
+      if (!checkAndRedirectIfNeeded()) return;
+      
       try {
-        const response = await apiClient.get('/exercise/list', {
-          headers: {
-            Authorization:
-              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA2ODg5fQ.5ZYVum2-jopUE8h4jC784qTsKYMd8M3OSjCjDLkjCbKoCgBIr2VpAfiiqICMcTCfxQLr0B2bCb0oXwQgFN50Xw',
-            RefreshToken:
-              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4OTY4OX0.dxeRiuXKqvnt2QkalIKZX2cUpKg8-KwI9uCfrbYFGnQBtDsCqlxe5OpN9fA1OCnppv8o2rKq_tviWJSBQlH5nw',
-          },
-        });
+        const response = await apiClient.get('/exercise/list');
         setAllExercises(response.data);
       } catch (err) {
-        alert("운동 목록을 불러오는 데 실패했습니다.");
+        if (err.response?.status === 401) {
+          alert('로그인이 필요합니다.');
+          window.location.href = '/loginpage';
+        } else {
+          alert("운동 목록을 불러오는 데 실패했습니다.");
+        }
       }
     };
     fetchExercises();
@@ -77,15 +115,10 @@ function UpdateExerciseLog() {
   // 기존 운동 기록 불러오기 및 state 세팅
   useEffect(() => {
     const fetchLog = async () => {
+      if (!checkAndRedirectIfNeeded()) return;
+      
       try {
-        const res = await apiClient.get(`/exercise/log/select/${id}`, {
-          headers: {
-            Authorization:
-              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA2ODg5fQ.5ZYVum2-jopUE8h4jC784qTsKYMd8M3OSjCjDLkjCbKoCgBIr2VpAfiiqICMcTCfxQLr0B2bCb0oXwQgFN50Xw',
-            RefreshToken:
-              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4OTY4OX0.dxeRiuXKqvnt2QkalIKZX2cUpKg8-KwI9uCfrbYFGnQBtDsCqlxe5OpN9fA1OCnppv8o2rKq_tviWJSBQlH5nw',
-          },
-        });
+        const res = await apiClient.get(`/exercise/log/select/${id}`);
         const data = res.data;
         setForm({
           exerciseDate: data.exerciseDate?.split('T')[0] || "",
@@ -109,24 +142,43 @@ function UpdateExerciseLog() {
           setPart(reverseCategoryMap[data.exercise.exerciseCategory] || "upper");
         }
       } catch (e) {
-        alert('기존 기록 불러오기 실패');
+        if (e.response?.status === 401) {
+          alert('로그인이 필요합니다.');
+          window.location.href = '/loginpage';
+        } else {
+          alert('기존 기록 불러오기 실패');
+        }
       }
     };
     fetchLog();
   }, [id]);
 
-  // 운동 부위 선택 변경 시 운동 이름/ID 세팅
+  // 운동 부위 선택 변경 시 운동 이름/ID 세팅 (초기 로딩 시에만)
   useEffect(() => {
     if (allExercises.length === 0) return;
     const availableExercises = allExercises.filter(ex => ex.exerciseCategory === categoryMap[part]);
-    if (availableExercises.length > 0) {
+    if (availableExercises.length > 0 && !exerciseId) {
       setExercise(availableExercises[0].exerciseName);
       setExerciseId(availableExercises[0].exerciseId);
-    } else {
+    } else if (availableExercises.length === 0) {
       setExercise('');
       setExerciseId(null);
     }
-  }, [part, allExercises]);
+  }, [part, allExercises, exerciseId]);
+
+  // 운동 종목 변경 시 해당 종목의 운동 목록에서 현재 선택된 운동이 있는지 확인
+  useEffect(() => {
+    if (allExercises.length === 0 || !exerciseId) return;
+    
+    const availableExercises = allExercises.filter(ex => ex.exerciseCategory === categoryMap[part]);
+    const currentExercise = availableExercises.find(ex => ex.exerciseId === exerciseId);
+    
+    // 현재 선택된 운동이 새로운 종목에 없으면 첫 번째 운동으로 설정
+    if (!currentExercise && availableExercises.length > 0) {
+      setExercise(availableExercises[0].exerciseName);
+      setExerciseId(availableExercises[0].exerciseId);
+    }
+  }, [part, allExercises, exerciseId]);
 
   // 세트 추가/삭제/변경
   const handleAddSet = () => {
@@ -170,10 +222,19 @@ function UpdateExerciseLog() {
       alert('필수 입력값을 모두 입력하세요!');
       return;
     }
+
+    if (!checkAndRedirectIfNeeded()) return;
+
+    const userUuid = getUserUuidFromToken();
+    if (!userUuid) {
+      alert('로그인 정보가 유효하지 않습니다. 다시 로그인해주세요.');
+      return;
+    }
+
     const localDateTimeString = form.exerciseDate ? `${form.exerciseDate}T00:00:00` : null;
     const updateLog = {
       exerciseLogsId: id, 
-      user: { userUuid: "2025061401" }, // 실제 로그인 사용자 UUID로 대체
+      user: { userUuid: userUuid },
       exercise: { exerciseId: exerciseId },
       exerciseDate: localDateTimeString,
       preCondition: bodyLabels[bodyCondition],
@@ -189,19 +250,23 @@ function UpdateExerciseLog() {
       memo: form.memo,
       setList: setList
     };
+    
+    // 디버깅: 전송할 데이터 확인
+    console.log('전송할 데이터:', updateLog);
+    console.log('선택된 운동 ID:', exerciseId);
+    console.log('선택된 운동 이름:', exercise);
+    console.log('선택된 운동 종목:', part);
     try {
-      await apiClient.post(`/exercise/log/update`, updateLog, {
-        headers: {
-          Authorization:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA2ODg5fQ.5ZYVum2-jopUE8h4jC784qTsKYMd8M3OSjCjDLkjCbKoCgBIr2VpAfiiqICMcTCfxQLr0B2bCb0oXwQgFN50Xw',
-          RefreshToken:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4OTY4OX0.dxeRiuXKqvnt2QkalIKZX2cUpKg8-KwI9uCfrbYFGnQBtDsCqlxe5OpN9fA1OCnppv8o2rKq_tviWJSBQlH5nw',
-        },
-      });
+      await apiClient.post(`/exercise/log/update`, updateLog);
       alert('수정 완료!');
       navigate(-1);
     } catch (err) {
-      alert('수정 실패!');
+      if (err.response?.status === 401) {
+        alert('로그인이 필요합니다.');
+        window.location.href = '/loginpage';
+      } else {
+        alert('수정 실패!');
+      }
     }
   };
 
@@ -250,7 +315,12 @@ function UpdateExerciseLog() {
               <select
                 id="exercise"
                 value={exerciseId || ''}
-                onChange={e => setExerciseId(Number(e.target.value))}
+                onChange={e => {
+                  const selectedId = Number(e.target.value);
+                  const selectedExercise = allExercises.find(ex => ex.exerciseId === selectedId);
+                  setExerciseId(selectedId);
+                  setExercise(selectedExercise ? selectedExercise.exerciseName : '');
+                }}
               >
                 {allExercises
                   .filter(ex => ex.exerciseCategory === categoryMap[part])

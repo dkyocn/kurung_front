@@ -1,7 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import '../../styles/exercise/createObjective.css';
-import axios from 'axios';
+import apiClient from '../../utils/axios';
 import { useNavigate, useParams } from 'react-router-dom';
+
+// accessToken에서 userUuid 추출 (JWT 전용)
+const getUserUuidFromToken = () => {
+  try {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) {
+      return null;
+    }
+
+    if (accessToken && accessToken.split('.').length === 3) {
+      const base64Url = accessToken.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+      const payload = JSON.parse(jsonPayload);
+      return payload.userUuid;
+    }
+  } catch (e) {
+    return null;
+  }
+  return null;
+};
+
+// 토큰 자동 검증 및 리다이렉트
+const checkAndRedirectIfNeeded = () => {
+  const accessToken = localStorage.getItem('accessToken');
+
+  if (!accessToken) {
+    alert('로그인이 필요합니다.');
+    window.location.href = '/loginpage';
+    return false;
+  }
+  return true;
+};
 
 // 월 옵션 생성 함수
 function getMonthOptions(startYear, startMonth, count) {
@@ -42,16 +80,11 @@ function UpdateObjective() {
   // 1. 기존 목표 데이터 불러오기
   useEffect(() => {
     async function fetchObjective() {
+      if (!checkAndRedirectIfNeeded()) return;
+      
       try {
         // 단일조회 API 경로(명세서 확인 필요, select/:id 구조)
-        const res = await axios.get(`/api/v1/kurung/exercise/objective/select/${id}`, {
-          headers: {
-            Authorization:
-              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA2ODg5fQ.5ZYVum2-jopUE8h4jC784qTsKYMd8M3OSjCjDLkjCbKoCgBIr2VpAfiiqICMcTCfxQLr0B2bCb0oXwQgFN50Xw',
-            RefreshToken:
-              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4OTY4OX0.dxeRiuXKqvnt2QkalIKZX2cUpKg8-KwI9uCfrbYFGnQBtDsCqlxe5OpN9fA1OCnppv8o2rKq_tviWJSBQlH5nw',
-          },
-        });
+        const res = await apiClient.get(`/exercise/objective/select/${id}`);
         const data = res.data;
 
         // 월 자동 매칭
@@ -68,8 +101,13 @@ function UpdateObjective() {
           memo: data.memo || '',
         });
       } catch (e) {
-        console.error('목표 불러오기 실패:', e);
-        alert('기존 목표 불러오기 실패');
+        if (e.response?.status === 401) {
+          alert('로그인이 필요합니다.');
+          window.location.href = '/loginpage';
+        } else {
+          console.error('목표 불러오기 실패:', e);
+          alert('기존 목표 불러오기 실패');
+        }
       }
     }
     fetchObjective();
@@ -104,10 +142,19 @@ function UpdateObjective() {
       alert('필수 입력값을 모두 입력하세요!');
       return;
     }
+
+    if (!checkAndRedirectIfNeeded()) return;
+
+    const userUuid = getUserUuidFromToken();
+    if (!userUuid) {
+      alert('로그인 정보가 유효하지 않습니다. 다시 로그인해주세요.');
+      return;
+    }
+
     const selectedMonth = monthOptions.find(m => m.label === form.month);
     const data = {
       objectiveId: id, // 필수! (백엔드에서 수정대상 식별용)
-      user: { userUuid: '2025061401' },
+      user: { userUuid: userUuid },
       objectiveTitle: form.title,
       objectiveCount: Number(form.count),
       objectiveDuration: Number(form.duration),
@@ -117,19 +164,17 @@ function UpdateObjective() {
       memo: form.memo,
     };
     try {
-      await axios.post('/api/v1/kurung/exercise/objective/updated', data, {
-        headers: {
-          Authorization:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA2ODg5fQ.5ZYVum2-jopUE8h4jC784qTsKYMd8M3OSjCjDLkjCbKoCgBIr2VpAfiiqICMcTCfxQLr0B2bCb0oXwQgFN50Xw',
-          RefreshToken:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4OTY4OX0.dxeRiuXKqvnt2QkalIKZX2cUpKg8-KwI9uCfrbYFGnQBtDsCqlxe5OpN9fA1OCnppv8o2rKq_tviWJSBQlH5nw',
-        },
-      });
+      await apiClient.post('/exercise/objective/updated', data);
       alert('목표가 수정되었습니다!');
       navigate(-1);
     } catch (err) {
-      console.error('수정 실패:', err.response?.data || err);
-      alert('수정 실패!');
+      if (err.response?.status === 401) {
+        alert('로그인이 필요합니다.');
+        window.location.href = '/loginpage';
+      } else {
+        console.error('수정 실패:', err.response?.data || err);
+        alert('수정 실패!');
+      }
     }
   };
 

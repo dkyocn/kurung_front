@@ -48,9 +48,9 @@ const LifeLogCalendar = () => {
       const response = await axios.get(baseUrl + 'lifeLogs/lifeLogList', {
         headers: {
           Authorization:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzMzQzODU0fQ.NBuxs9OqMYfJOfYHyPaU_0rQXKTLuvHcqeX4K1SPV5tiqcpIr5mz8qJKmWZM1PSq6JaQ6sKOzMk2Y4hi9xLM5g',
+            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDI4NTEyfQ.lzYit7hax1CtumOjoX41I3_EoenAKbgwnLYQv4o8WcS2xj9eM7TnXuSJOEXQ60VvBJQXWFKd9fVL1VF5oNgCvQ',
           RefreshToken:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQyNjY1NH0.DqHLn4onGUdomGtKoGI966DsBPghtYd4IDeMtprxvFU_zRCOJXxJENuFdEP3D-wW6Cigr6GYS1AphiW9C2i0yQ',
+            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzUxMTMxMn0.lo4fYGmfKFMTm9LlKfPLq15MmEOmVAIiHFhLz7jLd-pSPzKWXXrJgFDJeQSlpLoYVrKIMcRxjT1K-hHi-9C6Dg',
         },
         params: {
           date: dateParam,
@@ -91,9 +91,9 @@ const LifeLogCalendar = () => {
         const response = await axios.get(`${baseUrl}lifeLogs/${log.id}`, {
           headers: {
             Authorization:
-              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzMzQzODU0fQ.NBuxs9OqMYfJOfYHyPaU_0rQXKTLuvHcqeX4K1SPV5tiqcpIr5mz8qJKmWZM1PSq6JaQ6sKOzMk2Y4hi9xLM5g',
+              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDI4NTEyfQ.lzYit7hax1CtumOjoX41I3_EoenAKbgwnLYQv4o8WcS2xj9eM7TnXuSJOEXQ60VvBJQXWFKd9fVL1VF5oNgCvQ',
             RefreshToken:
-              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQyNjY1NH0.DqHLn4onGUdomGtKoGI966DsBPghtYd4IDeMtprxvFU_zRCOJXxJENuFdEP3D-wW6Cigr6GYS1AphiW9C2i0yQ',
+              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzUxMTMxMn0.lo4fYGmfKFMTm9LlKfPLq15MmEOmVAIiHFhLz7jLd-pSPzKWXXrJgFDJeQSlpLoYVrKIMcRxjT1K-hHi-9C6Dg',
           },
         });
         const data = response.data;
@@ -120,9 +120,9 @@ const LifeLogCalendar = () => {
         method: 'DELETE',
         headers: {
           Authorization:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzMzQzODU0fQ.NBuxs9OqMYfJOfYHyPaU_0rQXKTLuvHcqeX4K1SPV5tiqcpIr5mz8qJKmWZM1PSq6JaQ6sKOzMk2Y4hi9xLM5g',
+            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDI4NTEyfQ.lzYit7hax1CtumOjoX41I3_EoenAKbgwnLYQv4o8WcS2xj9eM7TnXuSJOEXQ60VvBJQXWFKd9fVL1VF5oNgCvQ',
           RefreshToken:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQyNjY1NH0.DqHLn4onGUdomGtKoGI966DsBPghtYd4IDeMtprxvFU_zRCOJXxJENuFdEP3D-wW6Cigr6GYS1AphiW9C2i0yQ',
+            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzUxMTMxMn0.lo4fYGmfKFMTm9LlKfPLq15MmEOmVAIiHFhLz7jLd-pSPzKWXXrJgFDJeQSlpLoYVrKIMcRxjT1K-hHi-9C6Dg',
         },
       });
       alert('삭제 성공');

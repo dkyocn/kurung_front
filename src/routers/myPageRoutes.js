@@ -6,6 +6,7 @@ import Withdrawal from '../pages/myPage/withdrawal';
 import MyInfoManagement from '../pages/myPage/myInfoManagement';
 
 const myPageRoutes = [
+   <Route path="/mypage" element={<GetMypage />} />,
   <Route path="/passwordReset" element={<PasswordReset />} />,
   <Route path="/withdrawal" element={<Withdrawal />} />,
   <Route path="/myInfoManagement" element={<MyInfoManagement />} />,

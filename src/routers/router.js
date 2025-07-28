@@ -18,8 +18,7 @@ import diagnosisRoutes from './diagnosisLogRoutes';
 import healthReportRoutes from './healthReportRoutes';
 import loginRoutes from './loginRoutes';
 import signupRoutes from './signupRoutes';
-import passwordResetRoutes from './myPageRoutes';
-import myPageRoutes from './myPageRoutes';
+import myPageRoutes from './mypageRoutes';
 import chatbotRoutes from './chatbotRoutes';
 
 const AppRouter = () => {
@@ -36,7 +35,6 @@ const AppRouter = () => {
       {/* {boardRoutes} */}
       {loginRoutes}
       {signupRoutes}
-      {passwordResetRoutes}
       {/* {noticeRoutes} */}
       {/* {memberRoutes} */}
       {/* <Route path="/" element={<Home />} />

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import apiClient from '../../utils/axios';
+import axios from 'axios'; // 즐겨찾기 API용 axios import
 import '../../styles/exercise/exerciseLogCheck.css';
 import { useNavigate } from 'react-router-dom';
 import Modal from '../../components/common/Modal'; // 공통 모달 import
@@ -13,6 +14,39 @@ function ExerciseLogCheck() {
     return d.toISOString().slice(0, 10);
   };
 
+  // API 기본 URL (diet.js와 동일하게)
+  const baseUrl = 'http://localhost:8081/api/v1/kurung/';
+
+  // accessToken에서 userUuid 추출 (JWT 전용)
+  const getUserUuidFromToken = () => {
+    try {
+      // localStorage에서 실제 로그인된 사용자의 토큰 가져오기
+      const accessToken = localStorage.getItem('accessToken');
+      if (!accessToken) {
+        console.error('accessToken이 localStorage에 없습니다.');
+        return null;
+      }
+
+      if (accessToken && accessToken.split('.').length === 3) {
+        // JWT payload 추출 (Base64 디코딩)
+        const base64Url = accessToken.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(
+          atob(base64)
+            .split('')
+            .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+            .join('')
+        );
+        const payload = JSON.parse(jsonPayload);
+        console.log('토큰에서 추출한 사용자 정보:', payload);
+        return payload.userUuid;
+      }
+    } catch (e) {
+      console.error('토큰에서 userUuid 추출 실패:', e);
+    }
+    return null;
+  };
+
   const [selectedDate, setSelectedDate] = useState(getToday());
   const [myRecords, setMyRecords] = useState([]);
   const [recommendedRecords, setRecommendedRecords] = useState([]);
@@ -22,7 +56,12 @@ function ExerciseLogCheck() {
 
   // 즐겨찾기 토글 함수
   const toggleFavorite = async (type, id, record) => {
-    const userUuid = '2025061401';
+    // 1. 로그인 사용자의 userUuid 동적 추출
+    const userUuid = getUserUuidFromToken();
+    if (!userUuid) {
+      alert('로그인 정보가 유효하지 않습니다. 다시 로그인해주세요.');
+      return;
+    }
     
     try {
       if (type === 'routine') {
@@ -34,12 +73,14 @@ function ExerciseLogCheck() {
           // 즐겨찾기 삭제 - 즐겨찾기 ID를 찾아서 삭제
           const favoriteRecord = recommendedRecords.find(r => r.routinesId === id);
           if (favoriteRecord && favoriteRecord.favoritesId) {
-            await axios.delete(`/api/v1/kurung/favorites/${favoriteRecord.favoritesId}`, {
+            // localStorage에서 토큰 가져오기
+            const accessToken = localStorage.getItem('accessToken');
+            const refreshToken = localStorage.getItem('refreshToken');
+            
+            await axios.delete(baseUrl + `favorites/${favoriteRecord.favoritesId}`, {
               headers: {
-                Authorization:
-                  'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA2ODg5fQ.5ZYVum2-jopUE8h4jC784qTsKYMd8M3OSjCjDLkjCbKoCgBIr2VpAfiiqICMcTCfxQLr0B2bCb0oXwQgFN50Xw',
-                RefreshToken:
-                  'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4OTY4OX0.dxeRiuXKqvnt2QkalIKZX2cUpKg8-KwI9uCfrbYFGnQBtDsCqlxe5OpN9fA1OCnppv8o2rKq_tviWJSBQlH5nw',
+                Authorization: accessToken,
+                RefreshToken: refreshToken,
               },
             });
           } else {
@@ -50,29 +91,46 @@ function ExerciseLogCheck() {
           // 즐겨찾기 추가
           const favoritesData = {
             userDTO: {
-              userUuid: userUuid
+              userUuid: userUuid // 동적으로 추출한 userUuid 사용
             },
             routinesId: id
           };
           
-          await axios.post('/api/v1/kurung/favorites/create', favoritesData, {
+          // localStorage에서 토큰 가져오기
+          const accessToken = localStorage.getItem('accessToken');
+          const refreshToken = localStorage.getItem('refreshToken');
+          
+          const response = await axios.post(baseUrl + 'favorites/create', favoritesData, {
             headers: {
-              Authorization:
-                'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA2ODg5fQ.5ZYVum2-jopUE8h4jC784qTsKYMd8M3OSjCjDLkjCbKoCgBIr2VpAfiiqICMcTCfxQLr0B2bCb0oXwQgFN50Xw',
-              RefreshToken:
-                'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4OTY4OX0.dxeRiuXKqvnt2QkalIKZX2cUpKg8-KwI9uCfrbYFGnQBtDsCqlxe5OpN9fA1OCnppv8o2rKq_tviWJSBQlH5nw',
+              Authorization: accessToken,
+              RefreshToken: refreshToken,
             },
           });
+          
+          // 응답에서 favoritesId를 받아서 업데이트
+          const newFavoritesId = response.data?.favoritesId;
+          console.log('즐겨찾기 추가 응답:', response.data);
+          
+          // UI 상태 업데이트 (favoritesId 포함)
+          setRecommendedRecords(prev => 
+            prev.map(record => 
+              record.routinesId === id 
+                ? { ...record, isFavorite: true, favoritesId: newFavoritesId }
+                : record
+            )
+          );
         }
         
-        // UI 상태 업데이트
-        setRecommendedRecords(prev => 
-          prev.map(record => 
-            record.routinesId === id 
-              ? { ...record, isFavorite: !record.isFavorite }
-              : record
-          )
-        );
+        // 즐겨찾기 삭제 시에는 UI 상태만 업데이트
+        if (isCurrentlyFavorite) {
+          setRecommendedRecords(prev => 
+            prev.map(record => 
+              record.routinesId === id 
+                ? { ...record, isFavorite: false, favoritesId: null }
+                : record
+            )
+          );
+        }
         
         console.log(`${isCurrentlyFavorite ? '즐겨찾기 삭제' : '즐겨찾기 추가'} 완료`);
       }
@@ -85,43 +143,36 @@ function ExerciseLogCheck() {
 
   // 데이터 불러오기
   useEffect(() => {
-    const userUuid = '2025061401'; // 하드코딩
+    // 1. 로그인 사용자의 userUuid 동적 추출
+    const userUuid = getUserUuidFromToken();
+    if (!userUuid) {
+      console.error('로그인 정보가 유효하지 않습니다.');
+      return;
+    }
 
     // 내가 입력한 운동 기록
-    axios.get(`/api/v1/kurung/exercise/summary/daily?date=${selectedDate}`, {
-      headers: {
-        Authorization:
-          'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA2ODg5fQ.5ZYVum2-jopUE8h4jC784qTsKYMd8M3OSjCjDLkjCbKoCgBIr2VpAfiiqICMcTCfxQLr0B2bCb0oXwQgFN50Xw',
-        RefreshToken:
-          'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4OTY4OX0.dxeRiuXKqvnt2QkalIKZX2cUpKg8-KwI9uCfrbYFGnQBtDsCqlxe5OpN9fA1OCnppv8o2rKq_tviWJSBQlH5nw',
-      },
-    })
+    apiClient.get(`/exercise/summary/daily?date=${selectedDate}`)
       .then(res => setMyRecords(res.data.exerciseList || []))
       .catch(() => setMyRecords([]));
 
     // 추천 운동 기록 (루틴)
-    axios.get(`/api/v1/kurung/exercise/routines/list?date=${selectedDate}`, {
-      headers: {
-        Authorization:
-          'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA2ODg5fQ.5ZYVum2-jopUE8h4jC784qTsKYMd8M3OSjCjDLkjCbKoCgBIr2VpAfiiqICMcTCfxQLr0B2bCb0oXwQgFN50Xw',
-        RefreshToken:
-          'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4OTY4OX0.dxeRiuXKqvnt2QkalIKZX2cUpKg8-KwI9uCfrbYFGnQBtDsCqlxe5OpN9fA1OCnppv8o2rKq_tviWJSBQlH5nw',
-      },
-    })
+    apiClient.get(`/exercise/routines/list?date=${selectedDate}`)
       .then(async (res) => {
         const routines = res.data || [];
         
         // 즐겨찾기 상태 불러오기
         try {
-          const favoritesRes = await axios.get('/api/v1/kurung/favorites/list', {
+          // localStorage에서 토큰 가져오기
+          const accessToken = localStorage.getItem('accessToken');
+          const refreshToken = localStorage.getItem('refreshToken');
+          
+          const favoritesRes = await axios.get(baseUrl + 'favorites/list', {
             headers: {
-              Authorization:
-                'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA2ODg5fQ.5ZYVum2-jopUE8h4jC784qTsKYMd8M3OSjCjDLkjCbKoCgBIr2VpAfiiqICMcTCfxQLr0B2bCb0oXwQgFN50Xw',
-              RefreshToken:
-                'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4OTY4OX0.dxeRiuXKqvnt2QkalIKZX2cUpKg8-KwI9uCfrbYFGnQBtDsCqlxe5OpN9fA1OCnppv8o2rKq_tviWJSBQlH5nw',
+              Authorization: accessToken,
+              RefreshToken: refreshToken,
             },
             params: {
-              userUuid: userUuid,
+              userUuid: userUuid, // 동적으로 추출한 userUuid 사용
               favoritesType: 'ROUTINES'
             }
           });
@@ -157,24 +208,10 @@ function ExerciseLogCheck() {
     if (!deleteTarget) return;
     try {
       if (deleteTarget.type === 'routine') {
-        await axios.delete(`/api/v1/kurung/exercise/routines/delete/${deleteTarget.id}`, {
-          headers: {
-            Authorization:
-              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA2ODg5fQ.5ZYVum2-jopUE8h4jC784qTsKYMd8M3OSjCjDLkjCbKoCgBIr2VpAfiiqICMcTCfxQLr0B2bCb0oXwQgFN50Xw',
-            RefreshToken:
-              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4OTY4OX0.dxeRiuXKqvnt2QkalIKZX2cUpKg8-KwI9uCfrbYFGnQBtDsCqlxe5OpN9fA1OCnppv8o2rKq_tviWJSBQlH5nw',
-          },
-        });
+        await apiClient.delete(`/exercise/routines/delete/${deleteTarget.id}`);
         setRecommendedRecords(prev => prev.filter(r => r.routinesId !== deleteTarget.id));
       } else if (deleteTarget.type === 'log') {
-        await axios.delete(`/api/v1/kurung/exercise/log/delete/${deleteTarget.id}`, {
-          headers: {
-            Authorization:
-              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA2ODg5fQ.5ZYVum2-jopUE8h4jC784qTsKYMd8M3OSjCjDLkjCbKoCgBIr2VpAfiiqICMcTCfxQLr0B2bCb0oXwQgFN50Xw',
-            RefreshToken:
-              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4OTY4OX0.dxeRiuXKqvnt2QkalIKZX2cUpKg8-KwI9uCfrbYFGnQBtDsCqlxe5OpN9fA1OCnppv8o2rKq_tviWJSBQlH5nw',
-          },
-        });
+        await apiClient.delete(`/exercise/log/delete/${deleteTarget.id}`);
         setMyRecords(prev => prev.filter(log => log.exerciseLogsId !== deleteTarget.id));
       }
       setShowModal(false);

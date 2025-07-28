@@ -216,6 +216,29 @@ function LoginSelect() {
     }, 500);
   };
 
+  // === 네이버 로그인 핸들러 ===
+  const handleNaverLogin = () => {
+    const clientId = '3Os7CSY9u41ugvx8VLkz'; // 수정된 Client ID
+    const redirectUri = 'http://localhost:3000/auth/naver/callback';
+    const state = 'STATE';
+    
+    const naverAuthUrl = `https://nid.naver.com/oauth2.0/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&state=${state}`;
+    
+    console.log('네이버 로그인 URL:', naverAuthUrl); // 디버깅용
+    window.location.href = naverAuthUrl;
+  };
+
+  // === 카카오 로그인 핸들러 ===
+  const handleKakaoLogin = () => {
+    const clientId = 'e0ccd9a1366d275242dc304128c7ef03';
+    const redirectUri = 'http://localhost:3000/auth/kakao/callback';
+    
+    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code`;
+    
+    console.log('카카오 로그인 URL:', kakaoAuthUrl); // 디버깅용
+    window.location.href = kakaoAuthUrl;
+  };
+
   return (
     <div className="page-outer">
       <div className="page-inner">
@@ -274,10 +297,10 @@ function LoginSelect() {
           ) : (
             /* === 기존 로그인 버튼들 (디자인 유지) === */
             <div className="login-buttons">
-              <button className="login-btn kakao">
+              <button className="login-btn kakao" onClick={handleKakaoLogin}>
                 <img src={kakaologo} alt="Kakao" className="login-icon" />
               </button>
-              <button className="login-btn naver">
+              <button className="login-btn naver" onClick={handleNaverLogin}>
                 <img src={naverlogo} alt="Naver" className="login-icon" />
               </button>
               <button className="login-btn school" onClick={handleFaceLogin}>
@@ -313,4 +336,4 @@ function LoginSelect() {
   );
 }
 
-export default LoginSelect; 
+export default LoginSelect;

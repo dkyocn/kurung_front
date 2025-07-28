@@ -1,19 +1,18 @@
 .exercise-style-body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-  background: #f8f9fa;
-  min-height: 100vh;
+  width: 1250px;
+  margin: 50px auto;
+  padding: 40px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
   color: #333;
 }
 
 .exercise-style-container {
-  background: white;
-  border-radius: 20px;
-  padding: 40px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-  margin-top: 20px;
+  background: transparent;
+  padding: 0;
+  margin: 0;
 }
 
 .exercise-style-title {
@@ -73,11 +72,11 @@
 }
 
 .exercise-style-result-box {
-  background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%);
+  background: #f8f9fa;
   border-radius: 15px;
   padding: 30px;
   margin-top: 30px;
-  border: 2px solid #81e6d9;
+  border: 1px solid #e2e8f0;
 }
 
 .exercise-style-result-title {
@@ -100,6 +99,7 @@
   color: #4a5568;
   line-height: 1.6;
   margin-bottom: 25px;
+  text-align: center;
 }
 
 .exercise-style-recommendations {
@@ -107,17 +107,20 @@
   border-radius: 10px;
   padding: 20px;
   margin-top: 20px;
+  border: 1px solid #e2e8f0;
 }
 
 .exercise-style-recommendations h4 {
   color: #2d3748;
   margin-bottom: 15px;
   font-size: 16px;
+  text-align: center;
 }
 
 .exercise-style-recommendations ul {
   list-style: none;
   padding: 0;
+  text-align: center;
 }
 
 .exercise-style-recommendations li {
@@ -125,6 +128,8 @@
   color: #4a5568;
   position: relative;
   padding-left: 20px;
+  display: inline-block;
+  margin: 0 10px;
 }
 
 .exercise-style-recommendations li:before {

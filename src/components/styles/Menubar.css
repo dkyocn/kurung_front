@@ -7,28 +7,47 @@
   font-family: 'Noto Sans KR', sans-serif;
   font-size: 15px; /* ✅ 폰트 크기 15px로 수정 */
   position: absolute;
+  padding: 0 18px;
 }
 
 .logo {
   font-size: 15px;
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 0;
 }
 
 .menu-section {
   padding: 0;
 }
 
+/* 라이프 로그 위 선 제거 */
+.menu-title-lifelog {
+  border-top: 0;
+  margin-top: 0;
+  padding-top: 6px;
+}
+
+/* 그 다음에 나오는 메뉴들: 선 유지되도록 명시 */
+.menu-section > .menu-title {
+  border-top: 1px solid #555;
+}
+
 .menu-title {
+  color: white;
   font-weight: bold;
   margin-top: 15px;
   cursor: pointer;
-  padding-top: 10px;
-  border-top: 1px solid #555;
-
-  display: flex;                 /* Flex 레이아웃 적용 */
+  padding-top: 12px;
+  border-top: none;
+  display: flex;
   justify-content: space-between; /* 좌우 양쪽 정렬 */
   align-items: center;
+  text-decoration: none;
+}
+
+.menubar-container {
+  width: 100%;
+  background-color: #222;
 }
 
 .title-text {
@@ -41,12 +60,22 @@
   margin-left: 10px;
 }
 
+.submenu-wrapper {
+  display: flex;
+  flex-direction: column; /* 세로 배치 */
+  gap: px; /* 메뉴 간 간격 */
+  margin-left: 12px;
+}
+
 .submenu {
-  margin: 6px 0 6px 10px;
-  padding-left: 10px;
+  margin: 2px 0;
+  padding: 4px 0 4px 16px; /* 좌측 들여쓰기만 조금 */
   cursor: pointer;
   color: #ccc;
-  font-size: 15px; /* ✅ submenu도 폰트 크기 맞춰줌 */
+  font-size: 15px;
+  display: block;
+  text-align: left; /* ✅ 왼쪽 정렬 확실하게 */
+  text-decoration: none;
 }
 
 .bini-icon {
@@ -60,5 +89,6 @@
 }
 
 .submenu:hover {
-  color: #88C71F;
+  color: #88c71f;
+  text-decoration: underline;
 }

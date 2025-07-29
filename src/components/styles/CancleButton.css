@@ -1,0 +1,33 @@
+/* CancleButton.css */
+
+.cancle-button-wrapper {
+  display: flex;
+  align-items: center;
+  font-family: 'Pretendard', sans-serif;
+  font-size: 14px;
+  color: #000;
+}
+
+/* 버튼 기본 스타일 */
+.cancle-button {
+  background-color: #f2f5f2;
+  color: #000; /* 글자색 검정색 */
+  border: none;
+  border-radius: 12px;
+  width: 84px;
+  height: 39px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* 클릭된 느낌 줄 수도 있음 */
+.cancle-button:active {
+  transform: scale(0.97);
+}
+
+/* 비활성화 상태 */
+.cancle-button:disabled {
+  background-color: #e0e0e0;
+  cursor: not-allowed;
+  opacity: 0.6;
+}

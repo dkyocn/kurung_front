@@ -7,13 +7,21 @@ import Header from './components/common/Header';
 import Footer from './components/common/Footer';
 import AppRouter from './routers/router';
 
+
 function App() {
   const [isChecked, setIsChecked] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // ✅ 햄버거 메뉴 상태
+
+  const toggleMenubar = () => {
+    setIsMenuOpen(prev => !prev);
+  };
 
   return (
     <Router>
-      <Header />
-      <Menubar />
+      <div className="App">
+        <Header toggleMenubar={toggleMenubar} />
+       {isMenuOpen && <Menubar />} 
+      </div>
       <AppRouter />
       <Footer />
     </Router>

@@ -1,0 +1,226 @@
+.exercise-recode-page * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.exercise-recode-page {
+    max-width: 1250px;
+    margin: 40px auto;
+    padding: 20px;
+    position: relative;
+    background-color: #F7F9FA;
+}
+
+.exercise-recode-page .tab-background {
+    height: 40px;
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 460px;
+    background-color: #88C71F;
+    border-radius: 20px;
+    z-index: 0;
+}
+
+.exercise-recode-page .tab-container {
+    display: flex;
+    margin-bottom: 30px;
+    position: relative;
+    height: 35px;
+    border-radius: 18px;
+    background-color: #88C71F;
+    max-width: 340px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 3px;
+    z-index: 1;
+}
+
+.exercise-recode-page .tab-slider {
+    position: absolute;
+    width: 50%;
+    height: calc(100% - 6px);
+    background-color: white;
+    border-radius: 15px;
+    transition: left 0.3s ease;
+    top: 3px;
+    box-shadow: none;
+}
+
+.exercise-recode-page .tab-slider.daily {
+    left: 0;
+}
+
+.exercise-recode-page .tab-slider.monthly {
+    left: 50%;
+}
+
+.exercise-recode-page .tab {
+    flex: 1;
+    border: none;
+    background: none;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    font-size: 14px;
+    font-weight: normal;
+    color: #FFFFFF;
+    transition: color 0.3s ease;
+}
+
+.exercise-recode-page .tab.active {
+    color: #000000;
+}
+
+.exercise-recode-page .content {
+    display: none;
+}
+
+.exercise-recode-page .content.active {
+    display: block;
+}
+
+.exercise-recode-page .monthly-summary {
+    margin-bottom: 30px;
+    background-color: #ffffff;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.exercise-recode-page .monthly-summary h2,
+.exercise-recode-page .daily-summary h2 {
+    font-size: 1.6em;
+    margin-bottom: 24px;
+    font-weight: 700;
+    color: #343A40;
+}
+
+.exercise-recode-page .stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 24px;
+    margin-bottom: 0;
+}
+
+.exercise-recode-page .stat-item {
+    text-align: center;
+}
+
+.exercise-recode-page .stat-item h3 {
+    font-size: 1em;
+    color: #868E96;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.exercise-recode-page .stat-item p {
+    font-size: 1.8em;
+    font-weight: 700;
+    color: #4DBA87;
+}
+
+.exercise-recode-page .message-box {
+    background-color: #E6FCF5;
+    padding: 20px;
+    border-radius: 16px;
+    margin-bottom: 30px;
+    border: 1px solid #C3FAE8;
+}
+
+.exercise-recode-page .message-box p {
+    color: #212529;
+    font-size: 1.05em;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.exercise-recode-page .daily-info {
+    background-color: #ffffff;
+    padding: 24px;
+    border-radius: 16px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.exercise-recode-page .daily-info p {
+    margin: 8px 0;
+    font-size: 1.1em;
+    color: #495057;
+}
+
+.exercise-recode-page .daily-info p > span {
+    font-weight: 700;
+    color: #212529;
+}
+
+.exercise-recode-page .exercise-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.exercise-recode-page .exercise-table th {
+    background-color: #4DBA87;
+    color: white;
+    padding: 16px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.1em;
+}
+
+.exercise-recode-page .exercise-table td {
+    padding: 16px;
+    text-align: center;
+    border-bottom: 1px solid #F1F3F5;
+    color: #495057;
+    font-size: 1.05em;
+}
+
+.exercise-recode-page .exercise-table tr:last-child td {
+    border-bottom: none;
+}
+
+.exercise-recode-page .chart-container {
+    margin-top: 20px;
+    background-color: #ffffff;
+    padding: 32px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.exercise-recode-page select {
+    padding: 10px 16px;
+    border: 1px solid #DEE2E6;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 1em;
+    background-color: #F8F9FA;
+}
+
+.exercise-recode-page .button {
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+.exercise-recode-page .button-default, .exercise-recode-page .button-edit {
+    background-color: #88C71F;
+    color: #FFFFFF;
+}
+.exercise-recode-page .button-cancel, .exercise-recode-page .button-list {
+    background-color: #EDEDED;
+    color: #000000;
+}
+.exercise-recode-page .button-delete {
+    background-color: #F45757;
+    color: #FFFFFF;
+} 

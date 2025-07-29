@@ -5,7 +5,6 @@ import './App.css';
 import Menubar from './components/common/Menubar';
 import Header from './components/common/Header';
 import Footer from './components/common/Footer';
-import Menubar from './components/common/Menubar';
 import AppRouter from './routers/router';
 
 

@@ -29,7 +29,7 @@ const AppRouter = () => {
     <Routes>
       {missionRoutes}
       {/* {lifeLogRoutes} */}
-      {boardRoutes}
+      {/* {boardRoutes}
       {noticeRoutes}
       {memberRoutes}
       <Route path="/" element={<Home />} />
@@ -44,7 +44,7 @@ const AppRouter = () => {
       {loginRoutes}
       {signupRoutes}
       {passwordResetRoutes}
-      {/* {noticeRoutes}
+      {/* {noticeRoutes} */}
       {/* {memberRoutes} */}
       {/* <Route path="/" element={<Home />} />
 

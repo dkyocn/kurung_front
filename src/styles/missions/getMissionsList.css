@@ -1,125 +1,177 @@
 .mission-container {
- position: absolute;
-  top: 90px; /* 상단 헤더 높이 고려 */
-  left: 450px; 
-  max-width: 920px;
-  margin: 0 auto;
-  padding: 40px 20px 0;
+  padding:40px 60px 60px 300px; 
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 수평 중앙 정렬 */
+  justify-content: flex-start; 
+  margin: 90px auto 0; /* 화면 가운데 정렬 */
+  max-width: 800px;
+  width: 100%;
+  min-height: 80vh;
   font-family: 'Noto Sans KR', sans-serif;
-  color: #000; /* 전체 글씨 검정색 */
+  color: #000;
   background-color: #fff;
   box-sizing: border-box;
-  
 }
 
 .mission-title {
-  font-size: 26px;
+  text-align: center;
+  font-size: 28px;
   font-weight: bold;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
+  padding: center; /* 기본 왼쪽 정렬 */
+  transition: padding-left 0.3s ease; 
+}
+
+
+.missions-content {
+  width: 100%;
+  max-width: 600px; /* ✅ 콘텐츠 폭 줄여서 가운데 배치 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.mission-title.with-sidebar {
+  padding-right: 600px; /* 메뉴바 열렸을 때 왼쪽 정렬 조정 */
 }
 
 .mission-list {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr; 
   flex-direction: column;
-  gap: 30px;
+  gap: 20px;
+  width: 100%;
 }
 
 .mission-card {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: center; /* 카드 내부도 중앙 */
   background-color: #f9f9f9;
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.08);
   min-height: 100px;
-}
-
-.mission-text {
-  flex: 1;
+  width: 100%;
+  text-align: left;
 }
 
 .mission-text h4 {
   font-size: 18px;
   font-weight: 700;
-  margin-bottom: 10px;
+  margin: 0 0 4px 0;
+  margin-bottom: 8px;
 }
 
 .mission-text p {
   font-size: 14px;
+  margin: 0;
   margin-bottom: 12px;
-  color: #000; /* 검정 */
+  color: #666;
 }
 
-.mission-btn {
-  padding: 8px 16px;
-  font-size: 14px;
-  background-color: #88c71f;
-  color: white;
+.mission-status-btn {
+  padding: 6px 14px;
   border: none;
-  border-radius: 8px;
+  border-radius: 20px;  
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 8px;
+  display: inline-block;
 }
 
-.mission-btn:hover {
-  background-color: #76b017;
+.mission-status-btn.pending {
+  background-color: #f4f6f4;
+  color: #333;
+}
+
+.mission-status-btn.in-progress {
+  background-color: #ffe45c;
+  color: #000;
+}
+
+
+.mission-status-btn.complete {
+  background-color: #7CC727;
+  color: #1c1c1c;
 }
 
 .bonus-section {
-  margin-top: 50px;
+  text-align: center;
+  margin-top: 30px;
+  padding-top: 20px;
   border-top: 1px solid #ddd;
-  padding-top: 30px;
+}
+
+.bonus-subtitle {
+  font-size: 14px;
+  color: #000;
+  margin-bottom: 5px;
+}
+
+.bonus-progress-text {
+  font-size: 13px;
+  color: #000;
+  margin-bottom: 10px;
+}
+
+.progress-bar {
+  width: 80%;
+  height: 8px;
+  background-color: #e5e5e5;
+  border-radius: 4px;
+  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: #222;
+  width: 0;
+  transition: width 0.4s ease-in-out;
+}
+
+.bonus-percentage {
+  font-weight: bold;
+  font-size: 14px;
+  margin-top: 5px;
 }
 
 .bonus-section h3 {
   font-size: 18px;
   font-weight: 700;
-  margin-bottom: 15px;
-}
-
-.bonus-section p {
-  font-size: 14px;
-  margin: 6px 0;
+  margin-bottom: 8px;
 }
 
 .progress-section {
   margin-top: 15px;
+  width: 100%;
 }
 
 .progress-bar {
-  width: 100%;
-  height: 10px;
+  width: 60%;
+  height: 12px;
   background-color: #eee;
   border-radius: 10px;
   overflow: hidden;
-  margin: 10px 0;
+  margin-top: 10px;
 }
 
 .progress-fill {
   height: 100%;
-  background-color: #000;
+  background-color: #7CC727;
   width: 0%;
   transition: width 0.3s ease;
 }
-
-.mission-icon {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-left: 20px;
-  min-width: 100px;
-  justify-content: flex-end;
-}
-
-.mission-icon img {
-  width: 60px;
-  height: 60px;
-  object-fit: contain;
-}
-
-.mission-icon span {
+.bonus-percentage {
+  font-weight: bold;
   font-size: 14px;
-  font-weight: 500;
-  color: #000;
+  margin-top: 5px;
 }
 

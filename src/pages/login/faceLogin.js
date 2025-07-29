@@ -134,22 +134,6 @@ function LoginPage() {
           
           let errorMessage = 'Face ID 로그인에 실패했습니다.';
           
-          if (err.response?.data?.detail) {
-            const serverError = err.response.data.detail;
-            if (serverError.includes('얼굴을 찾을 수 없습니다')) {
-              errorMessage = '얼굴이 감지되지 않았습니다. 카메라를 정면으로 바라보세요.';
-            } else if (serverError.includes('등록되지 않은 얼굴입니다')) {
-              errorMessage = '등록되지 않은 얼굴입니다. 먼저 Face ID를 등록해주세요.';
-            } else {
-              errorMessage = serverError;
-            }
-          } else if (err.response?.status === 401) {
-            errorMessage = '등록되지 않은 얼굴입니다. 먼저 Face ID를 등록해주세요.';
-          } else if (err.response?.status === 500) {
-            errorMessage = '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
-          } else if (err.code === 'ERR_NETWORK') {
-            errorMessage = 'Face ID 서버에 연결할 수 없습니다. 서버가 실행 중인지 확인해주세요.';
-          }
           
           setError(errorMessage);
         }
@@ -241,24 +225,6 @@ function LoginPage() {
       // 더 구체적인 오류 메시지 처리
       let errorMessage = '로그인에 실패했습니다.';
       
-      if (err.response?.data?.error) {
-        const serverError = err.response.data.error;
-        if (serverError.includes('password cannot be null')) {
-          errorMessage = '비밀번호가 설정되지 않았습니다. 비밀번호 재설정을 다시 시도해주세요.';
-        } else if (serverError.includes('Bad credentials')) {
-          errorMessage = '아이디와 비밀번호를 다시 확인해 주세요.';
-        } else if (serverError.includes('사용자를 찾을 수 없습니다')) {
-          errorMessage = '존재하지 않는 사용자입니다.';
-        } else {
-          errorMessage = serverError;
-        }
-      } else if (err.response?.status === 401) {
-        errorMessage = '아이디와 비밀번호를 다시 확인해 주세요.';
-      } else if (err.response?.status === 500) {
-        errorMessage = '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
-      } else if (err.code === 'ERR_NETWORK') {
-        errorMessage = '서버에 연결할 수 없습니다. 백엔드 서버가 실행 중인지 확인해주세요.';
-      }
       
       setError(errorMessage);
     }

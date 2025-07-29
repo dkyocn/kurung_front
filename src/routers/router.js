@@ -9,7 +9,8 @@ import { Routes, Route } from 'react-router-dom';
 // import boardRoutes from './boardRoutes';
 // import noticeRoutes from './noticeRoutes';
 // import memberRoutes from './memberRoutes';
-
+// import lifeLogRoutes from './lifeLogRoutes';
+import missionRoutes from './missionRoutes';
 import dietRouters from './dietRouters';
 import recipeRoutes from './recipeRoutes';
 import lifeLogRoutes from './lifeLogRoutes';
@@ -22,9 +23,16 @@ import passwordResetRoutes from './myPageRoutes';
 import chatbotRoutes from './chatbotRoutes';
 import communityRoutes from './communityRoutes';
 
+
 const AppRouter = () => {
   return (
     <Routes>
+      {missionRoutes}
+      {/* {lifeLogRoutes} */}
+      {/* {boardRoutes}
+      {noticeRoutes}
+      {memberRoutes}
+      <Route path="/" element={<Home />} />
       {chatbotRoutes}
       {exerciseRoutes}
       {lifeLogRoutes}
@@ -39,6 +47,7 @@ const AppRouter = () => {
       {/* {noticeRoutes} */}
       {/* {memberRoutes} */}
       {/* <Route path="/" element={<Home />} />
+
       <Route path="/about" element={<About />} /> */}
     </Routes>
   );

@@ -18,6 +18,9 @@ function App() {
 
   return (
     <Router>
+      <Header />
+      <Menubar/>
+
       <div className="App">
         <Header toggleMenubar={toggleMenubar} />
        {isMenuOpen && <Menubar />} 
@@ -26,6 +29,8 @@ function App() {
       <Footer />
     </Router>
   );
+
+
 }
 
 // function App() {

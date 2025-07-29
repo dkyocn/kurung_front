@@ -1,26 +1,31 @@
 import React, { useState, useEffect, useRef } from 'react';
-import '../../styles/login/loginSelect.css';
-import '../../styles/login/faceLogin.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import kakaologo from '../../images/login/kakaologo.png';
-import naverlogo from '../../images/login/naverlogo.png';
-import faceLogo from '../../images/login/FaceLogin.png';
+import '../../styles/login/loginPage.css';
+import './faceLogin.css'; // Face ID 스타일 추가
 
-function LoginSelect() {
-  const navigate = useNavigate();
-  
-  // === Face ID 관련 상태 ===
+function LoginPage() {
+
+  // === 상태 관리 및 네비게이션 ===
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const [isFaceLogin, setIsFaceLogin] = useState(false);
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
-  const [error, setError] = useState('');
-  const [email, setEmail] = useState(''); // 이메일 상태 추가
+  const navigate = useNavigate();
   
   // === 카메라 관련 ref ===
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const streamRef = useRef(null);
+
+  // === 로그인 페이지 접속 시 만료된 토큰 제거 ===
+  useEffect(() => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    console.log('로그인 페이지: 기존 토큰 제거됨');
+  }, []);
 
   // === 카메라 정리 ===
   useEffect(() => {
@@ -31,9 +36,19 @@ function LoginSelect() {
     };
   }, []);
 
-  // Face ID 로그인용 axios 인스턴스
+  // 로그인용 axios 인스턴스 (baseURL 직접 지정)
+  const loginApi = axios.create({
+    baseURL: 'http://localhost:8081',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    withCredentials: true,
+  });
+
+  // Face ID 로그인용 axios 인스턴스 (수정됨)
   const faceLoginApi = axios.create({
     baseURL: 'http://localhost:8000', // FastAPI 서버
+    // headers 제거 (FormData는 자동으로 설정됨)
   });
 
   // === 카메라 시작 ===
@@ -69,23 +84,11 @@ function LoginSelect() {
     }
     setIsCameraOn(false);
     setIsFaceLogin(false);
-    setEmail(''); // 이메일 초기화
-  };
-
-  // === 이메일 입력 핸들러 ===
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
   };
 
   // === 얼굴 촬영 및 로그인 ===
   const captureAndLogin = async () => {
     if (!videoRef.current || !canvasRef.current) return;
-
-    // userId 유효성 검사
-    if (!email) {
-      setError('아이디를 입력해주세요.');
-      return;
-    }
 
     setIsCapturing(true);
     setError('');
@@ -112,7 +115,6 @@ function LoginSelect() {
 
         // FormData 생성
         const formData = new FormData();
-        formData.append('user_id', email); // userId 추가
         formData.append('face_image', blob, 'face.jpg');
 
         // Face ID 로그인 API 호출
@@ -123,9 +125,6 @@ function LoginSelect() {
           localStorage.setItem('accessToken', response.data.access_token);
           localStorage.setItem('refreshToken', response.data.access_token); 
           
-          // 로그인 상태 변화 이벤트 발생
-          window.dispatchEvent(new Event('loginStatusChanged'));
-          
           console.log('Face ID 로그인 성공:', response.data);
           stopCamera();
           navigate('/main');
@@ -134,6 +133,7 @@ function LoginSelect() {
           console.error('Face ID 로그인 오류:', err);
           
           let errorMessage = 'Face ID 로그인에 실패했습니다.';
+          
           
           setError(errorMessage);
         }
@@ -150,14 +150,7 @@ function LoginSelect() {
 
   // === Face ID 등록 ===
   const registerFaceId = async () => {
-    // user_uuid =getUserUuidFromToken();
     if (!videoRef.current || !canvasRef.current) return;
-    
-    // 이메일 유효성 검사
-    if (!email || !email.includes('@')) {
-      setError('유효한 이메일을 입력해주세요.');
-      return;
-    }
 
     setIsCapturing(true);
     setError('');
@@ -179,7 +172,8 @@ function LoginSelect() {
         }
 
         const formData = new FormData();
-        formData.append('user_id', email); // 이메일 추가
+        formData.append('username', email || 'default_user');
+        formData.append('password', password || 'default_password');
         formData.append('face_image', blob, 'face.jpg');
 
         try {
@@ -194,6 +188,12 @@ function LoginSelect() {
           
           let errorMessage = 'Face ID 등록에 실패했습니다.';
           
+          if (err.response?.data?.detail) {
+            errorMessage = err.response.data.detail;
+          } else if (err.code === 'ERR_NETWORK') {
+            errorMessage = 'Face ID 서버에 연결할 수 없습니다.';
+          }
+          
           setError(errorMessage);
         }
         
@@ -207,66 +207,27 @@ function LoginSelect() {
     }
   };
 
-  // === Face ID 로그인 핸들러 ===
-  const handleFaceLogin = () => {
-    setIsFaceLogin(true);
-    // 약간의 지연 후 카메라 시작
-    setTimeout(() => {
-      startCamera();
-    }, 500);
-  };
-
-  // accessToken에서 userUuid 추출 (JWT 전용) - exerciseLogCheck.js 참고
-  const getUserUuidFromToken = () => {
+  // === 기존 로그인 요청 처리 ===
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
     try {
-      // localStorage에서 실제 로그인된 사용자의 토큰 가져오기
-      const accessToken = localStorage.getItem('accessToken');
-      if (!accessToken) {
-        console.error('accessToken이 localStorage에 없습니다.');
-        return null;
-      }
-
-      if (accessToken && accessToken.split('.').length === 3) {
-        // JWT payload 추출 (Base64 디코딩)
-        const base64Url = accessToken.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(
-          atob(base64)
-            .split('')
-            .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-            .join('')
-        );
-        const payload = JSON.parse(jsonPayload);
-        console.log('토큰에서 추출한 사용자 정보:', payload);
-        return payload.userUuid;
-      }
-    } catch (e) {
-      console.error('토큰에서 userUuid 추출 실패:', e);
+      const res = await loginApi.post('/api/v1/kurung/user/login', {
+        userId: email,
+        userPwd: password
+      });
+      localStorage.setItem('accessToken', res.data.accessToken);
+      localStorage.setItem('refreshToken', res.data.refreshToken);
+      navigate('/main'); // 성공 시 이동할 경로
+    } catch (err) {
+      console.error('로그인 오류:', err);
+      
+      // 더 구체적인 오류 메시지 처리
+      let errorMessage = '로그인에 실패했습니다.';
+      
+      
+      setError(errorMessage);
     }
-    return null;
-  };
-
-  // === 네이버 로그인 핸들러 ===
-  const handleNaverLogin = () => {
-    const clientId = '3Os7CSY9u41ugvx8VLkz'; // 수정된 Client ID
-    const redirectUri = 'http://localhost:3000/auth/naver/callback';
-    const state = 'STATE';
-    
-    const naverAuthUrl = `https://nid.naver.com/oauth2.0/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&state=${state}`;
-    
-    console.log('네이버 로그인 URL:', naverAuthUrl); // 디버깅용
-    window.location.href = naverAuthUrl;
-  };
-
-  // === 카카오 로그인 핸들러 ===
-  const handleKakaoLogin = () => {
-    const clientId = 'e0ccd9a1366d275242dc304128c7ef03';
-    const redirectUri = 'http://localhost:3000/auth/kakao/callback';
-    
-    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code`;
-    
-    console.log('카카오 로그인 URL:', kakaoAuthUrl); // 디버깅용
-    window.location.href = kakaoAuthUrl;
   };
 
   return (
@@ -279,7 +240,6 @@ function LoginSelect() {
           {/* === Face ID 로그인 섹션 === */}
           {isFaceLogin ? (
             <div className="face-login-section">
-              
               <div className="camera-container">
                 <video 
                   ref={videoRef} 
@@ -291,13 +251,6 @@ function LoginSelect() {
                 <canvas ref={canvasRef} style={{ display: 'none' }} />
               </div>
               
-              {/* 에러 메시지 표시 */}
-              {error && (
-                <div className="face-login-error">
-                  {error}
-                </div>
-              )}
-              
               <div className="face-login-buttons">
                 {!isCameraOn ? (
                   <button 
@@ -308,61 +261,84 @@ function LoginSelect() {
                   </button>
                 ) : (
                   <>
-                    {/* 이메일 입력 섹션 */}
-               <div className="email-input-section">
-                 <input
-                   type="email"
-                   value={email}
-                   onChange={handleEmailChange}
-                   placeholder="아이디를 입력하세요"
-                   className="email-input"
-                 />
-                  <button 
-                        className="face-login-btn primary" 
-                        onClick={captureAndLogin}
-                        disabled={isCapturing || !email}
-                      >
-                        {isCapturing ? '인식 중...' : '로그인'}
-                      </button>
-               </div>
-                      <button 
-                        className="face-login-btn secondary" 
-                        onClick={registerFaceId}
-                        disabled={isCapturing || !email}
-                      >
-                        Face ID 등록
-                      </button>
-                      <button 
-                        className="face-login-btn cancel" 
-                        onClick={stopCamera}
-                      >
-                        취소
-                      </button>
+                    <button 
+                      className="face-login-btn primary" 
+                      onClick={captureAndLogin}
+                      disabled={isCapturing}
+                    >
+                      {isCapturing ? '인식 중...' : 'Face ID 로그인'}
+                    </button>
+                    <button 
+                      className="face-login-btn secondary" 
+                      onClick={registerFaceId}
+                      disabled={isCapturing}
+                    >
+                      Face ID 등록
+                    </button>
+                    <button 
+                      className="face-login-btn cancel" 
+                      onClick={stopCamera}
+                    >
+                      취소
+                    </button>
                   </>
                 )}
               </div>
             </div>
           ) : (
-            /* === 기존 로그인 버튼들 (디자인 유지) === */
-            <div className="login-buttons">
-              <button className="login-btn kakao" onClick={handleKakaoLogin}>
-                <img src={kakaologo} alt="Kakao" className="login-icon" />
+            /* === 기존 로그인 폼 === */
+            <form className="login-form" onSubmit={handleSubmit}>
+              <input
+                className="login-input"
+                type="text"
+                placeholder="Email"
+                autoComplete="username"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+              />
+              <input
+                className="login-input"
+                type="password"
+                placeholder="Password"
+                autoComplete="current-password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+              />
+              <button className="login-btn-submit" type="submit">Log In</button>
+              
+              {/* === Face ID 로그인 버튼 === */}
+              <button 
+                type="button"
+                className="face-login-toggle-btn"
+                onClick={() => setIsFaceLogin(true)}
+              >
+                Face ID로 로그인
               </button>
-              <button className="login-btn naver" onClick={handleNaverLogin}>
-                <img src={naverlogo} alt="Naver" className="login-icon" />
-              </button>
-              <button className="login-btn school" onClick={handleFaceLogin}>
-                <img src={faceLogo} alt="Face Login" className="login-icon" />
-              </button>
-              <Link to="/loginPage" className="login-btn mail">
-                <span className="btn-text">Mail</span>
-              </Link>
-            </div>
+            </form>
           )}
+          
+          {/* === 에러 메시지 표시 === */}
+          {error && <div className="login-error">{error}</div>}
+          
+          {/* === 일반 로그인으로 돌아가기 === */}
+          {isFaceLogin && (
+            <button 
+              className="back-to-login-btn"
+              onClick={() => {
+                stopCamera();
+                setIsFaceLogin(false);
+                setError('');
+              }}
+            >
+              일반 로그인으로 돌아가기
+            </button>
+          )}
+          
+          <Link to="/passwordReset" className="login-bottom-text">비밀번호 재설정</Link>
         </div>
       </div>
     </div>
   );
 }
 
-export default LoginSelect;
+export default LoginPage; 

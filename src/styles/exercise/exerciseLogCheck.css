@@ -1,0 +1,171 @@
+.exercise-log-check-page {
+  max-width: 1250px;
+  margin: 40px auto;
+  background: #fafbfc;
+  min-height: 100vh;
+  padding: 32px 0 60px 0;
+}
+
+.exercise-log-check-filter-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  padding: 18px 24px;
+  border-radius: 12px;
+  margin-bottom: 32px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.exercise-log-check-section {
+  margin-bottom: 40px;
+}
+
+.exercise-log-check-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.exercise-log-check-add-btn {
+  background: #88C71F;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 7px 18px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.exercise-log-check-desc {
+  color: #888;
+  font-size: 1em;
+  margin-bottom: 18px;
+}
+
+.exercise-log-check-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.exercise-log-check-card {
+  position: relative;
+  background: #fff;
+  border: 1.5px solid #e3e6ea;
+  border-radius: 16px;
+  padding: 24px 20px 20px 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  margin-bottom: 0;
+  transition: box-shadow 0.2s, border 0.2s;
+}
+
+
+/* 카드 헤더: 제목, 버튼 일렬 정렬 */
+.exercise-log-check-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+/* 버튼 그룹은 오른쪽에만 flex로 */
+.exercise-log-check-card-actions {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  display: flex;
+  gap: 8px;
+  margin: 0;
+}
+
+.routine-check-card-actions {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  display: flex;
+  gap: 8px;
+  margin: 0;
+}
+
+.exercise-log-check-edit-btn,
+.exercise-log-check-delete-btn,
+.exercise-log-check-watch-btn {
+  border: none;
+  border-radius: 12px;
+  padding: 7px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.exercise-log-check-edit-btn {
+  background: #88C71F;
+  color: #fff;
+}
+
+.exercise-log-check-delete-btn {
+  background: #F45757;
+  color: #fff;
+}
+
+.exercise-log-check-watch-btn {
+  background: #88C71F;
+  color: #fff;
+  margin-top: 12px;
+}
+
+.exercise-log-check-favorite-star {
+  color: #FFD700;
+  font-size: 1.2rem;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.exercise-log-check-favorite-star.inactive {
+  color: #ccc;
+}
+
+.exercise-log-check-card h4 {
+  font-size: 1.15em;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.exercise-log-check-card p {
+  color: #444;
+  font-size: 1em;
+  margin: 0;
+  margin-top: 2px;
+}
+
+.date-input-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.exercise-log-check-date-input {
+  border: 1.5px solid #dbe4ec;
+  background: #f7fafb;
+  color: #444;
+  font-size: 1.15em;
+  border-radius: 10px;
+  padding: 8px 38px 8px 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  transition: border 0.2s, box-shadow 0.2s;
+  outline: none;
+  width: 170px;
+  font-family: inherit;
+}
+.exercise-log-check-date-input:focus {
+  border: 2px solid #88C71F;
+  background: #fff;
+  box-shadow: 0 2px 16px rgba(136, 199, 31, 0.09);
+}

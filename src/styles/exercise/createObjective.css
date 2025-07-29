@@ -1,0 +1,117 @@
+.create-objective-page {
+  max-width: 1250px;
+  margin: 40px auto;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 40px;
+  border: 1px solid #E9ECEF;
+}
+
+.create-objective-page .objective-title {
+  text-align: center;
+  color: #4DBA87; /* Main Accent Color */
+  font-size: 2.2em;
+  font-weight: 700;
+  margin-bottom: 40px;
+  letter-spacing: 0.5px;
+  border-bottom: none;
+  padding-bottom: 0;
+  position: relative;
+}
+
+.create-objective-page .objective-title::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 4px;
+  background-color: #4DBA87;
+  border-radius: 2px;
+  margin: 12px auto 0;
+}
+
+.create-objective-page .objective-form label {
+  font-weight: 500;
+  margin-bottom: 8px;
+  display: block;
+  font-size: 1.05em;
+  color: #495057;
+}
+
+.create-objective-page .objective-required {
+  color: #FA5252;
+  margin-left: 4px;
+  font-weight: 700;
+}
+
+.create-objective-page .objective-form input,
+.create-objective-page .objective-form select,
+.create-objective-page .objective-form textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid #DEE2E6;
+  font-size: 1em;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  background-color: #F8F9FA;
+  transition: all 0.2s ease;
+}
+
+.create-objective-page .objective-form input:focus,
+.create-objective-page .objective-form select:focus,
+.create-objective-page .objective-form textarea:focus {
+  outline: none;
+  border-color: #4DBA87;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(77, 186, 135, 0.2);
+}
+
+.create-objective-page .objective-row-2col {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 0;
+}
+
+.create-objective-page .objective-row-2col > div {
+  flex: 1;
+}
+
+.create-objective-page .objective-btn {
+  width: 100%;
+  background: #88C71F;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.15em;
+  font-weight: 700;
+  padding: 15px 0;
+  margin-top: 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.create-objective-page .objective-btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+.create-objective-page .objective-form textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.create-objective-page .objective-warning {
+  color: #FA5252;
+  font-size: 0.98em;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.create-objective-page .objective-duration-hint {
+  color: #868E96;
+  font-size: 0.95em;
+  margin-top: 2px;
+  margin-bottom: 8px;
+} 

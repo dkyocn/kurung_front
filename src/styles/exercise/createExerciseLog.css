@@ -1,0 +1,273 @@
+.create-exercise-log-page h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+.create-exercise-log-page .exercise-log-form {
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+  max-width: 1250px;
+  margin: auto;
+  box-shadow: none;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+.create-exercise-log-page label {
+  font-weight: 500;
+  display: block;
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 1.05em;
+  color: #495057;
+}
+.create-exercise-log-page select,
+.create-exercise-log-page input[type="date"],
+.create-exercise-log-page input[type="number"],
+.create-exercise-log-page input[type="text"],
+.create-exercise-log-page textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid #DEE2E6;
+  font-size: 1em;
+  box-sizing: border-box;
+  background-color: #F8F9FA;
+  transition: all 0.2s ease;
+}
+
+.create-exercise-log-page select:focus,
+.create-exercise-log-page input:focus,
+.create-exercise-log-page textarea:focus {
+  outline: none;
+  border-color: #4DBA87;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(77, 186, 135, 0.2);
+}
+.create-exercise-log-page .exercise-log-checkbox-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin-top: 8px;
+  padding: 10px;
+  background-color: #F8F9FA;
+  border-radius: 10px;
+}
+.create-exercise-log-page .exercise-log-checkbox-grid label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1em;
+  white-space: nowrap;
+  cursor: pointer;
+  font-weight: 400;
+}
+
+.create-exercise-log-page .exercise-log-checkbox-grid input[type="checkbox"] {
+  width: auto;
+}
+.create-exercise-log-page .exercise-log-set-rep-group {
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+  margin-top: 8px;
+}
+.create-exercise-log-page .exercise-log-set-rep-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.create-exercise-log-page .exercise-log-set-rep-row input {
+  font-size: 1em;
+  padding: 12px 16px;
+}
+.create-exercise-log-page .exercise-log-set-rep-row button {
+  background-color: #FA5252;
+  color: white;
+  font-size: 0.9em;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  height: auto;
+  transition: background-color 0.2s ease;
+}
+
+.create-exercise-log-page .exercise-log-set-rep-row button:hover {
+  background-color: #E03131;
+}
+
+.create-exercise-log-page .exercise-log-button {
+  border-radius: 12px;
+  padding: 15px 20px;
+  font-size: 1.1em;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.create-exercise-log-page .exercise-log-button-default {
+  background-color: #88C71F;
+  color: #FFFFFF;
+}
+.create-exercise-log-page .exercise-log-button-default:hover {
+  opacity: 0.9;
+}
+
+.create-exercise-log-page .exercise-log-button-cancel, .create-exercise-log-page .exercise-log-button-list {
+  background-color: #EDEDED;
+  color: #000000;
+  font-weight: 500;
+}
+.create-exercise-log-page .exercise-log-button-delete {
+  background-color: #F45757;
+  color: #FFFFFF;
+}
+.create-exercise-log-page input[type=range] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  background: transparent;
+  border: none !important;
+  box-shadow: none !important;
+  flex: 1;
+  max-width: 1250px;
+}
+.create-exercise-log-page input[type=range]::-webkit-slider-runnable-track {
+  height: 8px;
+  background: #DEE2E6;
+  border-radius: 4px;
+}
+.create-exercise-log-page input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  background: #4DBA87;
+  cursor: pointer;
+  margin-top: -8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  border: none !important;
+  outline: none !important;
+}
+.create-exercise-log-page input[type=range]::-moz-range-track {
+  height: 8px;
+  background: #DEE2E6;
+  border-radius: 4px;
+}
+.create-exercise-log-page input[type=range]::-moz-range-thumb {
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  background: #4DBA87;
+  cursor: pointer;
+  border: none !important;
+  outline: none !important;
+}
+.create-exercise-log-page .exercise-log-slider-group {
+  margin: 36px 0 20px 0;
+}
+.create-exercise-log-page .exercise-log-slider-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 12px 0 0 0;
+}
+.create-exercise-log-page .exercise-log-slider-label {
+  text-align: center;
+  font-weight: 500;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 1.1em;
+  color: #343A40;
+}
+
+.create-exercise-log-page .slider-min,
+.create-exercise-log-page .slider-max {
+  font-size: 0.9em;
+  color: #868E96;
+  font-weight: 500;
+}
+
+/* 카드 컨테이너 */
+.create-exercise-log-page {
+  max-width: 1250px;
+  margin: 40px auto;
+  padding: 0;
+}
+
+.create-exercise-log-page h1 {
+  text-align: center;
+  font-size: 2.2em;
+  margin-bottom: 40px;
+  font-weight: 700;
+  color: #343A40;
+}
+
+.create-exercise-log-page .exercise-log-card {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 32px;
+  margin-bottom: 32px;
+  border: 1px solid #E9ECEF;
+}
+
+.create-exercise-log-page .exercise-log-card h2 {
+  font-size: 1.5em;
+  font-weight: 700;
+  margin-bottom: 8px;
+  margin-top: 0;
+  color: #343A40;
+  border-bottom: 2px solid #F1F3F5;
+  padding-bottom: 12px;
+}
+
+.create-exercise-log-page .exercise-log-card p {
+  color: #868E96;
+  font-size: 1em;
+  margin-bottom: 24px;
+  margin-top: 0;
+}
+
+/* 2열 레이아웃 */
+.create-exercise-log-page .exercise-log-row-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+.create-exercise-log-page .exercise-log-row-2col > div {
+  flex: none; /* remove flex property */
+}
+
+/* 세트 추가 버튼 */
+.create-exercise-log-page .exercise-log-set-add-btn {
+  width: 100%;
+  margin-top: 8px;
+  margin-bottom: 0;
+  font-size: 1em;
+  font-weight: 500;
+  padding: 12px 0;
+  background-color: #88C71F;
+  color: #ffffff;
+}
+
+.create-exercise-log-page .exercise-log-set-add-btn:hover {
+  opacity: 0.9;
+}
+
+/* 제출 버튼 */
+.create-exercise-log-page .exercise-log-submit-btn {
+  width: 100%;
+  margin-top: 24px;
+  font-size: 1.15em;
+  font-weight: 700;
+  padding: 15px 0;
+}
+.create-exercise-log-page .exercise-log-required {
+  color: #FA5252;
+  margin-left: 4px;
+  font-weight: bold;
+}

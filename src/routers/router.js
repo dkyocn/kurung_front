@@ -11,6 +11,17 @@ import { Routes, Route } from 'react-router-dom';
 // import memberRoutes from './memberRoutes';
 // import lifeLogRoutes from './lifeLogRoutes';
 import missionRoutes from './missionRoutes';
+import dietRouters from './dietRouters';
+import recipeRoutes from './recipeRoutes';
+import lifeLogRoutes from './lifeLogRoutes';
+import exerciseRoutes from './exerciseLogRoutes';
+import diagnosisRoutes from './diagnosisLogRoutes';
+import healthReportRoutes from './healthReportRoutes';
+import loginRoutes from './loginRoutes';
+import signupRoutes from './signupRoutes';
+import passwordResetRoutes from './myPageRoutes';
+import chatbotRoutes from './chatbotRoutes';
+import communityRoutes from './communityRoutes';
 
 
 const AppRouter = () => {
@@ -18,10 +29,25 @@ const AppRouter = () => {
     <Routes>
       {missionRoutes}
       {/* {lifeLogRoutes} */}
-      {/* {boardRoutes}
+      {boardRoutes}
       {noticeRoutes}
       {memberRoutes}
       <Route path="/" element={<Home />} />
+      {chatbotRoutes}
+      {exerciseRoutes}
+      {lifeLogRoutes}
+      {dietRouters}
+      {diagnosisRoutes}
+      {recipeRoutes}
+      {healthReportRoutes}
+      {communityRoutes}
+      {loginRoutes}
+      {signupRoutes}
+      {passwordResetRoutes}
+      {/* {noticeRoutes}
+      {/* {memberRoutes} */}
+      {/* <Route path="/" element={<Home />} />
+
       <Route path="/about" element={<About />} /> */}
     </Routes>
   );

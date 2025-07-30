@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import '../styles/Menubar.css';
 import BiniImg from '../../assets/bini.png';
 import ArrowDown from '../../assets/arrow-down.png';
-import ArrowUp from '../../assets/arrow-up.png';
+import ArrowUp from '../../assets/arrow-up.png'
 import { Link } from 'react-router-dom';
 
 const Menubar = ({ isOpen }) => {
@@ -91,15 +91,12 @@ const Menubar = ({ isOpen }) => {
         {openSection === 'mypage' && (
           <>
             <div className="submenu">내 정보 관리</div>
-            <div className="submenu">
-            <Link to="/missions" className="submenu">mission</Link>
-            </div>
-            <div className="submenu-wrapper">
             <Link to="/mypage" className="submenu">마이페이지</Link>
-            </div>
-            <div className="submenu">
-            <Link to="/favorites" className="submenu">즐겨찾기</Link>
-            </div>
+            <Link to="/missions" className="submenu">
+              mission
+            </Link>
+
+            <div className="submenu">즐겨찾기</div>
           </>
         )}
       </div>

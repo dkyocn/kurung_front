@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../../styles/favorites/getFavoritesList.css';
 import filledStar from '../../assets/star-filled.png';
 import emptyStar from '../../assets/star-empty.png';
 import apiClient from '../../utils/axios';
 
-// JWT 토큰에서 userUuid 추출
 const getUserUuidFromToken = () => {
   const token = localStorage.getItem('accessToken');
   if (!token || token.split('.').length !== 3) return null;
-
   try {
     const base64Url = token.split('.')[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -18,155 +16,176 @@ const getUserUuidFromToken = () => {
         .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
         .join('')
     );
-    return JSON.parse(jsonPayload).userUuid;
-  } catch (error) {
-    console.error('토큰 파싱 오류:', error);
+    return JSON.parse(jsonPayload).userUuid || null;
+  } catch (e) {
+    console.error('토큰 파싱 실패:', e);
     return null;
   }
 };
 
 const GetFavoritesList = () => {
-  const [favorites, setFavorites] = useState({ ROUTINES: [], RECIPE: [], COMMUNITY: [] });
-  const [loading, setLoading] = useState(true);
+  const token = localStorage.getItem('accessToken');
   const userUuid = getUserUuidFromToken();
+  const favoritesTypes = ['ROUTINES', 'FOOD', 'COMMUNITY'];
 
-  // 1️⃣ 타입별 즐겨찾기 조회
+  const [favorites, setFavorites] = useState({
+    ROUTINES: [],
+    FOOD: [],
+    COMMUNITY: [],
+  });
+
+  const [favoritesState, setFavoritesState] = useState({});
+
+  // 즐겨찾기 목록 조회
   const fetchFavoritesByType = async (type) => {
-    const token = localStorage.getItem('accessToken');
     try {
       const response = await apiClient.get('/favorites/list', {
-        params: { favoritesType: type, userUuid }, // 로그인한 사용자 기준 + 타입별 조회
-        headers: { Authorization: `Bearer ${token}` },
+        params: { userUuid, favoritesType: type },
+        headers: { Authorization: token },
       });
-      return response.data || [];
+
+      if (response.status === 200 && Array.isArray(response.data)) {
+        const data = response.data.slice(0, 3);
+        setFavorites((prev) => ({ ...prev, [type]: data }));
+
+        setFavoritesState((prev) => {
+          const newState = { ...prev };
+          data.forEach((item) => {
+            newState[item.favoritesId] = true;
+          });
+          return newState;
+        });
+      } else {
+        setFavorites((prev) => ({ ...prev, [type]: [] }));
+      }
     } catch (error) {
-      console.error(`❌ ${type} 즐겨찾기 조회 실패:`, error);
-      return [];
+      console.error(`❌ ${type} 즐겨찾기 조회 실패:`, error.response?.data || error.message);
+      setFavorites((prev) => ({ ...prev, [type]: [] }));
     }
   };
 
-  // 2️⃣ 전체 즐겨찾기 조회
-  const fetchAllFavorites = async () => {
-    const routines = await fetchFavoritesByType('ROUTINES');
-    const recipe = await fetchFavoritesByType('RECIPE');
-    const community = await fetchFavoritesByType('COMMUNITY');
+  // 즐겨찾기 토글
+  const toggleFavorite = (type, item) => {
+    if (!item.favoritesId) return;
 
-    setFavorites({
-      ROUTINES: routines || [],
-      RECIPE: recipe || [],
-      COMMUNITY: community || [],
-    });
-    setLoading(false);
+    const isCurrentlyFav = favoritesState[item.favoritesId];
+
+    if (isCurrentlyFav) {
+      apiClient
+        .delete(`/favorites/delete`, {
+          params: { favoriteId: item.favoritesId },
+          headers: { Authorization: token },
+        })
+        .then(() => {
+          setFavoritesState((prev) => ({
+            ...prev,
+            [item.favoritesId]: false,
+          }));
+          fetchFavoritesByType(type);
+        })
+        .catch((err) => console.error('즐겨찾기 삭제 실패:', err));
+    } else {
+      apiClient
+        .post(
+          `/favorites/create`,
+          {
+            userUuid,
+            favoritesType: type,
+            targetId: item.favoritesId,
+          },
+          { headers: { Authorization: token } }
+        )
+        .then(() => {
+          setFavoritesState((prev) => ({
+            ...prev,
+            [item.favoritesId]: true,
+          }));
+          fetchFavoritesByType(type);
+        })
+        .catch((err) => console.error('즐겨찾기 추가 실패:', err));
+    }
   };
 
-  // 3️⃣ 컴포넌트 마운트 시 데이터 로드
   useEffect(() => {
-    if (userUuid) {
-      fetchAllFavorites();
-    } else {
-      setLoading(false);
-    }
-  }, [userUuid]);
-
-  if (loading) return <div>로딩 중...</div>;
-
-  const toggleFavorite = async (itemId) => {
-  const token = localStorage.getItem('accessToken');
-
-  setFavorites((prev) =>
-    prev.map((item) =>
-      item.id === itemId ? { ...item, isFavorite: !item.isFavorite } : item
-    )
-  );
-
-  const toggledItem = favorites.find((item) => item.id === itemId);
-  const newStatus = !toggledItem.isFavorite; // 새 상태 계산
-
-  try {
-    if (!newStatus) {
-      // 즐겨찾기 해제 (DELETE)
-      await apiClient.delete(`/favorites/delete/${itemId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-    } else {
-      // 즐겨찾기 추가 (POST)
-      await apiClient.post(
-        '/favorites/create',
-        { favoriteId: itemId },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-    }
-  } catch (error) {
-    console.error('즐겨찾기 토글 실패:', error);
-
-    // ❗ 요청 실패 시 상태 원복
-    setFavorites((prev) =>
-      prev.map((item) =>
-        item.id === itemId ? { ...item, isFavorite: toggledItem.isFavorite } : item
-      )
-    );
-  }
-};
-
+    favoritesTypes.forEach((type) => fetchFavoritesByType(type));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="favorites-container">
-      <h2 className="favorites-title">즐겨찾기</h2>
+      <h1 className="favorites-title">즐겨찾기</h1>
 
-      <div className="favorites-section">
-        <h3>즐겨찾는 커뮤니티</h3>
-        {favorites.COMMUNITY.length === 0 ? (
-          <p>데이터 없음</p>
-        ) : (
-          favorites.COMMUNITY.map((fav, index) => (
-            <div key={fav.favoriteId || `COMMUNITY-${index}`} className="favorite-card">
-              <div className="favorite-info">
-                <p className="favorite-title">{fav.title || '제목 없음'}</p>
-                <p className="favorite-description">{fav.description || '설명 없음'}</p>
-              </div>
-              <img src={filledStar} alt="star" className="star-icon" />
-            </div>
-          ))
-        )}
-      </div>
+      {favoritesTypes.map((type) => (
+        <div key={type} className="favorites-section">
+          <h2 className="favorites-subtitle">
+            즐겨찾는 {type === 'ROUTINES' ? '운동' : type === 'FOOD' ? '식단' : '커뮤니티'}
+          </h2>
 
-      {/* 운동 */}
-      <div className="favorites-section">
-        <h3>즐겨찾는 운동</h3>
-        {favorites.ROUTINES.length === 0 ? (
-          <p>데이터 없음</p>
-        ) : (
-          favorites.ROUTINES.map((fav, index) => (
-            <div key={fav.favoriteId || `ROUTINES-${index}`} className="favorite-card">
-              <div className="favorite-info">
-                <p className="favorite-title">{fav.title || '운동명 없음'}</p>
-                <p className="favorite-description">{fav.description || '운동 설명 없음'}</p>
-              </div>
-              <img src={filledStar} alt="star" className="star-icon" />
-            </div>
-          ))
-        )}
-      </div>
+          <div className="favorites-list">
+            {favorites[type] && favorites[type].length > 0 ? (
+              favorites[type].map((item) => {
+                let displayName = '';
+                let imageUrl = '';
 
-      {/* 식단 */}
-      <div className="favorites-section">
-        <h3>즐겨찾는 식단</h3>
-        {favorites.RECIPE.length === 0 ? (
-          <p>데이터 없음</p>
-        ) : (
-          favorites.RECIPE.map((fav, index) => (
-            <div key={fav.favoriteId || `RECIPE-${index}`} className="favorite-card">
-              <div className="favorite-info">
-                <p className="favorite-title">{fav.title || '레시피명 없음'}</p>
-                <p className="favorite-description">{fav.description || '레시피 설명 없음'}</p>
-              </div>
-              <img src={filledStar} alt="star" className="star-icon" />
-            </div>
+                switch (type) {
+                  case 'ROUTINES':
+                    displayName = item.routinesDTO?.title ?? `ID: ${item.favoritesId}`;
+                    break;
+                  case 'FOOD':
+                    displayName = item.foodDTO?.foodName ?? `ID: ${item.favoritesId}`;
+                    imageUrl = item.foodDTO?.foodPhoto ?? '';
+                    break;
+                  case 'COMMUNITY':
+                    displayName = item.communityDTO?.title ?? `ID: ${item.favoritesId}`;
+                    break;
+                  default:
+                    displayName = `ID: ${item.favoritesId}`;
+                }
 
-            
-          ))
-        )}
-      </div>
+                return (
+                  <div className="favorite-card" key={`${type}-${item.favoritesId ?? 'temp'}`}>
+                    <div className="favorite-content">
+                      {type === 'FOOD' && (
+                        <img
+                          src={
+                            imageUrl.startsWith('http')
+                              ? imageUrl
+                              : `${process.env.PUBLIC_URL}${imageUrl}`
+                          }
+                          alt={displayName}
+                          className="favorite-food-photo"
+                        />
+                      )}
+                      <p className="favorite-title">{displayName}</p>
+
+                      {type === 'ROUTINES' && item.routinesDTO?.videoUrl && (
+                        <button
+                          className="routine-btn start-btn"
+                          onClick={() =>
+                            window.open(item.routinesDTO?.videoUrl, '_blank', 'noopener,noreferrer')
+                          }
+                        >
+                          운동 시청
+                        </button>
+                      )}
+                    </div>
+
+                    <img
+                      src={favoritesState[item.favoritesId] ? filledStar : emptyStar}
+                      alt="favorite"
+                      className="favorite-icon"
+                      onClick={() => toggleFavorite(type, item)}
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </div>
+                );
+              })
+            ) : (
+              <p className="no-favorites">즐겨찾기 없음</p>
+            )}
+          </div>
+        </div>
+      ))}
     </div>
   );
 };

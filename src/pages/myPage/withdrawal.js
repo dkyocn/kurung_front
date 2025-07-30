@@ -1,11 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../../styles/myPage/withdrawal.css';
+import WithdrawalModal from '../../components/common/WithdrawalModal';
 
 function Withdrawal() {
+  const navigate = useNavigate();
   const [reason, setReason] = useState('사용 빈도가 낮음');
   const [customReason, setCustomReason] = useState('');
   const [agree, setAgree] = useState(false);
   const [password, setPassword] = useState('');
+  const [showWithdrawalModal, setShowWithdrawalModal] = useState(false);
+
+  // 로그인 상태 확인
+  useEffect(() => {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) {
+      console.log('로그인되지 않은 상태 - 로그인 페이지로 이동');
+      navigate('/loginSelect');
+      return;
+    }
+    console.log('로그인된 상태 - 회원탈퇴 페이지 접근 허용');
+  }, [navigate]);
 
   const reasons = [
     '사용 빈도가 낮음',
@@ -87,12 +102,38 @@ function Withdrawal() {
               />
             </div>
             <div className="withdrawal-btn-row">
-              <button className="withdrawal-cancel-btn" type="button">취소</button>
-              <button className="withdrawal-submit-btn" type="submit">회원 탈퇴</button>
+              <button 
+                className="withdrawal-cancel-btn" 
+                type="button"
+                onClick={() => navigate('/myInfoManagement')}
+              >
+                취소
+              </button>
+              <button 
+                className="withdrawal-submit-btn" 
+                type="button"
+                onClick={() => setShowWithdrawalModal(true)}
+              >
+                회원 탈퇴
+              </button>
             </div>
           </form>
         </div>
       </div>
+      
+      {/* 회원탈퇴 확인 모달 */}
+      {showWithdrawalModal && (
+        <WithdrawalModal
+          onConfirm={() => {
+            // 여기에 실제 탈퇴 로직 추가
+            console.log('회원탈퇴 처리:', { reason, customReason, password });
+            setShowWithdrawalModal(false);
+            // API 호출 후 페이지 이동 등
+          }}
+          onCancel={() => setShowWithdrawalModal(false)}
+          onClose={() => setShowWithdrawalModal(false)}
+        />
+      )}
     </div>
   );
 }

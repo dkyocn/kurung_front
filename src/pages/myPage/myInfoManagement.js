@@ -1,7 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import BirthDatePicker from '../../components/common/BirthDatePicker';
 import '../../styles/myPage/myInfoManagement.css';
 
 function MyInfoManagement() {
+  const navigate = useNavigate();
+  const [birthDate, setBirthDate] = useState('');
+  const [showBirthDatePicker, setShowBirthDatePicker] = useState(false);
+
+  // 로그인 상태 확인
+  useEffect(() => {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) {
+      console.log('로그인되지 않은 상태 - 로그인 페이지로 이동');
+      navigate('/loginSelect');
+      return;
+    }
+    console.log('로그인된 상태 - 마이페이지 접근 허용');
+  }, [navigate]);
+
+  const handleBirthDateClick = () => {
+    setShowBirthDatePicker(true);
+  };
+
+  const handleBirthDateConfirm = (date) => {
+    setBirthDate(date);
+  };
+
+  const handleBirthDateClose = () => {
+    setShowBirthDatePicker(false);
+  };
+
   return (
     <div className="myinfo-outer">
       <div className="myinfo-inner">
@@ -24,8 +53,22 @@ function MyInfoManagement() {
             </div>
             <div className="myinfo-row">
               <label className="myinfo-label">생년월일</label>
-              <input className="myinfo-input" type="text" placeholder="YYYY-MM-DD" />
-              <span className="myinfo-calendar-icon">📅</span>
+              <input 
+                className="myinfo-input" 
+                type="text" 
+                placeholder="YYYY-MM-DD" 
+                value={birthDate}
+                readOnly
+                onClick={handleBirthDateClick}
+                style={{ cursor: 'pointer' }}
+              />
+              <span 
+                className="myinfo-calendar-icon" 
+                onClick={handleBirthDateClick}
+                style={{ cursor: 'pointer' }}
+              >
+                📅
+              </span>
             </div>
             <div className="myinfo-row myinfo-gender-row">
               <button type="button" className="myinfo-gender-btn">여성</button>
@@ -38,6 +81,15 @@ function MyInfoManagement() {
           </div>
         </div>
       </div>
+      
+                     {/* 생년월일 선택 모달 */}
+        {showBirthDatePicker && (
+          <BirthDatePicker
+            onConfirm={handleBirthDateConfirm}
+            onClose={handleBirthDateClose}
+            initialDate={birthDate ? new Date(birthDate) : null}
+          />
+        )}
     </div>
   );
 }

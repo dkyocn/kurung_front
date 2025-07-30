@@ -140,4 +140,29 @@ body, html {
   display: block;
   margin-left: auto;
   margin-right: auto;
+}
+
+/* 이메일로 회원가입 링크 스타일 */
+.signup-link-container {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.signup-link {
+  color: #181818;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  transition: color 0.2s ease;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+.signup-link:hover {
+  color: #8dc63f;
+  background: rgba(141, 198, 63, 0.05);
+  border-color: rgba(141, 198, 63, 0.2);
 } 

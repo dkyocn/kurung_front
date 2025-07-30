@@ -46,9 +46,20 @@ const Menubar = ({ isOpen }) => {
         {openSection === 'exercise' && (
           <>
             <Link to="/createExerciseLog" className="submenu">
-              운동 기록
+              운동 기록 입력
             </Link>
-            <div className="submenu">운동 추천</div>
+            <Link to="/exerciseLogCheck" className="submenu">
+              운동 기록 확인
+            </Link>
+            <Link to="/exerciseRecode" className="submenu">
+              운동 요약
+            </Link>
+            <Link to="/exerciseVideoRecommend" className="submenu">
+              운동 영상 추천
+            </Link>
+            <Link to="/analyzingExerciseStyle" className="submenu">
+              운동 유형 테스
+            </Link>
           </>
         )}
 

@@ -1,14 +1,32 @@
 // src/components/common/Menubar.js
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/Menubar.css';
 import BiniImg from '../../assets/bini.png';
 import ArrowDown from '../../assets/arrow-down.png';
 import ArrowUp from '../../assets/arrow-up.png';
 import { Link } from 'react-router-dom';
+import axios from '../../utils/axios';
 
 const Menubar = ({ isOpen }) => {
   const [openSection, setOpenSection] = useState(null);
+
+  const navigate = useNavigate();
+
+  const handleHealthClick = async () => {
+    try {
+      const res = await axios.get('/medicine/result'); // 결과 조회 API
+      if (res.status === 200 && res.data) {
+        navigate('/healthResult');
+      } else {
+        navigate('/healthQuestion');
+      }
+    } catch (err) {
+      console.error('❌ 건강 진단 결과 확인 실패:', err);
+      navigate('/healthQuestion');
+    }
+  };
 
   const toggleSection = (section) => {
     setOpenSection((prev) => (prev === section ? null : section));
@@ -76,13 +94,15 @@ const Menubar = ({ isOpen }) => {
         {openSection === 'health' && (
           <>
             <div className="submenu">건강 리포트</div>
-            <Link to="/healthQuestion" className="submenu">
-              건강 상태 초기 진단
-            </Link>
+            <div className="submenu" onClick={handleHealthClick}>
+              건강상태 초기진단
+            </div>
           </>
         )}
 
-        <div className="menu-title">약물 상호작용 확인</div>
+        <Link to="/medicineInteraction" className="menu-title">
+          약물 상호작용 확인
+        </Link>
         <Link to="/communityPage" className="menu-title">
           커뮤니티 보드
         </Link>

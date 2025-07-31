@@ -19,7 +19,7 @@ import diagnosisRoutes from './diagnosisLogRoutes';
 import healthReportRoutes from './healthReportRoutes';
 import loginRoutes from './loginRoutes';
 import signupRoutes from './signupRoutes';
-import passwordResetRoutes from './myPageRoutes';
+import myPageRoutes from './mypageRoutes';
 import chatbotRoutes from './chatbotRoutes';
 import communityRoutes from './communityRoutes';
 import medicineRoutes from './medicineRoutes';
@@ -28,7 +28,12 @@ const AppRouter = () => {
   return (
     <Routes>
       {mainRoutes}
+      {myPageRoutes}
       {chatbotRoutes}
+      {/* 메인 페이지 라우트 추가 */}
+      {favoritesRoutes}
+      {loginRoutes}
+      {missionRoutes}
       {exerciseRoutes}
       {lifeLogRoutes}
       {dietRouters}
@@ -40,10 +45,6 @@ const AppRouter = () => {
       {signupRoutes}
       {passwordResetRoutes}
       {medicineRoutes}
-      {/* {noticeRoutes} */}
-      {/* {memberRoutes} */}
-      {/* <Route path="/" element={<Home />} />
-      <Route path="/about" element={<About />} /> */}
     </Routes>
   );
 };

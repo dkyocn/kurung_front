@@ -63,6 +63,46 @@ const GetFavoritesList = () => {
       setFavorites((prev) => ({ ...prev, [type]: [] }));
     }
   };
+  
+  const handleFavoriteClick = async (item, type) => {
+  const isCurrentlyFav = favoritesState[item.favoritesId];
+
+  try {
+    if (isCurrentlyFav) {
+      // 즐겨찾기 해제
+      await apiClient.delete(`/favorites/delete/${item.favoritesId}`);
+      setFavoritesState((prev) => ({ ...prev, [item.favoritesId]: false }));
+    } else {
+      // 즐겨찾기 추가
+      await apiClient.post(
+        '/favorites/create',
+        {
+          userUuid,
+          favoritesType: type,
+          routinesId: item.routinesDTO?.routinesId || null,
+          recipeId: item.foodDTO?.foodId || null,
+          stressReliefId: item.communityDTO?.communityId || null,
+        },
+        { headers: { Authorization: token } }
+      );
+      setFavoritesState((prev) => ({ ...prev, [item.favoritesId]: true }));
+    }
+
+    // 🔹 UI 상태 즉시 반영 (배열 수정)
+    setFavorites((prev) => ({
+      ...prev,
+      [type]: prev[type].map((fav) =>
+        fav.favoritesId === item.favoritesId
+          ? { ...fav, isFavorite: !fav.isFavorite }
+          : fav
+      ),
+    }));
+  } catch (error) {
+    console.error('❌ 즐겨찾기 변경 실패:', error);
+  }
+};
+
+
 
   // 즐겨찾기 토글
   const toggleFavorite = (type, item) => {
@@ -118,7 +158,7 @@ const GetFavoritesList = () => {
       {favoritesTypes.map((type) => (
         <div key={type} className="favorites-section">
           <h2 className="favorites-subtitle">
-            즐겨찾는 {type === 'ROUTINES' ? '운동' : type === 'FOOD' ? '식단' : '커뮤니티'}
+            즐겨찾는 {type === 'ROUTINES' ? '운동' : type === 'FOOD' ? '식단' : '  커뮤니티'}
           </h2>
 
           <div className="favorites-list">
@@ -174,7 +214,7 @@ const GetFavoritesList = () => {
                       src={favoritesState[item.favoritesId] ? filledStar : emptyStar}
                       alt="favorite"
                       className="favorite-icon"
-                      onClick={() => toggleFavorite(type, item)}
+                      onClick={() => handleFavoriteClick(item, type)}
                       style={{ cursor: 'pointer' }}
                     />
                   </div>

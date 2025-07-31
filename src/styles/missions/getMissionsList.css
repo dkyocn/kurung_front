@@ -1,78 +1,78 @@
 .mission-container {
-  padding:40px 60px 60px 300px; 
-  position: relative;
+  padding: 40px 20px;
   display: flex;
   flex-direction: column;
-  align-items: center; /* 수평 중앙 정렬 */
-  justify-content: flex-start; 
-  margin: 90px auto 0; /* 화면 가운데 정렬 */
-  max-width: 800px;
-  width: 100%;
-  min-height: 80vh;
+  align-items: center;
+  max-width: 900px;
+  margin: 80px auto 0;
   font-family: 'Noto Sans KR', sans-serif;
   color: #000;
-  background-color: #fff;
-  box-sizing: border-box;
 }
 
 .mission-title {
   text-align: center;
-  font-size: 28px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  padding: center; /* 기본 왼쪽 정렬 */
-  transition: padding-left 0.3s ease; 
+  font-size: 22px;
+  font-weight: 700;
+  margin: 30px 0 20px;
+  position: relative;
 }
 
+.mission-title::after {
+  content: "";
+  display: block;
+  width: 150px;
+  height: 3px;
+  background: #7ac142; /* 포인트 컬러 */
+  margin: 8px auto 0;
+  border-radius: 3px;
+}
 
-.missions-content {
-  width: 100%;
-  max-width: 600px; /* ✅ 콘텐츠 폭 줄여서 가운데 배치 */
+/* ✅ 미션 카드 리스트 */
+.mission-list {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
-}
-
-.mission-title.with-sidebar {
-  padding-right: 600px; /* 메뉴바 열렸을 때 왼쪽 정렬 조정 */
-}
-
-.mission-list {
-  display: grid;
-  grid-template-columns: 1fr 1fr; 
-  flex-direction: column;
-  gap: 20px;
+  gap: 16px; /* 카드 간격 */
   width: 100%;
 }
 
+/* ✅ 미션 카드 */
 .mission-card {
   display: flex;
   flex-direction: column;
-  align-items: center; /* 카드 내부도 중앙 */
-  background-color: #f9f9f9;
+  align-items: flex-center;
+  width: 55%;
+  padding: 18px 20px;
+  margin: 16px auto;
+  background-color: #fff;
   border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
-  min-height: 100px;
-  width: 100%;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
   text-align: left;
+  transition: transform 0.2s;
+  
 }
 
+.mission-card:hover {
+  transform: translateY(-4px); /* 살짝 올라오는 효과 */
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+/* ✅ 미션 카드 텍스트 */
 .mission-text h4 {
   font-size: 18px;
   font-weight: 700;
-  margin: 0 0 4px 0;
-  margin-bottom: 8px;
+  margin: 0 0 6px 0;
+  line-height: 1.4;
 }
 
 .mission-text p {
   font-size: 14px;
-  margin: 0;
-  margin-bottom: 12px;
-  color: #666;
+  color: #555;
+  margin: 0 0 12px 0;
+  line-height: 1.5;
 }
 
+/* ✅ 상태 버튼 */
 .mission-status-btn {
   padding: 6px 14px;
   border: none;
@@ -80,9 +80,7 @@
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
-  margin-top: 8px;
-  display: inline-block;
+  margin-top: auto;
 }
 
 .mission-status-btn.pending {
@@ -90,68 +88,29 @@
   color: #333;
 }
 
-.mission-status-btn.in-progress {
-  background-color: #ffe45c;
-  color: #000;
-}
-
-
 .mission-status-btn.complete {
   background-color: #7CC727;
-  color: #1c1c1c;
+  color: #fff;
 }
 
+/* ✅ 위/아래 구분 */
 .bonus-section {
   text-align: center;
-  margin-top: 30px;
-  padding-top: 20px;
-  border-top: 1px solid #ddd;
-}
-
-.bonus-subtitle {
-  font-size: 14px;
-  color: #000;
-  margin-bottom: 5px;
-}
-
-.bonus-progress-text {
-  font-size: 13px;
-  color: #000;
-  margin-bottom: 10px;
-}
-
-.progress-bar {
-  width: 80%;
-  height: 8px;
-  background-color: #e5e5e5;
-  border-radius: 4px;
-  margin: 0 auto;
-  overflow: hidden;
-  position: relative;
-}
-
-.progress-fill {
-  height: 100%;
-  background-color: #222;
-  width: 0;
-  transition: width 0.4s ease-in-out;
-}
-
-.bonus-percentage {
-  font-weight: bold;
-  font-size: 14px;
-  margin-top: 5px;
+  margin-top: 50px;
+  padding-top: 30px;
+  border-top: 1.5px solid #eee; /* 구분선 */
 }
 
 .bonus-section h3 {
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 600;
   margin-bottom: 8px;
 }
 
-.progress-section {
-  margin-top: 15px;
-  width: 100%;
+.bonus-progress-text {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 10px;
 }
 
 .progress-bar {
@@ -159,8 +118,8 @@
   height: 12px;
   background-color: #eee;
   border-radius: 10px;
+  margin: 0 auto 8px auto;
   overflow: hidden;
-  margin-top: 10px;
 }
 
 .progress-fill {
@@ -169,9 +128,10 @@
   width: 0%;
   transition: width 0.3s ease;
 }
+
 .bonus-percentage {
   font-weight: bold;
   font-size: 14px;
   margin-top: 5px;
+  color: #333;
 }
-

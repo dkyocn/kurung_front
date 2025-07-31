@@ -137,6 +137,7 @@ const Menubar = ({ isOpen }) => {
               즐겨찾기
             </Link>
           </>
+
         )}
       </div>
     </div>

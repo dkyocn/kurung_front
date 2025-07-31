@@ -4,7 +4,7 @@
 }
 
 .favorites-title {
-  font-size: 24px;
+  font-size: 35px;
   font-weight: bold;
   margin-bottom: 20px;
 }
@@ -18,11 +18,13 @@
 }
 
 .favorites-subtitle {
-  font-size: 20px;
+  font-size: 25px;
   font-weight: bold;
   margin-bottom: 15px;
   text-align: right;          
-  width: 29%;     
+  width: 200px;      /* 🔹 고정 폭 */
+  text-align: center; /* 🔹 글자는 오른쪽 정렬 */
+  margin-left: 18%;      
 
 }
 
@@ -34,16 +36,19 @@
 
 .favorite-card {
   display: flex;
-  justify-content: space-between;  /* 🔹 오른쪽 정렬 */
+  justify-content: space-between;
   align-items: center;
-  width: 70%;                 /* 🔹 카드 폭 절반으로 줄임 */
-  max-width: 500px;
-  min-width: 300px;
+
+  width: 80%;                /* 🔹 폭 늘림 */
+  max-width: 700px;          /* 🔹 최대 폭 2배로 확대 */
+  min-width: auto;           /* 🔹 최소 폭도 늘림 */
+
   background: #fff;
-  padding: 10px 20px;         /* 🔹 패딩 조금 줄임 */
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  margin: 0 auto;   
+  padding: 20px 30px;        /* 🔹 패딩 늘려서 카드 커짐 */
+  border-radius: 12px;       /* 🔹 둥근 정도 조금 더 키움 */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* 🔹 그림자 강조 */
+  margin: 0 auto;
+  transition: transform 0.2s ease-in-out;  /* 🔹 호버 시 부드러운 효과 */
 }
 
 .favorite-title {
@@ -102,7 +107,7 @@
 }
 
 .start-btn {
-  background-color: #67b046;
+  background-color: #88C71F;
   color: white;
 }
 

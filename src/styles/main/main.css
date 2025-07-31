@@ -1,0 +1,232 @@
+.mainPage {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 20px;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.dashboardGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 1250px;
+  margin: 0 auto;
+}
+
+.dashboardCard {
+  background: white;
+  border: 1px solid #88c71f;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.dashboardCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.cardTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 10px 0;
+  text-align: left;
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 식단 추천 */
+.kcalDisplay {
+  font-size: 30px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 3px;
+}
+
+.kcalLabel {
+  font-size: 12px;
+  color: #666;
+}
+
+/* 운동 추천 */
+.exerciseInfo {
+  margin-bottom: 10px;
+}
+
+.exerciseName {
+  font-size: 30px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 3px;
+}
+
+.exerciseDetails {
+  font-size: 12px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.exerciseIcon {
+  font-size: 14px;
+}
+
+.startButton {
+  background: white;
+  border: 1px solid #758566;
+  color: #000;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  align-self: flex-start;
+}
+
+.startButton:hover {
+  background-color: #f8f9fa;
+}
+
+/* 오늘의 체중 */
+.weightInfo {
+  font-size: 30px;
+  color: #000;
+  line-height: 1.3;
+}
+
+/* 식단 기록 */
+.broccoliIcon {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.dietMessage {
+  font-size: 12px;
+  color: #000;
+  line-height: 1.3;
+  text-align: center;
+}
+
+/* 목표 달성 진행률 */
+.progressRate {
+  font-size: 60px;
+  font-weight: 700;
+  color: #000;
+  text-align: center;
+}
+
+/* 라이프로그 */
+.lifeLogMessage {
+  font-size: 25px;
+  color: #000;
+  line-height: 1.3;
+}
+
+/* 건강리포트 */
+.healthReportInfo {
+  font-size: 30px;
+  color: #000;
+  line-height: 1.3;
+}
+
+/* 오늘의 미션 */
+.missionItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 22px;
+  color: #000;
+  margin-bottom: 8px;
+}
+
+.missionItem:last-child {
+  margin-bottom: 0;
+}
+
+.missionButton {
+  background: white;
+  border: 1px solid #758566;
+  color: #000;
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.missionButton:hover {
+  background-color: #f8f9fa;
+}
+
+/* 비니 */
+.biniIcon {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  margin: 0 auto 8px auto;
+  display: block;
+}
+
+.biniMessage {
+  font-size: 25px;
+  color: #000;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.chatButton {
+  background: white;
+  border: 1px solid #758566;
+  color: #000;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  align-self: center;
+}
+
+.chatButton:hover {
+  background-color: #f8f9fa;
+}
+
+/* 로딩 상태 */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 18px;
+  color: #666;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .dashboardGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+
+  .mainPage {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboardGrid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .dashboardCard {
+    padding: 15px;
+  }
+}

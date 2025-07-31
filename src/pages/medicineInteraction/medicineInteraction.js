@@ -128,9 +128,10 @@ const MedicineInteraction = ({ userUuid }) => {
   };
 
   const riskColor = (risk) => {
-    if (risk === '경미함') return 'yellow';
-    if (risk === '주의') return 'red';
-    return 'green';
+    if (risk === '경미함') return 'mild'; // 연노랑
+    if (risk === '중등도') return 'moderate'; // 연녹색
+    if (risk === '심각함') return 'severe'; // 빨강
+    return '';
   };
 
   return (

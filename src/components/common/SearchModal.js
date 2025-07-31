@@ -84,11 +84,8 @@ export default function SearchModal({
           {selected && selected.length > 0 && (
             <div className="searchModalSelectedList">
               {selected.map((item) => (
-                <span
-                  className="searchModalSelectedPill"
-                  key={item[itemKey] || item.value}
-                >
-                  {item[itemLabel] || item.label}
+                <span className="searchModalSelectedPill" key={item.value}>
+                  {item.label}
                   {onRemove && (
                     <button
                       className="searchModalSelectedRemove"

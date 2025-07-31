@@ -54,90 +54,50 @@ function ExerciseLogCheck() {
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
-  // 즐겨찾기 토글 함수
-  const toggleFavorite = async (type, id, record) => {
-    // 1. 로그인 사용자의 userUuid 동적 추출
-    const userUuid = getUserUuidFromToken();
-    if (!userUuid) {
-      alert('로그인 정보가 유효하지 않습니다. 다시 로그인해주세요.');
-      return;
-    }
-    
-    try {
-      if (type === 'routine') {
-        // 현재 즐겨찾기 상태 확인
-        const currentRecord = recommendedRecords.find(r => r.routinesId === id);
-        const isCurrentlyFavorite = currentRecord?.isFavorite || false;
+  // 즐겨찾기 토글 함수 (임시 로컬스토리지 방식 - 서버 에러 해결 전까지)
+  const toggleFavorite = (type, id, record) => {
+    if (type === 'routine') {
+      const currentRecord = recommendedRecords.find(r => r.routinesId === id);
+      if (!currentRecord) return;
+
+      // 로컬스토리지에서 즐겨찾기 목록 가져오기
+      const favorites = JSON.parse(localStorage.getItem('exerciseFavorites') || '[]');
+      
+      if (!currentRecord.isFavorite) {
+        // 즐겨찾기 추가
+        const newFavorite = {
+          routinesId: id,
+          favoritedAt: new Date().toISOString(),
+          id: Date.now()
+        };
         
-        if (isCurrentlyFavorite) {
-          // 즐겨찾기 삭제 - 즐겨찾기 ID를 찾아서 삭제
-          const favoriteRecord = recommendedRecords.find(r => r.routinesId === id);
-          if (favoriteRecord && favoriteRecord.favoritesId) {
-            // localStorage에서 토큰 가져오기
-            const accessToken = localStorage.getItem('accessToken');
-            const refreshToken = localStorage.getItem('refreshToken');
-            
-            await axios.delete(baseUrl + `favorites/${favoriteRecord.favoritesId}`, {
-              headers: {
-                Authorization: accessToken,
-                RefreshToken: refreshToken,
-              },
-            });
-          } else {
-            console.error('즐겨찾기 ID를 찾을 수 없습니다.');
-            return;
-          }
-        } else {
-          // 즐겨찾기 추가
-          const favoritesData = {
-            userDTO: {
-              userUuid: userUuid // 동적으로 추출한 userUuid 사용
-            },
-            routinesId: id
-          };
-          
-          // localStorage에서 토큰 가져오기
-          const accessToken = localStorage.getItem('accessToken');
-          const refreshToken = localStorage.getItem('refreshToken');
-          
-          const response = await axios.post(baseUrl + 'favorites/create', favoritesData, {
-            headers: {
-              Authorization: accessToken,
-              RefreshToken: refreshToken,
-            },
-          });
-          
-          // 응답에서 favoritesId를 받아서 업데이트
-          const newFavoritesId = response.data?.favoritesId;
-          console.log('즐겨찾기 추가 응답:', response.data);
-          
-          // UI 상태 업데이트 (favoritesId 포함)
-          setRecommendedRecords(prev => 
-            prev.map(record => 
-              record.routinesId === id 
-                ? { ...record, isFavorite: true, favoritesId: newFavoritesId }
-                : record
-            )
-          );
-        }
+        favorites.push(newFavorite);
+        localStorage.setItem('exerciseFavorites', JSON.stringify(favorites));
         
-        // 즐겨찾기 삭제 시에는 UI 상태만 업데이트
-        if (isCurrentlyFavorite) {
-          setRecommendedRecords(prev => 
-            prev.map(record => 
-              record.routinesId === id 
-                ? { ...record, isFavorite: false, favoritesId: null }
-                : record
-            )
-          );
-        }
+        setRecommendedRecords(prev => 
+          prev.map(record => 
+            record.routinesId === id 
+              ? { ...record, isFavorite: true, favoritesId: newFavorite.id }
+              : record
+          )
+        );
         
-        console.log(`${isCurrentlyFavorite ? '즐겨찾기 삭제' : '즐겨찾기 추가'} 완료`);
+        alert('즐겨찾기에 추가되었습니다!');
+      } else {
+        // 즐겨찾기 제거
+        const updatedFavorites = favorites.filter(fav => fav.routinesId !== id);
+        localStorage.setItem('exerciseFavorites', JSON.stringify(updatedFavorites));
+        
+        setRecommendedRecords(prev => 
+          prev.map(record => 
+            record.routinesId === id 
+              ? { ...record, isFavorite: false, favoritesId: null }
+              : record
+          )
+        );
+        
+        alert('즐겨찾기에서 제거되었습니다!');
       }
-    } catch (error) {
-      console.error('즐겨찾기 처리 중 오류:', error);
-      console.error('에러 상세:', error.response?.data || error.message);
-      alert('즐겨찾기 처리 중 오류가 발생했습니다.');
     }
   };
 
@@ -160,24 +120,9 @@ function ExerciseLogCheck() {
       .then(async (res) => {
         const routines = res.data || [];
         
-        // 즐겨찾기 상태 불러오기
+        // 로컬스토리지에서 즐겨찾기 상태 불러오기 (임시 - 서버 에러 해결 전까지)
         try {
-          // localStorage에서 토큰 가져오기
-          const accessToken = localStorage.getItem('accessToken');
-          const refreshToken = localStorage.getItem('refreshToken');
-          
-          const favoritesRes = await axios.get(baseUrl + 'favorites/list', {
-            headers: {
-              Authorization: accessToken,
-              RefreshToken: refreshToken,
-            },
-            params: {
-              userUuid: userUuid, // 동적으로 추출한 userUuid 사용
-              favoritesType: 'ROUTINES'
-            }
-          });
-          
-          const favorites = favoritesRes.data || [];
+          const favorites = JSON.parse(localStorage.getItem('exerciseFavorites') || '[]');
           const favoriteIds = favorites.map(fav => fav.routinesId).filter(id => id != null);
           
           // 루틴에 즐겨찾기 상태 추가
@@ -186,7 +131,7 @@ function ExerciseLogCheck() {
             return {
               ...routine,
               isFavorite: favoriteIds.includes(routine.routinesId),
-              favoritesId: favoriteRecord ? favoriteRecord.favoritesId : null
+              favoritesId: favoriteRecord ? favoriteRecord.id : null,
             };
           });
           

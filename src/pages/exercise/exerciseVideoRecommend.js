@@ -143,7 +143,7 @@ function ExerciseVideoRecommend() {
   return (
     <div className="exercise-video-recommend-body">
       <div className="exercise-video-recommend-container">
-        <h2 className="exercise-video-recommend-title">운동 정보 입력</h2>
+        <h2 className="exercise-video-recommend-title">운동 영상 추천</h2>
 
         <form className="exercise-video-recommend-form" onSubmit={handleSubmit}>
           <div className="form-container">
@@ -201,7 +201,6 @@ function ExerciseVideoRecommend() {
                   <option value="헬스장">헬스장</option>
                   <option value="집">집</option>
                   <option value="공원">공원</option>
-                  <option value="수영장">수영장</option>
                 </select>
               </div>
             </div>

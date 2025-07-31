@@ -76,7 +76,7 @@ const Menubar = ({ isOpen }) => {
               운동 영상 추천
             </Link>
             <Link to="/analyzingExerciseStyle" className="submenu">
-              운동 유형 테스
+              운동 유형 테스트
             </Link>
           </>
         )}

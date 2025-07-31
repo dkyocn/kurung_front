@@ -101,6 +101,9 @@ const Menubar = ({ isOpen }) => {
         {renderMenuTitle('마이페이지', 'mypage')}
         {openSection === 'mypage' && (
           <>
+            <Link to="/myInfoManagement" className="submenu">
+              내 정보 관리
+            </Link>
             <div className="submenu">내 정보 관리</div>
              <Link to="/mypage" className="submenu">마이페이지</Link>
             <Link to="/missions" className="submenu">mission</Link>

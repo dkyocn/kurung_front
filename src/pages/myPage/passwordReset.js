@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../../styles/login/passwordReset.css';
 
 function PasswordReset() {
@@ -9,6 +10,31 @@ function PasswordReset() {
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [isCodeVerified, setIsCodeVerified] = useState(false);
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
+
+  // === 이메일 중복 체크 ===
+  const checkEmailExists = async (email) => {
+    try {
+      const response = await fetch('http://localhost:8081/api/v1/kurung/user/check-email-duplicate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (response.ok) {
+        const isDuplicate = await response.json(); // true: 중복됨 (가입된 이메일), false: 중복되지 않음
+        return isDuplicate; // true면 가입된 이메일, false면 가입되지 않은 이메일
+      } else {
+        console.error('이메일 중복 체크 실패');
+        return false;
+      }
+    } catch (error) {
+      console.error('이메일 중복 체크 오류:', error);
+      return false;
+    }
+  };
 
   // === 인증번호 발송 ===
   const handleSendVerificationCode = async () => {
@@ -19,7 +45,22 @@ function PasswordReset() {
     }
 
     try {
-      console.log('API 호출 시작:', email); // 디버깅용
+      console.log('이메일 존재 여부 확인 시작:', email); // 디버깅용
+      
+      // 먼저 이메일이 가입된 회원인지 확인
+      const emailExists = await checkEmailExists(email);
+      
+      if (!emailExists) {
+        // 가입되지 않은 이메일인 경우
+        setMessage('등록되지 않은 이메일입니다. 회원가입 페이지로 이동합니다.');
+        setTimeout(() => {
+          navigate('/signupPage');
+        }, 2000); // 2초 후 회원가입 페이지로 이동
+        return;
+      }
+
+      // 가입된 이메일인 경우에만 인증번호 발송
+      console.log('인증번호 발송 API 호출 시작:', email); // 디버깅용
       const response = await fetch('http://localhost:8081/api/v1/kurung/user/send-verification-code', {
         method: 'POST',
         headers: {
@@ -35,6 +76,7 @@ function PasswordReset() {
         setIsCodeSent(true);
       } else {
         const errorMessage = await response.text();
+        console.log('오류 응답:', errorMessage); // 디버깅용
         setMessage(errorMessage || '인증번호 발송에 실패했습니다.');
       }
     } catch (error) {
@@ -132,6 +174,56 @@ function PasswordReset() {
     }
   };
 
+  // 메시지 타입에 따른 스타일 결정
+  const getMessageStyle = (message) => {
+    const isSuccess = message.includes('성공') || message.includes('확인') || message.includes('발송');
+    const isError = message.includes('실패') || message.includes('일치하지 않습니다') || message.includes('올바르지 않습니다') || message.includes('입력해주세요') || message.includes('등록되지 않은');
+    
+    if (isSuccess) {
+      return {
+        color: '#4CAF50',
+        backgroundColor: '#f0f8f0',
+        border: '1px solid #e8f5e8',
+        padding: '12px 20px',
+        borderRadius: '8px',
+        marginTop: '15px',
+        textAlign: 'center',
+        fontWeight: '500',
+        fontSize: '0.95rem',
+        boxShadow: '0 2px 8px rgba(76, 175, 80, 0.1)',
+        transition: 'all 0.3s ease'
+      };
+    } else if (isError) {
+      return {
+        color: '#f44336',
+        backgroundColor: '#ffebee',
+        border: '1px solid #ffcdd2',
+        padding: '12px 20px',
+        borderRadius: '8px',
+        marginTop: '15px',
+        textAlign: 'center',
+        fontWeight: '500',
+        fontSize: '0.95rem',
+        boxShadow: '0 2px 8px rgba(244, 67, 54, 0.1)',
+        transition: 'all 0.3s ease'
+      };
+    } else {
+      return {
+        color: '#666',
+        backgroundColor: '#f5f5f5',
+        border: '1px solid #e0e0e0',
+        padding: '12px 20px',
+        borderRadius: '8px',
+        marginTop: '15px',
+        textAlign: 'center',
+        fontWeight: '400',
+        fontSize: '0.9rem',
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+        transition: 'all 0.3s ease'
+      };
+    }
+  };
+
   return (
     <div className="page-outer">
       <div className="page-inner">
@@ -217,12 +309,7 @@ function PasswordReset() {
             </button>
           </form>
           {message && (
-            <div className="password-reset-message" style={{ 
-              color: message.includes('성공') || message.includes('확인') ? 'green' : 'red',
-              marginTop: '10px',
-              textAlign: 'center',
-              fontWeight: 'bold'
-            }}>
+            <div className="password-reset-message" style={getMessageStyle(message)}>
               {message}
             </div>
           )}

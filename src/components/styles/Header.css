@@ -57,3 +57,18 @@
   color: #88c71f;
   font-weight: bold;
 }
+
+/* 로그아웃 버튼 스타일 */
+.navItem[onclick] {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 15pt;
+  color: #000;
+  text-decoration: none;
+}
+
+.navItem[onclick]:hover {
+  color: #88c71f;
+  font-weight: bold;
+}

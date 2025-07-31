@@ -343,21 +343,30 @@ function LoginSelect() {
               </div>
             </div>
           ) : (
-            /* === 기존 로그인 버튼들 (디자인 유지) === */
-            <div className="login-buttons">
-              <button className="login-btn kakao" onClick={handleKakaoLogin}>
-                <img src={kakaologo} alt="Kakao" className="login-icon" />
-              </button>
-              <button className="login-btn naver" onClick={handleNaverLogin}>
-                <img src={naverlogo} alt="Naver" className="login-icon" />
-              </button>
-              <button className="login-btn school" onClick={handleFaceLogin}>
-                <img src={faceLogo} alt="Face Login" className="login-icon" />
-              </button>
-              <Link to="/loginPage" className="login-btn mail">
-                <span className="btn-text">Mail</span>
-              </Link>
-            </div>
+            <>
+              {/* === 기존 로그인 버튼들 (디자인 유지) === */}
+              <div className="login-buttons">
+                <button className="login-btn kakao" onClick={handleKakaoLogin}>
+                  <img src={kakaologo} alt="Kakao" className="login-icon" />
+                </button>
+                <button className="login-btn naver" onClick={handleNaverLogin}>
+                  <img src={naverlogo} alt="Naver" className="login-icon" />
+                </button>
+                <button className="login-btn school" onClick={handleFaceLogin}>
+                  <img src={faceLogo} alt="Face Login" className="login-icon" />
+                </button>
+                <Link to="/loginPage" className="login-btn mail">
+                  <span className="btn-text">Mail</span>
+                </Link>
+              </div>
+              
+              {/* 이메일로 회원가입 링크 추가 */}
+              <div className="signup-link-container">
+                <Link to="/signupPage" className="signup-link">
+                  이메일로 회원가입
+                </Link>
+              </div>
+            </>
           )}
         </div>
       </div>

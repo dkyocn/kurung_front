@@ -12,18 +12,18 @@
   padding-bottom: 40px;
 }
 .myinfo-box {
-  display: flex;
+  
   flex-direction: column;
   align-items: center;
   min-width: 600px;
   background: #fff;
   border-radius: 24px;
   box-shadow: 0 4px 32px rgba(0,0,0,0.04);
-  padding: 48px 56px 40px 56px;
+  padding: 48px 56px 90px 56px;
 }
 .myinfo-title {
-  font-size: 2rem;
-  font-weight: 800;
+  font-size: 1.5rem;
+  font-weight: 600;
   margin-bottom: 1.2rem;
   color: #181818;
   letter-spacing: 0.5px;
@@ -41,11 +41,11 @@
   height: 120px;
   border-radius: 50%;
   object-fit: cover;
-  margin-bottom: 0.7rem;
+  margin-bottom: 2rem;
 }
 .myinfo-profile-label {
-  font-weight: 700;
-  font-size: 1.15rem;
+  font-weight: 500;
+  font-size: 1.2rem;
   margin-bottom: 0.2rem;
   text-align: center;
 }
@@ -56,15 +56,36 @@
 }
 .myinfo-form {
   width: 430px;
-  margin: 0 auto 2.2rem auto;
-  display: flex;
+  margin: 0 auto 2rem auto;
+
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 3rem;
 }
-.myinfo-row {
+
+/* 입력 필드와 똑같은 스타일의 박스 */
+.myinfo-new-box {
+  width: 100%;
+  height: 40px;
+  border: none;
+  border-radius: 8px;
+  background: #f5f5f5;
+  font-size: 1rem;
+  padding: 0 1rem;
+  color: #737373;
   display: flex;
   align-items: center;
-  gap: 8px;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.myinfo-new-content {
+  font-size: 1rem;
+  color: #737373;
+}
+
+.myinfo-row {
+  align-items: center;
+  gap: 10px;
 }
 .myinfo-label {
   flex: 1;
@@ -73,7 +94,7 @@
 }
 .myinfo-input {
   flex: 3;
-  height: 38px;
+  height: 40px;
   border: none;
   border-radius: 8px;
   background: #f5f5f5;
@@ -100,6 +121,37 @@
   color: #222;
   cursor: pointer;
 }
+.myinfo-check-btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 12px;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: all 0.2s ease;
+  background-color: #88C71F;
+  color: white;
+}
+.myinfo-check-btn:not(:disabled) {
+  background-color: #88C71F;
+  color: white;
+}
+.myinfo-check-btn:not(:disabled):hover {
+  background-color: #88C71F;
+}
+.myinfo-check-btn.checked {
+  background-color: #88C71F;
+  color: white;
+}
+.myinfo-check-btn.checked:hover {
+  background-color: #88C71F;
+}
+.myinfo-check-btn:disabled {
+  background-color: #e9ecef;
+  color: #88C71F;
+  cursor: not-allowed;
+}
 .myinfo-calendar-icon {
   margin-left: 8px;
   color: #8dc63f;
@@ -111,8 +163,8 @@
   gap: 8px;
 }
 .myinfo-gender-btn {
-  height: 38px;
-  padding: 0 18px;
+  height: 40px;
+  padding: 0 25px;
   border: none;
   border-radius: 8px;
   background: #f5f5f5;
@@ -123,13 +175,15 @@
 }
 .myinfo-btn-row {
   display: flex;
-  justify-content: center;
-  gap: 24px;
+  justify-content: center; /* 그대로 유지 */
+  gap: 30px;
   width: 430px;
+  margin-top: 90px;
 }
+
 .myinfo-cancel-btn {
   height: 42px;
-  min-width: 120px;
+  min-width: 100px;
   padding: 0 32px;
   border: none;
   border-radius: 10px;
@@ -138,10 +192,11 @@
   font-weight: 700;
   font-size: 1.1rem;
   cursor: pointer;
+  margin-left: auto; /* 이 줄만 추가 */
 }
 .myinfo-save-btn {
   height: 42px;
-  min-width: 120px;
+  min-width: 100px;
   padding: 0 32px;
   border: none;
   border-radius: 10px;
@@ -150,4 +205,59 @@
   font-weight: 700;
   font-size: 1.1rem;
   cursor: pointer;
-} 
+  transition: all 0.2s ease;
+}
+
+.myinfo-save-btn:hover {
+  background: #88C71F;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(141, 198, 63, 0.4);
+}
+
+/* 회원탈퇴 문구 스타일 추가 */
+.myinfo-withdrawal-text {
+  text-align: center;
+  margin-top: 20px;
+  color: #ff6b6b;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.myinfo-withdrawal-text:hover {
+  color: #ff5252;
+}
+
+/* 메시지 스타일 추가 */
+.myinfo-message {
+  margin-top: 10px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 0.9rem;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: rgba(136, 199, 31, 0.1);
+}
+
+.myinfo-message.error {
+  background: rgba(255, 107, 107, 0.1);
+}
+
+/* 로딩 상태 스타일 */
+.myinfo-save-btn:disabled,
+.myinfo-cancel-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.myinfo-save-btn:disabled:hover,
+.myinfo-cancel-btn:disabled:hover {
+  background: #8dc63f;
+  transform: none;
+  box-shadow: none;
+
+  
+}

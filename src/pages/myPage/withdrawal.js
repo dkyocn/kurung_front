@@ -1,11 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import apiClient from '../../utils/axios';
 import '../../styles/myPage/withdrawal.css';
+import WithdrawalModal from '../../components/common/WithdrawalModal';
 
 function Withdrawal() {
+  const navigate = useNavigate();
   const [reason, setReason] = useState('사용 빈도가 낮음');
   const [customReason, setCustomReason] = useState('');
   const [agree, setAgree] = useState(false);
   const [password, setPassword] = useState('');
+  const [showWithdrawalModal, setShowWithdrawalModal] = useState(false);
+
+  // 로그인 상태 확인
+  useEffect(() => {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) {
+      console.log('로그인되지 않은 상태 - 로그인 페이지로 이동');
+      navigate('/loginSelect');
+      return;
+    }
+    console.log('로그인된 상태 - 회원탈퇴 페이지 접근 허용');
+  }, [navigate]);
 
   const reasons = [
     '사용 빈도가 낮음',
@@ -14,6 +30,42 @@ function Withdrawal() {
     '다른 앱 사용 예정',
     '기타',
   ];
+
+  // 비밀번호 검증 및 탈퇴 처리 함수
+  const handleWithdrawalSubmit = async () => {
+    // 비밀번호 입력 확인
+    if (!password.trim()) {
+      alert('현재 비밀번호를 입력해주세요.');
+      return;
+    }
+
+    // 동의 확인
+    if (!agree) {
+      alert('탈퇴 동의에 체크해주세요.');
+      return;
+    }
+
+    // 비밀번호 검증 API 호출
+    try {
+      const response = await apiClient.post('/user/verify-password', {
+        userPwd: password
+      });
+
+      if (response.data.success) {
+        // 비밀번호 검증 성공 시 모달 표시
+        setShowWithdrawalModal(true);
+      } else {
+        alert('비밀번호가 올바르지 않습니다.');
+      }
+    } catch (error) {
+      console.error('비밀번호 검증 오류:', error);
+      if (error.response?.status === 401) {
+        alert('비밀번호가 올바르지 않습니다.');
+      } else {
+        alert('비밀번호 검증 중 오류가 발생했습니다.');
+      }
+    }
+  };
 
   return (
     <div className="page-outer">
@@ -87,12 +139,56 @@ function Withdrawal() {
               />
             </div>
             <div className="withdrawal-btn-row">
-              <button className="withdrawal-cancel-btn" type="button">취소</button>
-              <button className="withdrawal-submit-btn" type="submit">회원 탈퇴</button>
+              <button 
+                className="withdrawal-cancel-btn" 
+                type="button"
+                onClick={() => navigate('/myInfoManagement')}
+              >
+                취소
+              </button>
+              <button 
+                className="withdrawal-submit-btn" 
+                type="button"
+                onClick={handleWithdrawalSubmit}
+              >
+                회원 탈퇴
+              </button>
             </div>
           </form>
         </div>
       </div>
+      
+      {/* 회원탈퇴 확인 모달 */}
+      {showWithdrawalModal && (
+        <WithdrawalModal
+          onConfirm={async () => {
+            try {
+              // 실제 탈퇴 API 호출
+              const response = await apiClient.delete('/user/withdrawal', {
+                data: { 
+                  reason, 
+                  customReason, 
+                  password 
+                }
+              });
+
+              if (response.data.success) {
+                alert('회원탈퇴가 완료되었습니다.');
+                localStorage.removeItem('accessToken');
+                navigate('/loginSelect');
+              } else {
+                alert('회원탈퇴 처리 중 오류가 발생했습니다.');
+              }
+            } catch (error) {
+              console.error('회원탈퇴 오류:', error);
+              alert('회원탈퇴 처리 중 오류가 발생했습니다.');
+            }
+            setShowWithdrawalModal(false);
+          }}
+          onCancel={() => setShowWithdrawalModal(false)}
+          onClose={() => setShowWithdrawalModal(false)}
+        />
+      )}
     </div>
   );
 }

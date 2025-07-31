@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // 페이지에서 공통으로 사용할 axios 객체 생성함
 const apiClient = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE_URL,
+  baseURL: 'http://localhost:8081/api/v1/kurung',
   headers: {
     'Content-Type': 'application/json',
   },

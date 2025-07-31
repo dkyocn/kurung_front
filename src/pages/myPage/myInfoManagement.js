@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../../utils/axios';
-import '../../styles/mypage/myInfoManagement.css';
+import '../../styles/myPage/myInfoManagement.css';
 
 function MyInfoManagement() {
   const navigate = useNavigate();

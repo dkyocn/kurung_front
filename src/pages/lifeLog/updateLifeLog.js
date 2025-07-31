@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import '../../styles/lifeLog/updateLifeLog.css';
 import SaveButton from '../../components/buttons/SaveButton';
 import SaveModal from '../../components/common/WarningModal';
-import axios from 'axios';
+import axios from '../../utils/axios';
 
 const UpdateLifeLog = () => {
   const location = useLocation();
@@ -12,7 +12,6 @@ const UpdateLifeLog = () => {
   const params = new URLSearchParams(location.search);
   const lifelogId = params.get('lifelogId');
   const [showSaveModal, setShowSaveModal] = useState(false);
-  const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
   const [formData, setFormData] = useState({
     lifelogId: '',
@@ -41,21 +40,13 @@ const UpdateLifeLog = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${baseUrl}lifeLogs/${lifelogId}`, {
-          headers: {
-            Authorization:
-              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ5dWppbjAxNDIzQGdtYWlsLmNvbSIsInVzZXJVdWlkIjoiMjAyNTA2MTQwMiIsImNhdGVnb3J5IjoiYWNjZXNzIiwibmFtZSI6IuygleycoOynhCIsInJvbGUiOiJVU0VSIiwiZXhwIjoxNzUzMTg3OTM1fQ.5-yOlfbE4wgWmKFCdp1nFhUVANvF9nS87ol-IfELuo92en7hCSax0plee8xdCZfeO1DkV8PigG0reNd3IiYX7A',
-            RefreshToken:
-              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ5dWppbjAxNDIzQGdtYWlsLmNvbSIsInVzZXJVdWlkIjoiMjAyNTA2MTQwMiIsImNhdGVnb3J5IjoicmVmcmVzaCIsIm5hbWUiOiLsoJXsnKDsp4QiLCJyb2xlIjoiVVNFUiIsImV4cCI6MTc1MzI3MDczNX0.2OXaxRF6Lb7C2h4eqEg1zipmBzZZVBA0lpRcFFcysRarCG9G2AiDpbmu3Owwx6L4qBBNWfleiK0d4GWcN2WLuQ',
-          },
-        });
+        const response = await axios.get(`lifeLogs/${lifelogId}`);
         const data = response.data;
 
         const datePart = data.lifelogDate?.split('T')[0] || '';
         const bedTimePart = data.bedTime?.split('T')[1]?.slice(0, 5) || '';
         const wakeupTimePart =
           data.wakeupTime?.split('T')[1]?.slice(0, 5) || '';
-
         setFormData({
           ...data,
           lifelogDate: `${datePart}T00:00:00`,
@@ -104,17 +95,7 @@ const UpdateLifeLog = () => {
         wakeupTime: `${baseDate}T${formData.wakeupTime}:00`,
       };
 
-      const response = await fetch('/api/v1/kurung/lifeLogs/update', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ5dWppbjAxNDIzQGdtYWlsLmNvbSIsInVzZXJVdWlkIjoiMjAyNTA2MTQwMiIsImNhdGVnb3J5IjoiYWNjZXNzIiwibmFtZSI6IuygleycoOynhCIsInJvbGUiOiJVU0VSIiwiZXhwIjoxNzUzMTg3OTM1fQ.5-yOlfbE4wgWmKFCdp1nFhUVANvF9nS87ol-IfELuo92en7hCSax0plee8xdCZfeO1DkV8PigG0reNd3IiYX7A',
-          RefreshToken:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ5dWppbjAxNDIzQGdtYWlsLmNvbSIsInVzZXJVdWlkIjoiMjAyNTA2MTQwMiIsImNhdGVnb3J5IjoicmVmcmVzaCIsIm5hbWUiOiLsoJXsnKDsp4QiLCJyb2xlIjoiVVNFUiIsImV4cCI6MTc1MzI3MDczNX0.2OXaxRF6Lb7C2h4eqEg1zipmBzZZVBA0lpRcFFcysRarCG9G2AiDpbmu3Owwx6L4qBBNWfleiK0d4GWcN2WLuQ',
-        },
-        body: JSON.stringify(body),
-      });
+      const response = await axios.post('lifeLogs/update', body);
       alert('수정이 완료되었습니다.');
       navigate('/getLifeLogList');
     } catch (err) {

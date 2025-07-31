@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import '../styles/Menubar.css';
 import BiniImg from '../../assets/bini.png';
 import ArrowDown from '../../assets/arrow-down.png';
-import ArrowUp from '../../assets/arrow-up.png';
+import ArrowUp from '../../assets/arrow-up.png'
 import { Link } from 'react-router-dom';
 
 const Menubar = ({ isOpen }) => {
@@ -55,9 +55,18 @@ const Menubar = ({ isOpen }) => {
         {renderMenuTitle('멘탈 케어', 'mental')}
         {openSection === 'mental' && (
           <>
-            <Link to="/chatbot" className="submenu" style={{ display: 'flex', alignItems: 'center' }}>
-              <img src={BiniImg} alt="비니" className="bini-icon" style={{ marginRight: '8px' }} />
-               비니
+            <Link
+              to="/chatbot"
+              className="submenu"
+              style={{ display: 'flex', alignItems: 'center' }}
+            >
+              <img
+                src={BiniImg}
+                alt="비니"
+                className="bini-icon"
+                style={{ marginRight: '8px' }}
+              />
+              비니
             </Link>
             <div className="submenu">스트레스 해소 추천</div>
           </>
@@ -74,15 +83,19 @@ const Menubar = ({ isOpen }) => {
         )}
 
         <div className="menu-title">약물 상호작용 확인</div>
-        <div className="menu-title">커뮤니티 보드</div>
+        <Link to="/communityPage" className="menu-title">
+          커뮤니티 보드
+        </Link>
 
         {renderMenuTitle('마이페이지', 'mypage')}
         {openSection === 'mypage' && (
-         <div className="submenu-wrapper">
-            <Link to="/mypage" className="submenu">마이페이지</Link>
+          <>
+            <div className="submenu">내 정보 관리</div>
+             <Link to="/mypage" className="submenu">마이페이지</Link>
             <Link to="/missions" className="submenu">mission</Link>
-            <div className="submenu">즐겨찾기</div>
-          </div>
+            <Link to="/favorites" className="submenu">즐겨찾기</Link>
+          </>
+
         )}
       </div>
     </div>

@@ -1,6 +1,6 @@
 // src/components/common/Header.js
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import '../styles/Header.css';
@@ -14,10 +14,48 @@ import WarningModal from './WarningModal';
 
 function Header({ toggleMenubar }) {
 
+  // 로그인 상태 관리
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // 로그인 상태 확인 함수
+  const checkLoginStatus = () => {
+    const accessToken = localStorage.getItem('accessToken');
+    setIsLoggedIn(!!accessToken);
+  };
+
+  // 컴포넌트 마운트 시 로그인 상태 확인 및 이벤트 리스너 등록
+  useEffect(() => {
+    // 초기 로그인 상태 확인
+    checkLoginStatus();
+
+    // localStorage 변화 감지를 위한 이벤트 리스너
+    const handleStorageChange = (e) => {
+      if (e.key === 'accessToken') {
+        checkLoginStatus();
+      }
+    };
+
+    // storage 이벤트 리스너 등록 (다른 탭에서의 변화 감지)
+    window.addEventListener('storage', handleStorageChange);
+
+    // 커스텀 이벤트 리스너 등록 (같은 탭에서의 변화 감지)
+    const handleLoginChange = () => {
+      checkLoginStatus();
+    };
+
+    window.addEventListener('loginStatusChanged', handleLoginChange);
+
+    // 컴포넌트 언마운트 시 이벤트 리스너 정리
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('loginStatusChanged', handleLoginChange);
+    };
+  }, []);
+
   // modal (비니용)
   const [showModal, setShowModal] = useState(false);
 
-  // “비니” 클릭 시 모달 열기
+  // "비니" 클릭 시 모달 열기
   const handleBiniClick = () => setShowModal(true);
 
   const handleConfirm = () => {
@@ -82,9 +120,15 @@ function Header({ toggleMenubar }) {
                 </Link>
               </li>
               <li>
-                <Link to="/" className="navItem">
-                  프로필
-                </Link>
+                {isLoggedIn ? (
+                  <Link to="/myInfoManagement" className="navItem">
+                    프로필
+                  </Link>
+                ) : (
+                  <Link to="/loginSelect" className="navItem">
+                    로그인
+                  </Link>
+                )}
               </li>
             </ul>
           </nav>

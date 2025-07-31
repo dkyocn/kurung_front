@@ -7,7 +7,7 @@
   font-family: 'Noto Sans KR', sans-serif;
   font-size: 15px; /* ✅ 폰트 크기 15px로 수정 */
   position: absolute;
-  padding: 0 18px; 
+  padding: 0 18px;
 }
 
 .logo {
@@ -33,14 +33,16 @@
 }
 
 .menu-title {
+  color: white;
   font-weight: bold;
   margin-top: 15px;
   cursor: pointer;
   padding-top: 12px;
   border-top: none;
-  display: flex;               
+  display: flex;
   justify-content: space-between; /* 좌우 양쪽 정렬 */
   align-items: center;
+  text-decoration: none;
 }
 
 .menubar-container {
@@ -67,12 +69,12 @@
 
 .submenu {
   margin: 2px 0;
-  padding: 4px 0 4px 16px;     /* 좌측 들여쓰기만 조금 */
+  padding: 4px 0 4px 16px; /* 좌측 들여쓰기만 조금 */
   cursor: pointer;
   color: #ccc;
   font-size: 15px;
   display: block;
-  text-align: left;            /* ✅ 왼쪽 정렬 확실하게 */
+  text-align: left; /* ✅ 왼쪽 정렬 확실하게 */
   text-decoration: none;
 }
 
@@ -87,6 +89,6 @@
 }
 
 .submenu:hover {
-  color: #88C71F;
+  color: #88c71f;
   text-decoration: underline;
 }

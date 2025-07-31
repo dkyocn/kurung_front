@@ -40,15 +40,8 @@ function CreateExerciseLog() {
  useEffect(() => {
   const fetchExercises = async () => {
     try {
-      // 변경: /api/v1/kurung/exercise/list
-      const response = await apiClient.get('/exercise/list', {
-        headers: {
-          Authorization:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA2ODg5fQ.5ZYVum2-jopUE8h4jC784qTsKYMd8M3OSjCjDLkjCbKoCgBIr2VpAfiiqICMcTCfxQLr0B2bCb0oXwQgFN50Xw',
-          RefreshToken:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4OTY4OX0.dxeRiuXKqvnt2QkalIKZX2cUpKg8-KwI9uCfrbYFGnQBtDsCqlxe5OpN9fA1OCnppv8o2rKq_tviWJSBQlH5nw',
-        },
-      });
+      // apiClient는 자동으로 localStorage의 토큰을 사용하므로 별도 헤더 불필요
+      const response = await apiClient.get('/exercise/list');
       setAllExercises(response.data);
     } catch (err) {
       alert("운동 목록을 불러오는 데 실패했습니다.");
@@ -136,10 +129,48 @@ function CreateExerciseLog() {
     const dateString = form.exerciseDate; // "2025-07-19"
     const localDateTimeString = dateString ? `${dateString}T00:00:00` : null;
 
+    // 1. 로그인 사용자의 userUuid 동적 추출
+    const getUserUuidFromToken = () => {
+      try {
+        // localStorage에서 실제 로그인된 사용자의 토큰 가져오기
+        const accessToken = localStorage.getItem('accessToken');
+        if (!accessToken) {
+          console.error('accessToken이 localStorage에 없습니다.');
+          return null;
+        }
+
+        if (accessToken && accessToken.split('.').length === 3) {
+          // JWT payload 추출 (Base64 디코딩)
+          const base64Url = accessToken.split('.')[1];
+          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+          const jsonPayload = decodeURIComponent(
+            atob(base64)
+              .split('')
+              .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+              .join('')
+          );
+          const payload = JSON.parse(jsonPayload);
+          console.log('토큰에서 추출한 사용자 정보:', payload);
+          return payload.userUuid;
+        }
+      } catch (e) {
+        console.error('토큰에서 userUuid 추출 실패:', e);
+      }
+      return null;
+    };
+
+    const userUuid = getUserUuidFromToken();
+    if (!userUuid) {
+      alert('로그인 정보가 유효하지 않습니다. 다시 로그인해주세요.');
+      return;
+    }
+
+    console.log('사용할 userUuid:', userUuid);
+
     // 입력값 수집 → data 만들기
     const newLog = {
-      user: { userUuid: "2025061401" }, // EXERCISE_ID (운동명-ID 매핑 필요)
-    exercise: { exerciseId: exerciseId },         
+      user: { userUuid: userUuid }, // 동적으로 추출한 userUuid 사용
+      exercise: { exerciseId: exerciseId },         
       exerciseDate: localDateTimeString,
       preCondition: bodyLabels[bodyCondition], // PRE_CONDITION (ex. "보통")
       duration: Number(form.duration),      // DURATION (예: 30)
@@ -156,14 +187,8 @@ function CreateExerciseLog() {
     };
 
     try {
-      await apiClient.post('/exercise/log/create', newLog, {
-        headers: {
-          Authorization:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA2ODg5fQ.5ZYVum2-jopUE8h4jC784qTsKYMd8M3OSjCjDLkjCbKoCgBIr2VpAfiiqICMcTCfxQLr0B2bCb0oXwQgFN50Xw',
-          RefreshToken:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4OTY4OX0.dxeRiuXKqvnt2QkalIKZX2cUpKg8-KwI9uCfrbYFGnQBtDsCqlxe5OpN9fA1OCnppv8o2rKq_tviWJSBQlH5nw',
-        },
-      });
+      // apiClient는 자동으로 localStorage의 토큰을 사용하므로 별도 헤더 불필요
+      await apiClient.post('/exercise/log/create', newLog);
       alert('운동 기록 저장 완료!');
       // 폼 초기화 등 추가 가능
     } catch (err) {

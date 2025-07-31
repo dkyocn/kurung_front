@@ -1,0 +1,41 @@
+.pagingContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.pagingArrow {
+  font-size: 22px;
+  color: #bbb;
+  cursor: pointer;
+  padding: 0 6px;
+  transition: color 0.2s;
+}
+
+.pagingArrow:hover {
+  color: #666;
+}
+
+.pagingPageNum {
+  font-size: 18px;
+  color: #888;
+  padding: 0 8px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
+.pagingPageNum:hover {
+  background: #f0f0f0;
+  color: #666;
+}
+
+.pagingPageNum.active {
+  background: #222;
+  color: #fff;
+  font-weight: 700;
+}

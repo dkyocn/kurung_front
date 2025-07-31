@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from '../../utils/axios';
+import axios from 'axios';
 import '../../styles/login/loginPage.css';
 
 function LoginPage() {
@@ -11,20 +11,47 @@ function LoginPage() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  // === 로그인 요청 처리 ===
+  // === 로그인 페이지 접속 시 만료된 토큰 제거 ===
+  useEffect(() => {
+    // 로그인 페이지에 접속할 때 기존 토큰 제거 (선택적)
+    // localStorage.removeItem('accessToken');
+    // localStorage.removeItem('refreshToken');
+    // console.log('로그인 페이지: 기존 토큰 제거됨');
+  }, []);
+
+  // 로그인용 axios 인스턴스 (baseURL 직접 지정)
+  const loginApi = axios.create({
+    baseURL: 'http://localhost:8081',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    withCredentials: true,
+  });
+
+  // === 기존 로그인 요청 처리 ===
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     try {
-      const res = await axios.post('/user/login', {
+      const res = await loginApi.post('/api/v1/kurung/user/login', {
         userId: email,
         userPwd: password
       });
       localStorage.setItem('accessToken', res.data.accessToken);
       localStorage.setItem('refreshToken', res.data.refreshToken);
+      
+      // 로그인 상태 변화 이벤트 발생
+      window.dispatchEvent(new Event('loginStatusChanged'));
+      
       navigate('/main'); // 성공 시 이동할 경로
     } catch (err) {
-      setError(err.response?.data?.error || '로그인에 실패했습니다.');
+      console.error('로그인 오류:', err);
+      
+      // 더 구체적인 오류 메시지 처리
+      let errorMessage = '로그인에 실패했습니다.';
+      
+      
+      setError(errorMessage);
     }
   };
 

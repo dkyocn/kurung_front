@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../utils/axios';
 import '../../styles/lifeLog/createLifeLog.css';
 import SaveButton from '../../components/buttons/SaveButton';
 import SaveModal from '../../components/common/Modal';
@@ -87,18 +87,7 @@ const CreateLifLogForm = () => {
 
       console.log('보낼 데이터:', body);
 
-      const response = await axios.post(
-        '/api/v1/kurung/lifeLogs/create',
-        body,
-        {
-          headers: {
-            Authorization:
-              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ5dWppbjAxNDIzQGdtYWlsLmNvbSIsInVzZXJVdWlkIjoiMjAyNTA2MTQwMiIsImNhdGVnb3J5IjoiYWNjZXNzIiwibmFtZSI6IuygleycoOynhCIsInJvbGUiOiJVU0VSIiwiZXhwIjoxNzUzMTg3OTM1fQ.5-yOlfbE4wgWmKFCdp1nFhUVANvF9nS87ol-IfELuo92en7hCSax0plee8xdCZfeO1DkV8PigG0reNd3IiYX7A',
-            RefreshToken:
-              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ5dWppbjAxNDIzQGdtYWlsLmNvbSIsInVzZXJVdWlkIjoiMjAyNTA2MTQwMiIsImNhdGVnb3J5IjoicmVmcmVzaCIsIm5hbWUiOiLsoJXsnKDsp4QiLCJyb2xlIjoiVVNFUiIsImV4cCI6MTc1MzI3MDczNX0.2OXaxRF6Lb7C2h4eqEg1zipmBzZZVBA0lpRcFFcysRarCG9G2AiDpbmu3Owwx6L4qBBNWfleiK0d4GWcN2WLuQ',
-          },
-        }
-      );
+      const response = await axios.post('/api/v1/kurung/lifeLogs/create', body);
       alert('저장 성공');
       navigate('/getLifeLogList');
     } catch (e) {
@@ -199,7 +188,7 @@ const CreateLifLogForm = () => {
           <SaveModal
             message="저장하시겠습니까?"
             onConfirm={handleSubmit}
-            onClose={() => setShowSaveModal(false)}
+            onCancel={() => setShowSaveModal(false)}
           />
         )}
       </div>

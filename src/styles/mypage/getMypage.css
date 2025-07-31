@@ -238,7 +238,8 @@ td {
   border-radius: 20px;
   border: none;
   cursor: pointer;
-  background-color: #eee;
+  background-color: #EDEDED;
+  font-weight: 500;
 }
 
 .edit-buttons .save-btn {
@@ -249,10 +250,85 @@ td {
 
 
 /* 건강 목표 */
-.goal-section p {
-  font-size: 15px;
-  margin-bottom: 0.5rem;
+.health-goal {
+  margin-top: 24px;
 }
+
+.health-goal h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 7px;
+}
+
+.goal-progress {
+  font-size: 16px;
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.mission-count {
+  background: #fff8e1;      /* 연한 노랑 배경 */
+  color: #ff9800;           /* 주황 텍스트 */
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-weight: 400px;
+  display: inline-block;
+  margin-right: 3px;
+}
+
+.highlight {
+  background-color: #f4facc; /* 연한 형광 연두색 (#88C71F보다 훨씬 연함) */
+  padding: 2px 4px;          /* 텍스트 주변 여백 */
+  border-radius: 4px;        /* 모서리 살짝 둥글게 */
+}
+
+.goal-buttons {
+  margin-top: 10px;
+  display: flex;
+  gap: 9px;
+}
+
+.goal-btn {
+  padding: 7px 20px;
+  border-radius: 18px;       /* 둥근 모서리 */
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s;
+  border: none;
+  gap: 20px;  
+}
+
+/* 버튼 스타일 가이드 */
+.goal-btn.goal-basic {
+  background: #EDEDED;
+  color: #333;
+}
+
+.goal-btn.goal-basic:hover {
+  background: #dcdcdc;
+}
+
+.goal-btn.goal-create {
+  background: #88C71F;
+  color: white;
+}
+
+.goal-btn.goal-create:hover {
+  background: #7CC727;
+}
+
+.goal-divider {
+  margin: 20px 0;         /* 위아래 여백 */
+  border: none;           /* 기본 테두리 제거 */
+  height: 2px;            /* 선 두께 */
+  background-color: #000; /* 연한 회색 */
+  border-radius: 1px;      /* 살짝 둥근 느낌 */
+}
+
+
+
 
 /* 즐겨찾기 */
 .favorites-category {
@@ -265,15 +341,33 @@ td {
   margin-top: 10px;
 }
 
-.favorite-card {
-  width: 140px;
-  padding: 16px;
-  border-radius: 10px;
-  background-color: #fff7f0;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.06);
-  text-align: center;
-  transition: 0.3s ease;
+.mypage-favorites-cards {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* 왼쪽 정렬 */
+  gap: 8px;
+  margin-top: 8px;
 }
+
+.mypage-favorites-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 10px 16px;
+  width: 250px;  /* ✅ 원하는 카드 가로 크기 */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  transition: 0.2s;
+}
+
+.mypage-favorites-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.mypage-favorites-card .card-title {
+  font-size: 14px;
+  font-weight: 500;
+}
+
 
 .favorite-title {
   font-weight: 600;
@@ -287,8 +381,9 @@ td {
 
 .favorite-tabs {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 16px;
   border-bottom: 1px solid #ddd;
   padding-bottom: 0.5rem;
 }
@@ -297,27 +392,41 @@ td {
   background: none;
   border: none;
   font-weight: 500;
-  font-size: 1rem;
+  font-size: 15px;
   cursor: pointer;
-  color: #999;
+  color: #8CD41F;
   padding: 0.3rem 0.6rem;
   border-bottom: 2px solid transparent;
 }
 
 .favorite-tab.active {
-  color: black;
+  color: white;
   border-bottom: 2px solid #6c9e77;
+  background-color: #7CC727;
 }
 
 .move-favorites-btn-wrapper {
-  margin-top: 16px;
+  margin-top: 0px;
   display: flex;
   justify-content: flex-start;
   text-align: left;
 }
 
+.card-img {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.card-title1 {
+  font-size: 24px;
+  font-weight: 500;
+}
+
 .move-favorites-btn {
-  background-color: #eee;
+  background-color: #EDEDED;
   color: #111;
   padding: 6px 12px;
   border: none;
@@ -327,40 +436,74 @@ td {
   cursor: pointer;
 }
 
-.move-favorites-btn:hover {
-  background-color: #dcdcdc;
+/* 미션 카드 공통 스타일 */
+.mypage-missions-container {
+  margin-top: 30px;
 }
 
-.mission-section {
-  margin-top: 40px;
-}
-
-.mission-section h3 {
+.mypage-missions-title {
   font-size: 18px;
   font-weight: bold;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
-.mission-item {
-  margin-bottom: 16px;
+.mypage-missions-list {
+  display: flex;
+  flex-wrap: wrap;        /* 여러 줄 허용 */
+  gap: 15px;              /* 카드 간격 */
+  align-items: flex-start;
 }
 
-.mission-title {
-  font-size: 15px;
-  font-weight: 500;
-  color: #111;
-  margin-bottom: 4px;
+.mypage-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mission-card1 {
+  width: 180px;           /* 카드 폭 줄이기 */
+  padding: 4px 8px;       /* 안쪽 여백 줄이기 */
+  font-size: 9px;         /* 전체 글씨 크기 축소 */
+  margin: 6px;            /* 카드 간격 살짝 줄이기 */
+}
+
+.mission-card1 div:first-child {
+  font-size: 11px;        /* 제목 크기 축소 */
+  margin-bottom: 2px;
 }
 
 .mission-status {
-  font-size: 14px;
-  font-weight: 500;
-  color: #6b8e23; /* 올리브색 - 미션 전 */
+  font-size: 9px;         /* 상태 글씨 축소 */
 }
 
-.mission-status.done {
-  color: #4caf50; /* 초록색 - 미션 완료 */
+.mypage-card-title {
+  font-size: 1rem;
+  font-weight: 600;
 }
+
+.mypage-card-desc {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.mypage-card-status {
+  font-size: 0.8rem;
+  margin-top: 6px;
+}
+
+.mypage-card-status.done {
+  color: green;
+}
+
+.mypage-card-status.pending {
+  color: gray;
+}
+
+
 
 /* 리마인더 */
 .reminder-section p {
@@ -370,7 +513,7 @@ td {
 
 .toggle-btn {
   padding: 0.4rem 1rem;
-  background-color: #88C71F;
+  background-color: #8CD41F;
   color: white;
   border: none;
   border-radius: 5px;
@@ -390,7 +533,7 @@ td {
 }
 
 .toggle-btn {
-  background-color: #7bc043;
+  background-color: #8CD41F;
   color: white;
   padding: 4px 12px;
   border-radius: 20px;

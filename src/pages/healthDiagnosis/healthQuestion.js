@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../../utils/axios';
+import aiAxios from 'axios';
 import '../../styles/healthDiagnosis/healthQuestion.css';
-import WarningModal from '../../components/common/WarningModal'; // ✅ default export 기준 수정
+import WarningModal from '../../components/common/WarningModal';
 import { useNavigate } from 'react-router-dom';
 
 // 선지 번호 숫자 문자로 변환
@@ -114,7 +115,41 @@ const HealthQuestion = () => {
   const [answers, setAnswers] = useState({}); // 응답 상태
   const [showModal, setShowModal] = useState(false); // 경고 모달 상태
   const [modalMessage, setModalMessage] = useState(''); // 모달 메세지
+  const [showLoginWarning, setShowLoginWarning] = useState(false);
   const navigate = useNavigate();
+
+  // 건강 초기진단 ai용 axios 인스턴스 (수정됨)
+  const diagnosisApi = aiAxios.create({
+    baseURL: 'http://localhost:8000', // FastAPI 서버
+    // headers 제거 (FormData는 자동으로 설정됨)
+  });
+
+  const getUserUuidFromToken = () => {
+    try {
+      const accessToken = localStorage.getItem('accessToken');
+      if (!accessToken) {
+        console.error('accessToken이 localStorage에 없습니다.');
+        return null;
+      }
+
+      if (accessToken && accessToken.split('.').length === 3) {
+        const base64Url = accessToken.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(
+          atob(base64)
+            .split('')
+            .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+            .join('')
+        );
+        const payload = JSON.parse(jsonPayload);
+        console.log('토큰에서 추출한 사용자 정보:', payload);
+        return payload.userUuid;
+      }
+    } catch (e) {
+      console.error('토큰에서 userUuid 추출 실패:', e);
+    }
+    return null;
+  };
 
   // 비음주자/비흡연자 체크 시 문항 비활성화 및 응답 제거
   const handleCheckboxToggle = (category) => {
@@ -140,15 +175,15 @@ const HealthQuestion = () => {
 
   // API 요청 : 질문 목록 불러오기
   useEffect(() => {
+    const uuid = getUserUuidFromToken();
+
+    if (!uuid) {
+      setShowLoginWarning(true);
+      return;
+    }
+
     axios
-      .get('/api/v1/kurung/diagnosis/questions', {
-        headers: {
-          Authorization:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNTE3ODgwfQ.fqW3EodeRL9zYj4A2KdQaLDIHrt5Souu5K3e9OBqbOjyXCPlj_pxe91Fa_yRkCIgPvePpOND3iX9RFy_B1Zj1w',
-          RefreshToken:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzYwMDY4MH0.u-I6qQ1qbq9pulAQ_4Jr4Tl0W9_XK7Yw9dMqoVtF_9CHkX86FdhA3tXZKpwYnobVBQ2V8i750yoT1SWq2wjXsw',
-        },
-      })
+      .get('diagnosis/questions')
       .then((res) => {
         console.log('✅ 응답:', res.data);
         setQuestions(res.data);
@@ -255,14 +290,11 @@ const HealthQuestion = () => {
     });
 
     try {
-      await axios.post('/api/v1/kurung/diagnosis/answers', formattedAnswers, {
-        headers: {
-          Authorization:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNTE3ODgwfQ.fqW3EodeRL9zYj4A2KdQaLDIHrt5Souu5K3e9OBqbOjyXCPlj_pxe91Fa_yRkCIgPvePpOND3iX9RFy_B1Zj1w',
-          RefreshToken:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzYwMDY4MH0.u-I6qQ1qbq9pulAQ_4Jr4Tl0W9_XK7Yw9dMqoVtF_9CHkX86FdhA3tXZKpwYnobVBQ2V8i750yoT1SWq2wjXsw',
-        },
-      });
+      // await diagnosisApi.post('/diagnosis/analyze', {
+      //   userUuid: getUserUuidFromToken(),
+      // });
+
+      await axios.post('diagnosis/answers', formattedAnswers);
       navigate('/healthResult');
     } catch (err) {
       console.error('❌ 응답 저장 실패:', err);
@@ -320,6 +352,23 @@ const HealthQuestion = () => {
       <button className="submit-button" onClick={handleSubmit}>
         완료하기
       </button>
+
+      {/* ✅ 로그인 필요 시 경고 모달 */}
+      {showLoginWarning && (
+        <WarningModal
+          message={
+            <>
+              로그인이 필요합니다.
+              <br />
+              로그인 페이지로 이동합니다.
+            </>
+          }
+          onConfirm={() => {
+            setShowLoginWarning(false);
+            navigate('/loginPage');
+          }}
+        />
+      )}
 
       {showModal && (
         <WarningModal

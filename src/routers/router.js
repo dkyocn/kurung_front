@@ -23,6 +23,7 @@ import signupRoutes from './signupRoutes';
 import passwordResetRoutes from './myPageRoutes';
 import chatbotRoutes from './chatbotRoutes';
 import communityRoutes from './communityRoutes';
+import medicineRoutes from './medicineRoutes';
 
 
 const AppRouter = () => {
@@ -44,6 +45,7 @@ const AppRouter = () => {
       {communityRoutes}
       {signupRoutes}
       {passwordResetRoutes}
+      {medicineRoutes}
       {chatbotRoutes}
     </Routes>
   );

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../../utils/axios';
-import '../../styles/myPage/withdrawal.css';
+import '../../styles/mypage/withdrawal.css';
 import WithdrawalModal from '../../components/common/WithdrawalModal';
 
 function Withdrawal() {

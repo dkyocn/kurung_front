@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import '../../styles/myPage/getMypage.css';
+import '../../styles/mypage/getMypage.css';
 import Modal from '../../components/common/Modal';
 import apiClient from '../../utils/axios';
 const GetMypage = () => {
@@ -440,7 +440,7 @@ const GetMypage = () => {
                       className="card-img"
                     />
                   )}
-                  <p className="card-title">{displayName}</p>
+                  <p className="card-title2">{displayName}</p>
                 </div>
               );
             })

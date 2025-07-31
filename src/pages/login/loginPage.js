@@ -32,11 +32,20 @@ function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    try {
-      const res = await loginApi.post('/api/v1/kurung/user/login', {
-        userId: email,
-        userPwd: password
-      });
+    
+          console.log('로그인 시도 - 이메일:', email);
+      console.log('로그인 시도 - 비밀번호 길이:', password.length);
+      
+      try {
+        const requestData = {
+          userId: email,
+          userPwd: password
+        };
+        console.log('로그인 요청 데이터:', requestData);
+      
+      const res = await loginApi.post('/api/v1/kurung/user/login', requestData);
+      console.log('로그인 성공 응답:', res.data);
+      
       localStorage.setItem('accessToken', res.data.accessToken);
       localStorage.setItem('refreshToken', res.data.refreshToken);
       
@@ -46,10 +55,17 @@ function LoginPage() {
       navigate('/main'); // 성공 시 이동할 경로
     } catch (err) {
       console.error('로그인 오류:', err);
+      console.error('오류 응답:', err.response?.data);
+      console.error('오류 상태:', err.response?.status);
       
       // 더 구체적인 오류 메시지 처리
       let errorMessage = '로그인에 실패했습니다.';
       
+      if (err.response?.status === 401) {
+        errorMessage = '이메일 또는 비밀번호가 올바르지 않습니다.';
+      } else if (err.response?.status === 500) {
+        errorMessage = '서버 오류가 발생했습니다.';
+      }
       
       setError(errorMessage);
     }

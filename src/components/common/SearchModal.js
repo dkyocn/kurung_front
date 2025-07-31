@@ -26,8 +26,10 @@ export default function SearchModal({
   selected = [],
   onRemove,
   placeholder = 'Search...',
-  itemKey = 'foodId',
-  itemLabel = 'foodName',
+  getKey = (item) => item.id || item.value,
+  getLabel = (item) => item.label || item.nameKo || item.foodName,
+  getValue = (item) => item.value || item.substanceId || item.foodId,
+  initialKeyword = '',
 }) {
   const baseUrl = process.env.REACT_APP_API_BASE_URL;
   const [search, setSearch] = useState('');
@@ -35,20 +37,22 @@ export default function SearchModal({
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (open) setSearch('');
-  }, [open]);
+    if (open) {
+      setSearch(initialKeyword || '');
+    }
+  }, [open, initialKeyword]);
 
   useEffect(() => {
     if (!open) return;
+
     if (onSearch) {
       onSearch(search);
     } else if (api) {
       setLoading(true);
+      const fullUrl = `${baseUrl.replace(/\/+$/, '')}/${api.replace(/^\/+/, '')}`;
       axios
-        .get(baseUrl + api, {
-          params: {
-            keyword: search,
-          },
+        .get(fullUrl, {
+          params: { keyword: search },
         })
         .then((res) => {
           const data = res.data;
@@ -80,11 +84,8 @@ export default function SearchModal({
           {selected && selected.length > 0 && (
             <div className="searchModalSelectedList">
               {selected.map((item) => (
-                <span
-                  className="searchModalSelectedPill"
-                  key={item[itemKey] || item.value}
-                >
-                  {item[itemLabel] || item.label}
+                <span className="searchModalSelectedPill" key={item.value}>
+                  {item.label}
                   {onRemove && (
                     <button
                       className="searchModalSelectedRemove"
@@ -113,13 +114,8 @@ export default function SearchModal({
             <div className="searchModalNoResult">Loading...</div>
           ) : displayResults && displayResults.length > 0 ? (
             displayResults.map((item) => (
-              <div
-                className="searchModalResultRow"
-                key={item[itemKey] || item.value}
-              >
-                <span className="searchModalResultLabel">
-                  {item[itemLabel] || item.label}
-                </span>
+              <div className="searchModalResultRow" key={getKey(item)}>
+                <span className="searchModalResultLabel">{getLabel(item)}</span>
                 <button
                   className="searchModalResultAdd"
                   onClick={() => onSelect(item)}

@@ -2,10 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import '../../styles/login/loginPage.css';
-import './faceLogin.css'; // Face ID 스타일 추가
+import '../../faceLogin.css'; // Face ID 스타일 추가
 
 function LoginPage() {
-
   // === 상태 관리 및 네비게이션 ===
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -14,7 +13,7 @@ function LoginPage() {
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
   const navigate = useNavigate();
-  
+
   // === 카메라 관련 ref ===
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -31,7 +30,7 @@ function LoginPage() {
   useEffect(() => {
     return () => {
       if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
+        streamRef.current.getTracks().forEach((track) => track.stop());
       }
     };
   }, []);
@@ -54,14 +53,14 @@ function LoginPage() {
   // === 카메라 시작 ===
   const startCamera = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { 
-          width: 640, 
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          width: 640,
           height: 480,
-          facingMode: 'user' // 전면 카메라 사용
-        } 
+          facingMode: 'user', // 전면 카메라 사용
+        },
       });
-      
+
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         streamRef.current = stream;
@@ -76,7 +75,7 @@ function LoginPage() {
   // === 카메라 중지 ===
   const stopCamera = () => {
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
     }
     if (videoRef.current) {
@@ -106,41 +105,42 @@ function LoginPage() {
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
       // 캔버스에서 이미지 데이터를 Blob으로 변환
-      canvas.toBlob(async (blob) => {
-        if (!blob) {
-          setError('이미지 캡처에 실패했습니다.');
+      canvas.toBlob(
+        async (blob) => {
+          if (!blob) {
+            setError('이미지 캡처에 실패했습니다.');
+            setIsCapturing(false);
+            return;
+          }
+
+          // FormData 생성
+          const formData = new FormData();
+          formData.append('face_image', blob, 'face.jpg');
+
+          // Face ID 로그인 API 호출
+          try {
+            const response = await faceLoginApi.post('/login-face', formData);
+
+            // JWT 토큰 저장
+            localStorage.setItem('accessToken', response.data.access_token);
+            localStorage.setItem('refreshToken', response.data.access_token);
+
+            console.log('Face ID 로그인 성공:', response.data);
+            stopCamera();
+            navigate('/main');
+          } catch (err) {
+            console.error('Face ID 로그인 오류:', err);
+
+            let errorMessage = 'Face ID 로그인에 실패했습니다.';
+
+            setError(errorMessage);
+          }
+
           setIsCapturing(false);
-          return;
-        }
-
-        // FormData 생성
-        const formData = new FormData();
-        formData.append('face_image', blob, 'face.jpg');
-
-        // Face ID 로그인 API 호출
-        try {
-          const response = await faceLoginApi.post('/login-face', formData);
-          
-          // JWT 토큰 저장
-          localStorage.setItem('accessToken', response.data.access_token);
-          localStorage.setItem('refreshToken', response.data.access_token); 
-          
-          console.log('Face ID 로그인 성공:', response.data);
-          stopCamera();
-          navigate('/main');
-          
-        } catch (err) {
-          console.error('Face ID 로그인 오류:', err);
-          
-          let errorMessage = 'Face ID 로그인에 실패했습니다.';
-          
-          
-          setError(errorMessage);
-        }
-        
-        setIsCapturing(false);
-      }, 'image/jpeg', 0.8);
-
+        },
+        'image/jpeg',
+        0.8
+      );
     } catch (err) {
       console.error('이미지 캡처 오류:', err);
       setError('이미지 캡처 중 오류가 발생했습니다.');
@@ -164,42 +164,47 @@ function LoginPage() {
       canvas.height = video.videoHeight;
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      canvas.toBlob(async (blob) => {
-        if (!blob) {
-          setError('이미지 캡처에 실패했습니다.');
-          setIsCapturing(false);
-          return;
-        }
-
-        const formData = new FormData();
-        formData.append('username', email || 'default_user');
-        formData.append('password', password || 'default_password');
-        formData.append('face_image', blob, 'face.jpg');
-
-        try {
-          const response = await faceLoginApi.post('/register-face', formData);
-          console.log('Face ID 등록 성공:', response.data);
-          setError(''); // 에러 메시지 제거
-          alert('Face ID 등록이 완료되었습니다!'); // 성공 메시지
-          stopCamera();
-          
-        } catch (err) {
-          console.error('Face ID 등록 오류:', err);
-          
-          let errorMessage = 'Face ID 등록에 실패했습니다.';
-          
-          if (err.response?.data?.detail) {
-            errorMessage = err.response.data.detail;
-          } else if (err.code === 'ERR_NETWORK') {
-            errorMessage = 'Face ID 서버에 연결할 수 없습니다.';
+      canvas.toBlob(
+        async (blob) => {
+          if (!blob) {
+            setError('이미지 캡처에 실패했습니다.');
+            setIsCapturing(false);
+            return;
           }
-          
-          setError(errorMessage);
-        }
-        
-        setIsCapturing(false);
-      }, 'image/jpeg', 0.8);
 
+          const formData = new FormData();
+          formData.append('username', email || 'default_user');
+          formData.append('password', password || 'default_password');
+          formData.append('face_image', blob, 'face.jpg');
+
+          try {
+            const response = await faceLoginApi.post(
+              '/register-face',
+              formData
+            );
+            console.log('Face ID 등록 성공:', response.data);
+            setError(''); // 에러 메시지 제거
+            alert('Face ID 등록이 완료되었습니다!'); // 성공 메시지
+            stopCamera();
+          } catch (err) {
+            console.error('Face ID 등록 오류:', err);
+
+            let errorMessage = 'Face ID 등록에 실패했습니다.';
+
+            if (err.response?.data?.detail) {
+              errorMessage = err.response.data.detail;
+            } else if (err.code === 'ERR_NETWORK') {
+              errorMessage = 'Face ID 서버에 연결할 수 없습니다.';
+            }
+
+            setError(errorMessage);
+          }
+
+          setIsCapturing(false);
+        },
+        'image/jpeg',
+        0.8
+      );
     } catch (err) {
       console.error('Face ID 등록 오류:', err);
       setError('Face ID 등록 중 오류가 발생했습니다.');
@@ -214,18 +219,17 @@ function LoginPage() {
     try {
       const res = await loginApi.post('/api/v1/kurung/user/login', {
         userId: email,
-        userPwd: password
+        userPwd: password,
       });
       localStorage.setItem('accessToken', res.data.accessToken);
       localStorage.setItem('refreshToken', res.data.refreshToken);
       navigate('/main'); // 성공 시 이동할 경로
     } catch (err) {
       console.error('로그인 오류:', err);
-      
+
       // 더 구체적인 오류 메시지 처리
       let errorMessage = '로그인에 실패했습니다.';
-      
-      
+
       setError(errorMessage);
     }
   };
@@ -236,47 +240,44 @@ function LoginPage() {
         <div className="login-box">
           <h1 className="login-title">KURUNG</h1>
           <p className="login-subtitle">Welcome to Wellbeing Hub</p>
-          
+
           {/* === Face ID 로그인 섹션 === */}
           {isFaceLogin ? (
             <div className="face-login-section">
               <div className="camera-container">
-                <video 
-                  ref={videoRef} 
-                  autoPlay 
-                  playsInline 
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
                   muted
                   className="camera-video"
                 />
                 <canvas ref={canvasRef} style={{ display: 'none' }} />
               </div>
-              
+
               <div className="face-login-buttons">
                 {!isCameraOn ? (
-                  <button 
-                    className="face-login-btn" 
-                    onClick={startCamera}
-                  >
+                  <button className="face-login-btn" onClick={startCamera}>
                     카메라 시작
                   </button>
                 ) : (
                   <>
-                    <button 
-                      className="face-login-btn primary" 
+                    <button
+                      className="face-login-btn primary"
                       onClick={captureAndLogin}
                       disabled={isCapturing}
                     >
                       {isCapturing ? '인식 중...' : 'Face ID 로그인'}
                     </button>
-                    <button 
-                      className="face-login-btn secondary" 
+                    <button
+                      className="face-login-btn secondary"
                       onClick={registerFaceId}
                       disabled={isCapturing}
                     >
                       Face ID 등록
                     </button>
-                    <button 
-                      className="face-login-btn cancel" 
+                    <button
+                      className="face-login-btn cancel"
                       onClick={stopCamera}
                     >
                       취소
@@ -294,7 +295,7 @@ function LoginPage() {
                 placeholder="Email"
                 autoComplete="username"
                 value={email}
-                onChange={e => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <input
                 className="login-input"
@@ -302,12 +303,14 @@ function LoginPage() {
                 placeholder="Password"
                 autoComplete="current-password"
                 value={password}
-                onChange={e => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
               />
-              <button className="login-btn-submit" type="submit">Log In</button>
-              
+              <button className="login-btn-submit" type="submit">
+                Log In
+              </button>
+
               {/* === Face ID 로그인 버튼 === */}
-              <button 
+              <button
                 type="button"
                 className="face-login-toggle-btn"
                 onClick={() => setIsFaceLogin(true)}
@@ -316,13 +319,13 @@ function LoginPage() {
               </button>
             </form>
           )}
-          
+
           {/* === 에러 메시지 표시 === */}
           {error && <div className="login-error">{error}</div>}
-          
+
           {/* === 일반 로그인으로 돌아가기 === */}
           {isFaceLogin && (
-            <button 
+            <button
               className="back-to-login-btn"
               onClick={() => {
                 stopCamera();
@@ -333,12 +336,14 @@ function LoginPage() {
               일반 로그인으로 돌아가기
             </button>
           )}
-          
-          <Link to="/passwordReset" className="login-bottom-text">비밀번호 재설정</Link>
+
+          <Link to="/passwordReset" className="login-bottom-text">
+            비밀번호 재설정
+          </Link>
         </div>
       </div>
     </div>
   );
 }
 
-export default LoginPage; 
+export default LoginPage;

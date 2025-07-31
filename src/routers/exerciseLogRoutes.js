@@ -8,6 +8,7 @@ import ExerciseLogCheck from '../pages/exercise/exerciseLogCheck';
 import UpdateExerciseLog from '../pages/exercise/updateExerciseLog';
 import UpdateObjective from '../pages/exercise/updateObjective';
 import AnalyzingExerciseStyle from '../pages/exercise/analyzingExerciseStyle';
+import ExerciseVideoRecommend from '../pages/exercise/exerciseVideoRecommend'
 // import UpdateObjective from '../pages/exercise/updateObjective';
 
 // <Route path="/updateExerciseLog" element={<UpdateExerciseLog />} />, */}
@@ -20,7 +21,9 @@ const exerciseLogRoutes = [
   <Route path="/exerciseLogCheck" element={<ExerciseLogCheck />} />, 
   <Route path="/updateExerciseLog/:id" element={<UpdateExerciseLog />} />,
   <Route path="/updateObjective/:id" element={<UpdateObjective />} />,
-  <Route path="/analyzingExerciseStyle" element={<AnalyzingExerciseStyle />} />,  
+  <Route path="/analyzingExerciseStyle" element={<AnalyzingExerciseStyle />} />, 
+  <Route path="/exerciseVideoRecommend" element={<ExerciseVideoRecommend />} />, 
+  
  
 ];
 

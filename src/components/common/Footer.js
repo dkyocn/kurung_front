@@ -10,12 +10,12 @@ const Footer = ({ isLoggedIn, user }) => {
       <div className="footer-top">
         <Link to="/getLifeLogList">라이프로그</Link>
         <Link to="/diet">식단</Link>
-        <a href="#">운동</a>
-        <a href="#">멘탈케어</a>
+        <Link to="/createExerciseLog">운동</Link>
+        <Link to="/chatbot">비니</Link>
         <Link to="/getHealthReport">건강 관리</Link>
-        <a href="#">약물 상호작용 확인</a>
-        <a href="#">커뮤니티 보드</a>
-        <a href="#">{isLoggedIn ? '마이페이지' : '마이페이지'}</a>
+        <Link to="/medicineInteraction">약물 상호작용 확인</Link>
+        <Link to="/communityPage">커뮤니티 보드</Link>
+        <Link to="/mypage">{isLoggedIn ? '마이페이지' : '마이페이지'}</Link>
       </div>
 
       <div className="footer-divider" />

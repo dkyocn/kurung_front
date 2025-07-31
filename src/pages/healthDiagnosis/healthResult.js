@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../../utils/axios';
 import { useNavigate } from 'react-router-dom';
 import { PieChart, Pie, Cell } from 'recharts';
+
+import CreateButton from '../../components/buttons/CreateButton';
 import '../../styles/healthDiagnosis/healthResult.css';
 
 // 이미지 import
@@ -56,14 +58,7 @@ const HealthResult = ({ userUuid }) => {
     // console.log('[디버그] userUuid:', userUuid);
 
     axios
-      .get(`/api/v1/kurung/diagnosis/result`, {
-        headers: {
-          Authorization:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNTE3ODgwfQ.fqW3EodeRL9zYj4A2KdQaLDIHrt5Souu5K3e9OBqbOjyXCPlj_pxe91Fa_yRkCIgPvePpOND3iX9RFy_B1Zj1w',
-          RefreshToken:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzYwMDY4MH0.u-I6qQ1qbq9pulAQ_4Jr4Tl0W9_XK7Yw9dMqoVtF_9CHkX86FdhA3tXZKpwYnobVBQ2V8i750yoT1SWq2wjXsw',
-        },
-      })
+      .get(`diagnosis/result`)
       .then((res) => setDiagnosis(res.data))
       .catch((err) => {
         console.error('진단 결과 불러오기 실패:', err);
@@ -134,9 +129,11 @@ const HealthResult = ({ userUuid }) => {
             </h2>
             <p>{diagnosis.dianosisSummary}</p>
             <div className="retry-button-wrapper">
-              <button className="retry-button" onClick={handleRetry}>
-                재검사
-              </button>
+              <CreateButton
+                className="submit-retry"
+                label="재검사"
+                onClick={handleRetry}
+              />
             </div>
           </div>
         </section>
@@ -162,16 +159,6 @@ const HealthResult = ({ userUuid }) => {
             );
           })}
         </section>
-
-        {/* PDF 다운로드 버튼 */}
-        <div className="download-btn-wrapper">
-          <button
-            className="download-button"
-            onClick={() => alert('PDF 다운로드 준비 중')}
-          >
-            Download Report (PDF)
-          </button>
-        </div>
       </div>
     </div>
   );

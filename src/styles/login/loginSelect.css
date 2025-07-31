@@ -69,27 +69,50 @@ body, html {
   justify-content: center;
   cursor: pointer;
   box-shadow: 0 4px 16px rgba(0,0,0,0.07);
-  transition: box-shadow 0.2s;
+  transition: all 0.3s ease;
   background: #fff;
   position: relative;
   outline: none;
   border: 2px solid transparent;
+  transform: translateY(0);
+}
+
+.login-btn:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  border-color: rgba(141, 198, 63, 0.3);
 }
 
 .login-btn .icon {
   font-size: 2rem;
   margin-bottom: 0.1rem;
+  transition: transform 0.3s ease;
+}
+
+.login-btn:hover .icon {
+  transform: scale(1.1);
 }
 
 .login-btn .btn-text {
   font-size: 1.05rem;
   font-weight: 700;
   letter-spacing: 0.5px;
+  transition: transform 0.3s ease;
+}
+
+.login-btn:hover .btn-text {
+  transform: scale(1.05);
 }
 
 .login-btn.kakao {
   background: #ffe812;
   color: #181818;
+}
+
+.login-btn.kakao:hover {
+  background: #ffd700;
+  box-shadow: 0 8px 25px rgba(255, 232, 18, 0.4);
+  border-color: #ffd700;
 }
 
 .login-btn.kakao .btn-text {
@@ -104,6 +127,12 @@ body, html {
   border: 2px solid #03c75a;
 }
 
+.login-btn.naver:hover {
+  background: #02b351;
+  box-shadow: 0 8px 25px rgba(3, 199, 90, 0.4);
+  border-color: #02b351;
+}
+
 .login-btn.naver .btn-text {
   font-size: 1.4rem;
   font-weight: 800;
@@ -116,11 +145,23 @@ body, html {
   border: none;
 }
 
+.login-btn.school:hover {
+  background: #e0e0e0;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  border-color: #d0d0d0;
+}
+
 .login-btn.mail {
   background: #ededed;
   color: #222;
   border: none;
   font-size: 1.05rem;
+}
+
+.login-btn.mail:hover {
+  background: #e0e0e0;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  border-color: #d0d0d0;
 }
 
 .login-bottom-text {
@@ -140,4 +181,34 @@ body, html {
   display: block;
   margin-left: auto;
   margin-right: auto;
-} 
+  transition: transform 0.3s ease;
+}
+
+.login-btn:hover .login-icon {
+  transform: scale(1.1);
+}
+
+/* 이메일로 회원가입 링크 스타일 */
+.signup-link-container {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.signup-link {
+  color: #181818;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  transition: color 0.2s ease;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+.signup-link:hover {
+  color: #8dc63f;
+  background: rgba(141, 198, 63, 0.05);
+  border-color: rgba(141, 198, 63, 0.2);
+}

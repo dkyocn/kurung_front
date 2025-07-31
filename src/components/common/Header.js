@@ -13,7 +13,6 @@ import WarningModal from './WarningModal';
 //     };
 
 function Header({ toggleMenubar }) {
-
   // 로그인 상태 관리
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -87,7 +86,7 @@ function Header({ toggleMenubar }) {
           <button type="button" onClick={toggleMenubar} className="menuButton">
             ☰
           </button>
-          <Link to="/" className="logoLink">
+          <Link to="/main" className="logoLink">
             KURUNG
           </Link>
         </div>
@@ -95,9 +94,9 @@ function Header({ toggleMenubar }) {
           <nav>
             <ul className="navList">
               <li>
-                <button className="navItem" onClick={handleBiniClick}>
+                <Link to="/chatbot" className="navItem">
                   비니
-                </button>
+                </Link>
               </li>
               <li>
                 <Link to="/diet" className="navItem">
@@ -105,17 +104,17 @@ function Header({ toggleMenubar }) {
                 </Link>
               </li>
               <li>
-                <Link to="/" className="navItem" onClick={handleDietClick}>
+                <Link to="/createExerciseLog" className="navItem">
                   운동
                 </Link>
               </li>
               <li>
-                <Link to="/" className="navItem">
+                <Link to="/getLifeLogList" className="navItem">
                   라이프로그
                 </Link>
               </li>
               <li>
-                <Link to="/" className="navItem">
+                <Link to="/mypage" className="navItem">
                   마이페이지
                 </Link>
               </li>
@@ -125,7 +124,7 @@ function Header({ toggleMenubar }) {
                     프로필
                   </Link>
                 ) : (
-                  <Link to="/loginSelect" className="navItem">
+                  <Link to="/" className="navItem">
                     로그인
                   </Link>
                 )}

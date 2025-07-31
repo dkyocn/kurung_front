@@ -174,6 +174,56 @@ function PasswordReset() {
     }
   };
 
+  // 메시지 타입에 따른 스타일 결정
+  const getMessageStyle = (message) => {
+    const isSuccess = message.includes('성공') || message.includes('확인') || message.includes('발송');
+    const isError = message.includes('실패') || message.includes('일치하지 않습니다') || message.includes('올바르지 않습니다') || message.includes('입력해주세요') || message.includes('등록되지 않은');
+    
+    if (isSuccess) {
+      return {
+        color: '#4CAF50',
+        backgroundColor: '#f0f8f0',
+        border: '1px solid #e8f5e8',
+        padding: '12px 20px',
+        borderRadius: '8px',
+        marginTop: '15px',
+        textAlign: 'center',
+        fontWeight: '500',
+        fontSize: '0.95rem',
+        boxShadow: '0 2px 8px rgba(76, 175, 80, 0.1)',
+        transition: 'all 0.3s ease'
+      };
+    } else if (isError) {
+      return {
+        color: '#f44336',
+        backgroundColor: '#ffebee',
+        border: '1px solid #ffcdd2',
+        padding: '12px 20px',
+        borderRadius: '8px',
+        marginTop: '15px',
+        textAlign: 'center',
+        fontWeight: '500',
+        fontSize: '0.95rem',
+        boxShadow: '0 2px 8px rgba(244, 67, 54, 0.1)',
+        transition: 'all 0.3s ease'
+      };
+    } else {
+      return {
+        color: '#666',
+        backgroundColor: '#f5f5f5',
+        border: '1px solid #e0e0e0',
+        padding: '12px 20px',
+        borderRadius: '8px',
+        marginTop: '15px',
+        textAlign: 'center',
+        fontWeight: '400',
+        fontSize: '0.9rem',
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+        transition: 'all 0.3s ease'
+      };
+    }
+  };
+
   return (
     <div className="page-outer">
       <div className="page-inner">
@@ -259,12 +309,7 @@ function PasswordReset() {
             </button>
           </form>
           {message && (
-            <div className="password-reset-message" style={{ 
-              color: message.includes('성공') || message.includes('확인') ? 'green' : 'red',
-              marginTop: '10px',
-              textAlign: 'center',
-              fontWeight: 'bold'
-            }}>
+            <div className="password-reset-message" style={getMessageStyle(message)}>
               {message}
             </div>
           )}

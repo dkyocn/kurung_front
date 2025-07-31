@@ -209,25 +209,34 @@ function SignupPage() {
     setShowSuccessModal(false);
   };
 
+  // 메시지 타입에 따른 스타일 결정
+  const getMessageStyle = (message) => {
+    const isSuccess = message.includes('성공') || message.includes('완료') || message.includes('확인') || message.includes('발송');
+    const isError = message.includes('실패') || message.includes('일치하지 않습니다') || message.includes('올바르지 않습니다') || message.includes('입력해주세요') || message.includes('이미 가입된') || message.includes('다른 이메일');
+    
+    if (isSuccess) {
+      return 'signup-message success';
+    } else if (isError) {
+      return 'signup-message error';
+    } else {
+      return 'signup-message info';
+    }
+  };
+
   return (
     <div className="page-outer">
       <div className="page-inner">
         <div className="signup-box">
           <h1 className="signup-title">KURUNG</h1>
           <form className="signup-form">
-            {/* 메시지 표시 영역 */}
-            {message && (
-              <div className="signup-message" style={{ 
-                color: message.includes('성공') || message.includes('완료') ? '#88C71F' : '#ff4444',
-                textAlign: 'center',
-                marginBottom: '16px',
-                fontSize: '14px'
-              }}>
-                {message}
-              </div>
-            )}
-            
-
+            {/* 메시지 표시 영역 - 고정 높이로 미리 확보 */}
+            <div className="signup-message-container">
+              {message && (
+                <div className={getMessageStyle(message)}>
+                  {message}
+                </div>
+              )}
+            </div>
             
             <div className="signup-row">
               <label className="signup-label">아이디</label>
@@ -263,10 +272,6 @@ function SignupPage() {
                 type="button"
                 onClick={handleVerifyCode}
                 disabled={isLoading || isEmailVerified}
-                style={{ 
-                  backgroundColor: (isLoading || isEmailVerified) ? '#ccc' : '#88C71F',
-                  cursor: (isLoading || isEmailVerified) ? 'not-allowed' : 'pointer'
-                }}
               >
                 {isLoading ? '확인 중...' : '인증번호 확인'}
               </button>
@@ -304,10 +309,6 @@ function SignupPage() {
                 className="signup-btn" 
                 type="button"
                 onClick={handleConfirmPassword}
-                style={{ 
-                  backgroundColor: isPasswordConfirmed ? '#88C71F' : '#ccc',
-                  cursor: isPasswordConfirmed ? 'pointer' : 'not-allowed'
-                }}
               >
                 비밀번호 확인
               </button>
@@ -335,4 +336,4 @@ function SignupPage() {
   );
 }
 
-export default SignupPage; 
+export default SignupPage;

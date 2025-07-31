@@ -4,6 +4,7 @@ import SearchModal from '../../components/common/SearchModal';
 import starIcon from '../../assets/icons/star.png';
 import starFilledIcon from '../../assets/icons/starFilled.png';
 import axios from '../../utils/axios';
+import aiAxios from 'axios';
 
 export default function RecipePage() {
   const baseUrl = process.env.REACT_APP_API_BASE_URL;
@@ -16,6 +17,8 @@ export default function RecipePage() {
   const [favoriteRecipes, setFavoriteRecipes] = useState([]); // recipe id array
   const [favoriteLoading, setFavoriteLoading] = useState({}); // { [id]: boolean }
   const [selectedRecipe, setSelectedRecipe] = useState(null); // recipe object or null
+  const [recommendedRecipes, setRecommendedRecipes] = useState([]);
+  const [recipesLoading, setRecipesLoading] = useState(false);
 
   const handleFoodSelect = (item) => {
     setShowFoodModal(false);
@@ -47,49 +50,88 @@ export default function RecipePage() {
     setSelectedFridge((prev) => prev.filter((f) => f.foodId !== item.foodId));
   };
 
-  // Example recommended recipes (replace with API data as needed)
-  const recommendedRecipes = [
-    {
-      id: 1,
-      title: '레몬 허브 로스트 치킨',
-      description:
-        '부드러운 닭고기와 구운 야채로 영양과 맛있고 건강한 요리입니다.',
-      image:
-        'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80',
-      detail:
-        '레몬과 허브로 마리네이드한 닭고기를 오븐에 구워낸 건강한 요리입니다. 감자, 당근 등 다양한 야채와 함께 곁들여 드세요.',
-    },
-    {
-      id: 2,
-      title: '병아리콩과 페타 치즈를 곁들인 퀴노아 샐러드',
-      description:
-        '퀴노아, 병아리콩, 페타 치즈로 만든 신선하고 단백질이 풍부한 샐러드입니다.',
-      image:
-        'https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=400&q=80',
-      detail:
-        '퀴노아와 병아리콩, 페타 치즈, 각종 채소를 곁들여 만든 샐러드로, 올리브오일 드레싱과 함께 즐기세요.',
-    },
-    {
-      id: 3,
-      title: '수란을 곁들인 아보카도 토스트',
-      description:
-        '크리미한 아보카도와 완숙하게 삶은 계란을 곁들인 간단하면서도 영양가 있는 아침 식사.',
-      image:
-        'https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=400&q=80',
-      detail:
-        '통밀빵 위에 으깬 아보카도와 수란을 올려 소금, 후추, 올리브오일로 마무리합니다.',
-    },
-    {
-      id: 4,
-      title: '수란을 곁들인 아보카도 토스트',
-      description:
-        '크리미한 아보카도와 완숙하게 삶은 계란을 곁들인 간단하면서도 영양가 있는 아침 식사.',
-      image:
-        'https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=400&q=80',
-      detail:
-        '통밀빵 위에 으깬 아보카도와 수란을 올려 소금, 후추, 올리브오일로 마무리합니다.',
-    },
-  ];
+  // accessToken에서 userUuid 추출 (JWT 전용)
+  const getUserUuidFromToken = () => {
+    try {
+      const accessToken = localStorage.getItem('accessToken');
+      if (!accessToken) {
+        return null;
+      }
+
+      if (accessToken && accessToken.split('.').length === 3) {
+        const base64Url = accessToken.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(
+          atob(base64)
+            .split('')
+            .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+            .join('')
+        );
+        const payload = JSON.parse(jsonPayload);
+        return payload.userUuid;
+      }
+    } catch (e) {
+      return null;
+    }
+    return null;
+  };
+
+  const aiApi = aiAxios.create({
+    baseURL: 'http://localhost:8000', // FastAPI 서버
+    // headers 제거 (FormData는 자동으로 설정됨)
+  });
+
+  // Fetch recommended recipes from FastAPI
+  const handleRecommend = async () => {
+    try {
+      setRecipesLoading(true);
+      const userUuid = getUserUuidFromToken();
+
+      // Call FastAPI to get recommended meal indices
+      const response = await aiApi.get('/recipe', {
+        params: { user_uuid: userUuid },
+      });
+
+      const { selected_meal_indices } = response.data;
+
+      // Fetch food details for each meal index
+      const recipePromises = selected_meal_indices.map(async (mealId) => {
+        try {
+          const foodResponse = await axios.get(`diet/food/${mealId}`);
+          const foodData = foodResponse.data;
+
+          return {
+            id: mealId,
+            title: foodData.foodName || `추천 레시피 ${mealId}`,
+            description:
+              `총 kcal :  ${foodData.nutrition.kcal}` ||
+              `추천된 레시피입니다. (ID: ${mealId})`,
+            image:
+              foodData.foodPhoto ||
+              `https://images.unsplash.com/photo-${1500000000000 + mealId}?auto=format&fit=crop&w=400&q=80`,
+          };
+        } catch (error) {
+          console.error(`음식 정보 조회 실패 (ID: ${mealId}):`, error);
+          return {
+            id: mealId,
+            title: `추천 레시피 ${mealId}`,
+            description: `추천된 레시피입니다. (ID: ${mealId})`,
+            image: `https://images.unsplash.com/photo-${1500000000000 + mealId}?auto=format&fit=crop&w=400&q=80`,
+            detail: `추천된 레시피의 상세 정보입니다. (ID: ${mealId})`,
+            foodData: null,
+          };
+        }
+      });
+
+      const recipes = await Promise.all(recipePromises);
+      setRecommendedRecipes(recipes);
+    } catch (error) {
+      console.error('추천 레시피 불러오기 실패:', error);
+      setRecommendedRecipes([]);
+    } finally {
+      setRecipesLoading(false);
+    }
+  };
 
   const toggleFavorite = async (id) => {
     if (favoriteLoading[id]) return;
@@ -150,7 +192,7 @@ export default function RecipePage() {
             추가 <span className="addBtnPlus">+</span>
           </button>
         </div>
-        <div className="filterRow">
+        {/* <div className="filterRow">
           <span>냉장고 재료</span>
           <button className="uploadBtn">Upload Photo</button>
         </div>
@@ -171,61 +213,75 @@ export default function RecipePage() {
               추가 <span className="addBtnPlus">+</span>
             </button>
           )}
-        </div>
+        </div> */}
         <div className="filterRow filterRowRight">
-          <button className="recommendBtn">추천</button>
+          <button
+            className="recommendBtn"
+            onClick={handleRecommend}
+            disabled={recipesLoading}
+          >
+            {recipesLoading ? '추천 중...' : '추천'}
+          </button>
         </div>
       </div>
       <div className="recommendTitle">추천 레시피</div>
       <div className="recommendRecipeList">
-        {recommendedRecipes.map((recipe) => (
-          <div className="recommendRecipeItem" key={recipe.id}>
-            <div
-              className="recommendRecipeInfo"
-              onClick={() => setSelectedRecipe(recipe)}
-              style={{ cursor: 'pointer' }}
-            >
-              <div className="recommendRecipeTitle">
-                <button
-                  className="recommendRecipeStarBtn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleFavorite(recipe.id);
-                  }}
-                  aria-label="즐겨찾기"
-                  disabled={favoriteLoading[recipe.id]}
-                >
-                  {favoriteLoading[recipe.id] ? (
-                    <span className="starLoadingSpinner" />
-                  ) : (
-                    <img
-                      src={
-                        favoriteRecipes.includes(recipe.id)
-                          ? starFilledIcon
-                          : starIcon
-                      }
-                      alt="star"
-                      className="recommendRecipeStarImg"
-                    />
-                  )}
-                </button>
-                {recipe.title}
+        {recipesLoading ? (
+          <div className="loadingMessage">추천 레시피를 불러오는 중...</div>
+        ) : recommendedRecipes.length > 0 ? (
+          recommendedRecipes.map((recipe) => (
+            <div className="recommendRecipeItem" key={recipe.id}>
+              <div
+                className="recommendRecipeInfo"
+                onClick={() => setSelectedRecipe(recipe)}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className="recommendRecipeTitle">
+                  <button
+                    className="recommendRecipeStarBtn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFavorite(recipe.id);
+                    }}
+                    aria-label="즐겨찾기"
+                    disabled={favoriteLoading[recipe.id]}
+                  >
+                    {favoriteLoading[recipe.id] ? (
+                      <span className="starLoadingSpinner" />
+                    ) : (
+                      <img
+                        src={
+                          favoriteRecipes.includes(recipe.id)
+                            ? starFilledIcon
+                            : starIcon
+                        }
+                        alt="star"
+                        className="recommendRecipeStarImg"
+                      />
+                    )}
+                  </button>
+                  {recipe.title}
+                </div>
+                <div className="recommendRecipeDesc">{recipe.description}</div>
               </div>
-              <div className="recommendRecipeDesc">{recipe.description}</div>
+              <div
+                className="recommendRecipeImgWrap"
+                onClick={() => setSelectedRecipe(recipe)}
+                style={{ cursor: 'pointer' }}
+              >
+                <img
+                  className="recommendRecipeImg"
+                  src={require('../../assets/images/food/PestoPasta.webp')}
+                  alt={recipe.title}
+                />
+              </div>
             </div>
-            <div
-              className="recommendRecipeImgWrap"
-              onClick={() => setSelectedRecipe(recipe)}
-              style={{ cursor: 'pointer' }}
-            >
-              <img
-                className="recommendRecipeImg"
-                src={recipe.image}
-                alt={recipe.title}
-              />
-            </div>
+          ))
+        ) : (
+          <div className="noRecipesMessage">
+            추천 버튼을 눌러 레시피를 받아보세요.
           </div>
-        ))}
+        )}
       </div>
       {selectedRecipe && (
         <RecipeDetailModal

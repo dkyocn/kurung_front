@@ -23,6 +23,8 @@ import myPageRoutes from './mypageRoutes';
 import chatbotRoutes from './chatbotRoutes';
 import communityRoutes from './communityRoutes';
 import medicineRoutes from './medicineRoutes';
+import favoritesRoutes from './favoritesRoutes';
+import missionRoutes from './missionRoutes';
 
 const AppRouter = () => {
   return (
@@ -43,7 +45,6 @@ const AppRouter = () => {
       {communityRoutes}
       {loginRoutes}
       {signupRoutes}
-      {passwordResetRoutes}
       {medicineRoutes}
     </Routes>
   );

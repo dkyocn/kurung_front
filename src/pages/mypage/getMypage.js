@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import '../../styles/mypage/getMypage.css';
+import '../../styles/myPage/getMypage.css';
 import Modal from '../../components/common/Modal';
 import apiClient from '../../utils/axios';
 const GetMypage = () => {
@@ -90,7 +90,11 @@ const GetMypage = () => {
         });
       } catch (err) {
         alert('건강정보를 불러오는데 실패했습니다.');
-        console.error('🔴 서버 응답 오류:', err.response?.status, err.response?.data || err.message);
+        console.error(
+          '🔴 서버 응답 오류:',
+          err.response?.status,
+          err.response?.data || err.message
+        );
       }
     };
 
@@ -106,7 +110,7 @@ const GetMypage = () => {
       try {
         const responses = await Promise.all(
           favoritesTypes.map((category) =>
-            apiClient .get(`/favorites/list`, {
+            apiClient.get(`/favorites/list`, {
               params: { userUuid: uuid, favoritesType: category },
               headers: { Authorization: localStorage.getItem('accessToken') },
             })
@@ -126,65 +130,66 @@ const GetMypage = () => {
 
     fetchFavorites();
   }, []);
-  
-const MypageMissionCard = ({ mission }) => {
-  return (
-    <div className="mypage-card">
-      <h4 className="mypage-card-title">{mission.title}</h4>
-      <p className="mypage-card-desc">{mission.description}</p>
-      <span className={`mypage-card-status ${mission.complete ? 'done' : 'pending'}`}>
-      <p>{mission.complete ? '미션완료' : '미션전'}</p>
-      </span>
-    </div>
-  );
-};
 
-  /** ✅ 오늘의 미션 (더미 데이터) */
- useEffect(() => {
-  const fetchMissions = async () => {
-    try {
-      const response = await apiClient.get('/missions/today');
-      console.log('✅ 마이페이지 미션 응답:', response.data);
-
-      // response.data가 배열인지 확인
-      const data = Array.isArray(response.data) ? response.data : [];
-      
-      // DTO 매핑
-      const mappedData = data.map((mission) => {
-        let title = '오늘의 미션';
-        let description = '설명이 없습니다.';
-
-        if (mission.exerciseRecDTO) {
-          title = '운동 미션';
-          description = mission.exerciseRecDTO.exerciseTitle || '운동 미션';
-        } else if (mission.dietRecDTO) {
-          title = '식단 미션';
-          description = mission.dietRecDTO.dietTitle || '식단 미션';
-        } else if (mission.stressRecDTO) {
-          title = '스트레스 미션';
-          description = mission.stressRecDTO.stressTitle || '스트레스 미션';
-        } else if (mission.habitRecDTO) {
-          title = '습관 미션';
-          description = mission.habitRecDTO.habitName || '습관 미션';
-        }
-
-        return {
-          id: mission.missionId,
-          title,
-          description,
-          complete: mission.complete || false,
-        };
-      });
-
-      setMissions(mappedData);
-    } catch (error) {
-      console.error('❌ 마이페이지 미션 fetch 실패:', error);
-    }
+  const MypageMissionCard = ({ mission }) => {
+    return (
+      <div className="mypage-card">
+        <h4 className="mypage-card-title">{mission.title}</h4>
+        <p className="mypage-card-desc">{mission.description}</p>
+        <span
+          className={`mypage-card-status ${mission.complete ? 'done' : 'pending'}`}
+        >
+          <p>{mission.complete ? '미션완료' : '미션전'}</p>
+        </span>
+      </div>
+    );
   };
 
-  fetchMissions();
-}, []);
+  /** ✅ 오늘의 미션 (더미 데이터) */
+  useEffect(() => {
+    const fetchMissions = async () => {
+      try {
+        const response = await apiClient.get('/missions/today');
+        console.log('✅ 마이페이지 미션 응답:', response.data);
 
+        // response.data가 배열인지 확인
+        const data = Array.isArray(response.data) ? response.data : [];
+
+        // DTO 매핑
+        const mappedData = data.map((mission) => {
+          let title = '오늘의 미션';
+          let description = '설명이 없습니다.';
+
+          if (mission.exerciseRecDTO) {
+            title = '운동 미션';
+            description = mission.exerciseRecDTO.exerciseTitle || '운동 미션';
+          } else if (mission.dietRecDTO) {
+            title = '식단 미션';
+            description = mission.dietRecDTO.dietTitle || '식단 미션';
+          } else if (mission.stressRecDTO) {
+            title = '스트레스 미션';
+            description = mission.stressRecDTO.stressTitle || '스트레스 미션';
+          } else if (mission.habitRecDTO) {
+            title = '습관 미션';
+            description = mission.habitRecDTO.habitName || '습관 미션';
+          }
+
+          return {
+            id: mission.missionId,
+            title,
+            description,
+            complete: mission.complete || false,
+          };
+        });
+
+        setMissions(mappedData);
+      } catch (error) {
+        console.error('❌ 마이페이지 미션 fetch 실패:', error);
+      }
+    };
+
+    fetchMissions();
+  }, []);
 
   /** ✅ BMI 계산 */
   const calculateBMI = () => {
@@ -217,7 +222,8 @@ const MypageMissionCard = ({ mission }) => {
       const userUuid = localStorage.getItem('userUuid');
       const token = localStorage.getItem('accessToken');
 
-      const numeric = (val) => parseFloat(val.toString().replace(/[^0-9.]/g, ''));
+      const numeric = (val) =>
+        parseFloat(val.toString().replace(/[^0-9.]/g, ''));
 
       const requestData = {
         healthinfoId: bodyInfo.healthInfoId,
@@ -282,7 +288,9 @@ const MypageMissionCard = ({ mission }) => {
             value={value}
             activeStartDate={viewDate}
             onChange={setValue}
-            onActiveStartDateChange={({ activeStartDate }) => setViewDate(activeStartDate)}
+            onActiveStartDateChange={({ activeStartDate }) =>
+              setViewDate(activeStartDate)
+            }
             prevLabel="〈"
             nextLabel="〉"
             locale="ko-KR"
@@ -293,7 +301,8 @@ const MypageMissionCard = ({ mission }) => {
             showNeighboringMonth={false}
             tileContent={tileContent}
             tileDisabled={({ date, view }) =>
-              date.getMonth() !== viewDate.getMonth() || date.getFullYear() !== viewDate.getFullYear()
+              date.getMonth() !== viewDate.getMonth() ||
+              date.getFullYear() !== viewDate.getFullYear()
             }
           />
         </div>
@@ -304,15 +313,35 @@ const MypageMissionCard = ({ mission }) => {
         <h3>기본 신체 정보</h3>
         <div className="info-row">
           <label>키</label>
-          <input name="height" value={bodyInfo.height} onChange={handleChange} readOnly={!editable} />
+          <input
+            name="height"
+            value={bodyInfo.height}
+            onChange={handleChange}
+            readOnly={!editable}
+          />
           <label>체중</label>
-          <input name="weight" value={bodyInfo.weight} onChange={handleChange} readOnly={!editable} />
+          <input
+            name="weight"
+            value={bodyInfo.weight}
+            onChange={handleChange}
+            readOnly={!editable}
+          />
         </div>
         <div className="info-row">
           <label>체지방률</label>
-          <input name="fat" value={bodyInfo.fat} onChange={handleChange} readOnly={!editable} />
+          <input
+            name="fat"
+            value={bodyInfo.fat}
+            onChange={handleChange}
+            readOnly={!editable}
+          />
           <label>골격근량</label>
-          <input name="muscle" value={bodyInfo.muscle} onChange={handleChange} readOnly={!editable} />
+          <input
+            name="muscle"
+            value={bodyInfo.muscle}
+            onChange={handleChange}
+            readOnly={!editable}
+          />
         </div>
         <div className="info-row">
           <label>BMI</label>
@@ -322,121 +351,138 @@ const MypageMissionCard = ({ mission }) => {
           </div>
         </div>
         <div className="edit-buttons">
-          {editable && <button className="save-btn" onClick={handleSave}>저장</button>}
+          {editable && (
+            <button className="save-btn" onClick={handleSave}>
+              저장
+            </button>
+          )}
           <button onClick={() => setEditable(true)}>신체 정보 수정</button>
         </div>
       </section>
 
       <section className="health-goal">
-    <h3>나의 건강 목표</h3>
-    <div className="goal-progress">
-      <p>주 5회 운동</p>
-      
-      <p>
-        <span className="highlight">2/5 미션</span> 달성
-      </p>
-    </div>
-    <div className="goal-buttons">
-        {/* 목표 설정 */}
-        <button
-          className="goal-btn"
-          onClick={() => navigate('/createObjective')}
-        >
-          목표 설정
-        </button>
+        <h3>나의 건강 목표</h3>
+        <div className="goal-progress">
+          <p>주 5회 운동</p>
 
-        {/* 목표 수정 (동적 id 적용) */}
-        <button
-          className="goal-btn"
-          onClick={() => navigate(`/updateObjective/1`)}
-        >
-          목표 수정
-        </button>
-</div>
-  </section>
+          <p>
+            <span className="highlight">2/5 미션</span> 달성
+          </p>
+        </div>
+        <div className="goal-buttons">
+          {/* 목표 설정 */}
+          <button
+            className="goal-btn"
+            onClick={() => navigate('/createObjective')}
+          >
+            목표 설정
+          </button>
+
+          {/* 목표 수정 (동적 id 적용) */}
+          <button
+            className="goal-btn"
+            onClick={() => navigate(`/updateObjective/1`)}
+          >
+            목표 수정
+          </button>
+        </div>
+      </section>
 
       {/* ✅ 즐겨찾기 */}
       <section className="favorites-section">
         <h3>즐겨찾기</h3>
-       <div className="favorites-tabs">
-    {favoritesTypes.map((category) => (
-      <button
-        key={category}
-        className={`favorite-tab ${activeTab === category ? 'active' : ''}`}
-        onClick={() => setActiveTab(category)}
-      >
-        {category === 'ROUTINES' ? '운동' : category === 'FOOD' ? '식단' : '커뮤니티'}
-      </button>
-    ))}
-  </div>
-
-  {/* 선택된 탭의 즐겨찾기 카드 */}
-  <div className="mypage-favorites-cards">
-  {favorites[activeTab] && favorites[activeTab].length > 0 ? (
-    favorites[activeTab].slice(0, 3).map((item) => {
-      let displayName = '';
-      let imageUrl = '';
-
-      switch (activeTab) {
-        case 'ROUTINES':
-          displayName = item.routinesDTO?.title ?? `ID: ${item.favoritesId}`;
-          break;
-        case 'FOOD':
-          displayName = item.foodDTO?.foodName ?? `ID: ${item.favoritesId}`;
-          break;
-        case 'COMMUNITY':
-          displayName = item.communityDTO?.title ?? `ID: ${item.favoritesId}`;
-          break;
-        default:
-          displayName = `ID: ${item.favoritesId}`;
-      }
-
-      return (
-        <div key={item.favoritesId} className="mypage-favorites-card">
-          {imageUrl && <img src={imageUrl} alt={displayName} className="card-img" />}
-          <p className="card-title">{displayName}</p>
+        <div className="favorites-tabs">
+          {favoritesTypes.map((category) => (
+            <button
+              key={category}
+              className={`favorite-tab ${activeTab === category ? 'active' : ''}`}
+              onClick={() => setActiveTab(category)}
+            >
+              {category === 'ROUTINES'
+                ? '운동'
+                : category === 'FOOD'
+                  ? '식단'
+                  : '커뮤니티'}
+            </button>
+          ))}
         </div>
-      );
-    })
-  ) : (
-    <p className="empty-message">즐겨찾기 항목이 없습니다.</p>
-  )}
-</div>
+
+        {/* 선택된 탭의 즐겨찾기 카드 */}
+        <div className="mypage-favorites-cards">
+          {favorites[activeTab] && favorites[activeTab].length > 0 ? (
+            favorites[activeTab].slice(0, 3).map((item) => {
+              let displayName = '';
+              let imageUrl = '';
+
+              switch (activeTab) {
+                case 'ROUTINES':
+                  displayName =
+                    item.routinesDTO?.title ?? `ID: ${item.favoritesId}`;
+                  break;
+                case 'FOOD':
+                  displayName =
+                    item.foodDTO?.foodName ?? `ID: ${item.favoritesId}`;
+                  break;
+                case 'COMMUNITY':
+                  displayName =
+                    item.communityDTO?.title ?? `ID: ${item.favoritesId}`;
+                  break;
+                default:
+                  displayName = `ID: ${item.favoritesId}`;
+              }
+
+              return (
+                <div key={item.favoritesId} className="mypage-favorites-card">
+                  {imageUrl && (
+                    <img
+                      src={imageUrl}
+                      alt={displayName}
+                      className="card-img"
+                    />
+                  )}
+                  <p className="card-title">{displayName}</p>
+                </div>
+              );
+            })
+          ) : (
+            <p className="empty-message">즐겨찾기 항목이 없습니다.</p>
+          )}
+        </div>
 
         <div className="move-favorites-btn-wrapper">
-          <button className="move-favorites-btn" onClick={() => navigate('/favorites')}>
+          <button
+            className="move-favorites-btn"
+            onClick={() => navigate('/favorites')}
+          >
             즐겨찾기 페이지로 이동
           </button>
         </div>
       </section>
 
+      <div className="mypage-missions-container">
+        <h3 className="mypage-missions-title">오늘의 미션</h3>
 
-  <div className="mypage-missions-container">
-    <h3 className="mypage-missions-title">오늘의 미션</h3>
-
-    {missions.length === 0 ? (
-      <p className="mypage-empty">오늘 등록된 미션이 없습니다.</p>
-    ) : (
-      <div className="mypage-missions-list">
-        {missions.map((mission) => (
-          <MypageMissionCard
-            key={mission.id}
-            mission={mission}
-            onStatusChange={(newStatus) => {
-              // 상태 업데이트 로직 유지
-              setMissions((prev) =>
-                prev.map((m) =>
-                  m.id === mission.id ? { ...m, complete: newStatus } : m
-                )
-              );
-            }}
-          />
-        ))}
+        {missions.length === 0 ? (
+          <p className="mypage-empty">오늘 등록된 미션이 없습니다.</p>
+        ) : (
+          <div className="mypage-missions-list">
+            {missions.map((mission) => (
+              <MypageMissionCard
+                key={mission.id}
+                mission={mission}
+                onStatusChange={(newStatus) => {
+                  // 상태 업데이트 로직 유지
+                  setMissions((prev) =>
+                    prev.map((m) =>
+                      m.id === mission.id ? { ...m, complete: newStatus } : m
+                    )
+                  );
+                }}
+              />
+            ))}
+          </div>
+        )}
       </div>
-    )}
-  </div>
-
-
 
       {/* ✅ 리마인더 */}
       <section className="reminder-section">
@@ -445,7 +491,10 @@ const MypageMissionCard = ({ mission }) => {
         <p className="reminder-subtext" onClick={() => setShowTimeModal(true)}>
           미션 시간 알림 설정
         </p>
-        <button className="toggle-btn" onClick={() => setReminderEnabled(!reminderEnabled)}>
+        <button
+          className="toggle-btn"
+          onClick={() => setReminderEnabled(!reminderEnabled)}
+        >
           {reminderEnabled ? 'ON' : 'OFF'}
         </button>
 
@@ -458,7 +507,14 @@ const MypageMissionCard = ({ mission }) => {
         <Modal onClose={() => setShowTimeModal(false)}>
           <div style={{ padding: '20px', textAlign: 'center' }}>
             <h4 style={{ marginBottom: '20px' }}>알림 시간 설정</h4>
-            <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', marginBottom: '20px' }}>
+            <div
+              style={{
+                display: 'flex',
+                gap: '10px',
+                justifyContent: 'center',
+                marginBottom: '20px',
+              }}
+            >
               <select value={ampm} onChange={(e) => setAmpm(e.target.value)}>
                 <option value="오전">오전</option>
                 <option value="오후">오후</option>
@@ -466,18 +522,31 @@ const MypageMissionCard = ({ mission }) => {
               <select value={hour} onChange={(e) => setHour(e.target.value)}>
                 {[...Array(12)].map((_, i) => {
                   const h = String(i + 1).padStart(2, '0');
-                  return <option key={h} value={h}>{h}</option>;
+                  return (
+                    <option key={h} value={h}>
+                      {h}
+                    </option>
+                  );
                 })}
               </select>
-              <select value={minute} onChange={(e) => setMinute(e.target.value)}>
+              <select
+                value={minute}
+                onChange={(e) => setMinute(e.target.value)}
+              >
                 {[...Array(60)].map((_, i) => {
                   const m = String(i).padStart(2, '0');
-                  return <option key={m} value={m}>{m}</option>;
+                  return (
+                    <option key={m} value={m}>
+                      {m}
+                    </option>
+                  );
                 })}
               </select>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+            <div
+              style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}
+            >
               <button
                 style={{
                   padding: '8px 16px',

@@ -158,7 +158,7 @@ function Header({ toggleMenubar }) {
                 </Link>
               </li>
               <li>
-                <Link to="/" className="navItem" onClick={handleDietClick}>
+                <Link to="/createExerciseLog" className="navItem">
                   운동
                 </Link>
               </li>

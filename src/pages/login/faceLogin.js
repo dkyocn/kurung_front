@@ -22,9 +22,9 @@ function LoginPage() {
 
   // === 로그인 페이지 접속 시 만료된 토큰 제거 ===
   useEffect(() => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    console.log('로그인 페이지: 기존 토큰 제거됨');
+    // localStorage.removeItem('accessToken');
+    // localStorage.removeItem('refreshToken');
+    // console.log('로그인 페이지: 기존 토큰 제거됨');
   }, []);
 
   // === 카메라 정리 ===

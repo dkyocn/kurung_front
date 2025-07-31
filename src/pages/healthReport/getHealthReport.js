@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../../utils/axios';
 import dayjs from 'dayjs';
 import {
   LineChart,
@@ -80,13 +80,7 @@ function HealthReport() {
       const reportMonth = dayjs(`${year}-${month}-01`)
         .startOf('month')
         .format('YYYY-MM-DDTHH:mm:ss');
-      const response = await axios.get(baseUrl + 'healthReport/report', {
-        headers: {
-          Authorization:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDI4NTEyfQ.lzYit7hax1CtumOjoX41I3_EoenAKbgwnLYQv4o8WcS2xj9eM7TnXuSJOEXQ60VvBJQXWFKd9fVL1VF5oNgCvQ',
-          RefreshToken:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzUxMTMxMn0.lo4fYGmfKFMTm9LlKfPLq15MmEOmVAIiHFhLz7jLd-pSPzKWXXrJgFDJeQSlpLoYVrKIMcRxjT1K-hHi-9C6Dg',
-        },
+      const response = await axios.get('healthReport/report', {
         params: {
           reportMonth,
         },
@@ -103,13 +97,7 @@ function HealthReport() {
 
   const fetchMissions = async (currentDate, displayType) => {
     try {
-      const response = await axios.get(baseUrl + 'missions/range', {
-        headers: {
-          Authorization:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDI4NTEyfQ.lzYit7hax1CtumOjoX41I3_EoenAKbgwnLYQv4o8WcS2xj9eM7TnXuSJOEXQ60VvBJQXWFKd9fVL1VF5oNgCvQ',
-          RefreshToken:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzUxMTMxMn0.lo4fYGmfKFMTm9LlKfPLq15MmEOmVAIiHFhLz7jLd-pSPzKWXXrJgFDJeQSlpLoYVrKIMcRxjT1K-hHi-9C6Dg',
-        },
+      const response = await axios.get('missions/range', {
         params: {
           currentDate,
           displayType,

@@ -14,7 +14,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import axios from 'axios';
+import axios from '../../utils/axios';
 import '../../styles/lifeLog/getMonthlyLifeLog.css';
 
 const emotionColors = {
@@ -40,22 +40,34 @@ const emotionOrder = [
 ];
 
 const MonthlyLifeLogReport = () => {
+  const today = new Date();
+  const initialViewDate = new Date(
+    today.getFullYear(),
+    today.getMonth() - 1,
+    1
+  );
   const [viewDate, setViewDate] = useState(new Date());
   const [monthlyData, setMonthlyData] = useState(null);
   const [lifeLogMap, setLifeLogMap] = useState({});
+  const [isFutureMonth, setIsFutureMonth] = useState(false);
   const navigate = useNavigate();
-  const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
   const fetchMonthlyReport = async (year, month) => {
+    const selectedDate = new Date(year, month - 1);
+    const now = new Date(today.getFullYear(), today.getMonth(), 1);
+
+    if (selectedDate > now) {
+      setIsFutureMonth(true);
+      setMonthlyData(null);
+      setLifeLogMap({});
+      return;
+    }
+
+    setIsFutureMonth(false);
+
     const dateParam = `${year}-${String(month).padStart(2, '0')}`;
     try {
-      const response = await axios.get(baseUrl + 'lifeLogs/monthly', {
-        headers: {
-          Authorization:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDI4NTEyfQ.lzYit7hax1CtumOjoX41I3_EoenAKbgwnLYQv4o8WcS2xj9eM7TnXuSJOEXQ60VvBJQXWFKd9fVL1VF5oNgCvQ',
-          RefreshToken:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzUxMTMxMn0.lo4fYGmfKFMTm9LlKfPLq15MmEOmVAIiHFhLz7jLd-pSPzKWXXrJgFDJeQSlpLoYVrKIMcRxjT1K-hHi-9C6Dg',
-        },
+      const response = await axios.get('lifeLogs/monthly', {
         params: {
           date: dateParam,
         },
@@ -68,6 +80,7 @@ const MonthlyLifeLogReport = () => {
         return;
       }
       console.log(data);
+
       const logMap = {};
       data.lifeLogList.forEach((log) => {
         const dateKey = new Date(log.lifelogDate).toISOString().slice(0, 10);
@@ -87,7 +100,9 @@ const MonthlyLifeLogReport = () => {
 
   const tileContent = ({ date, view }) => {
     if (view === 'month') {
-      const dateKey = date.toISOString().slice(0, 10);
+      const offset = date.getTimezoneOffset() * 60000;
+      const localDate = new Date(date.getTime() - offset);
+      const dateKey = localDate.toISOString().slice(0, 10);
       const emotion = lifeLogMap[dateKey]?.emotion;
 
       return (
@@ -112,6 +127,10 @@ const MonthlyLifeLogReport = () => {
 
   const handleMonthChange = ({ activeStartDate }) => {
     setViewDate(activeStartDate);
+    fetchMonthlyReport(
+      activeStartDate.getFullYear(),
+      activeStartDate.getMonth() + 1
+    );
   };
 
   const renderEmotionStats = () => {
@@ -181,7 +200,7 @@ const MonthlyLifeLogReport = () => {
 
       {monthlyData && (
         <div className="report-summary">
-          <h2>{monthlyData.month}월 요약</h2>
+          <h2>{viewDate.getMonth() + 1}월 요약</h2>
 
           <div className="monthly-boxes">
             <div className="monthly-item">
@@ -205,7 +224,49 @@ const MonthlyLifeLogReport = () => {
               </p>
             </div>
           </div>
+
+          <div className="habit-recommended">
+            <label className="recommend-title">이번 달 습관 추천</label>
+            <div className="recommended-list">
+              {monthlyData.habitMissions &&
+              monthlyData.habitMissions.length > 0 ? (
+                monthlyData.habitMissions.map((mission, index) => {
+                  const habit = mission.habitRecDTO;
+                  const koreanOrder = [
+                    '1. ',
+                    '2. ',
+                    '3. ',
+                    '4. ',
+                    '5. ',
+                    '6. ',
+                    '7. ',
+                  ];
+                  return (
+                    <div
+                      key={mission.monthlyHabitId}
+                      className="recommended-item"
+                    >
+                      <strong>{koreanOrder[index]}</strong> {habit.habitName}
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="recommended-empty">추천된 습관이 없습니다.</div>
+              )}
+            </div>
+          </div>
         </div>
+      )}
+
+      {isFutureMonth ? (
+        <div className="report-summary">
+          <h2>{viewDate.getMonth() + 1}월 리포트</h2>
+          <div className="report-unavailable">
+            월간 리포트 작성이 불가합니다.
+          </div>
+        </div>
+      ) : (
+        monthlyData && <div className="report-summary"></div>
       )}
     </div>
   );

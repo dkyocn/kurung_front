@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/Menubar.css';
 import BiniImg from '../../assets/bini.png';
 import ArrowDown from '../../assets/arrow-down.png';
-import ArrowUp from '../../assets/arrow-up.png'
+import ArrowUp from '../../assets/arrow-up.png';
 import { Link } from 'react-router-dom';
 import axios from '../../utils/axios';
 
@@ -45,7 +45,9 @@ const Menubar = ({ isOpen }) => {
 
   return (
     <div className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
-      <div className="menu-title menu-title-lifelog">라이프 로그</div>
+      <Link to="/getLifeLogList" className="menu-title menu-title-lifelog">
+        라이프 로그
+      </Link>
 
       <div className="menu-section">
         {renderMenuTitle('식단', 'life')}
@@ -97,14 +99,15 @@ const Menubar = ({ isOpen }) => {
               />
               비니
             </Link>
-            <div className="submenu">스트레스 해소 추천</div>
           </>
         )}
 
         {renderMenuTitle('건강 관리', 'health')}
         {openSection === 'health' && (
           <>
-            <div className="submenu">건강 리포트</div>
+            <Link to="/getHealthReport" className="submenu">
+              건강 리포트
+            </Link>
             <div className="submenu" onClick={handleHealthClick}>
               건강상태 초기진단
             </div>
@@ -124,10 +127,15 @@ const Menubar = ({ isOpen }) => {
             <Link to="/myInfoManagement" className="submenu">
               내 정보 관리
             </Link>
-            <div className="submenu">내 정보 관리</div>
-             <Link to="/mypage" className="submenu">마이페이지</Link>
-            <Link to="/missions" className="submenu">mission</Link>
-            <Link to="/favorites" className="submenu">즐겨찾기</Link>
+            <Link to="/mypage" className="submenu">
+              마이페이지
+            </Link>
+            <Link to="/missions" className="submenu">
+              mission
+            </Link>
+            <Link to="/favorites" className="submenu">
+              즐겨찾기
+            </Link>
           </>
         )}
       </div>

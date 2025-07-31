@@ -9,6 +9,7 @@ import starFilledIcon from '../../assets/icons/starFilled.png';
 import SaveButton from '../../components/buttons/SaveButton';
 import SaveModal from '../../components/common/Modal';
 import axios from '../../utils/axios';
+import aiAxios from 'axios';
 import {
   PieChart,
   Pie,
@@ -42,6 +43,37 @@ const DietForm = () => {
   const [displayDate, setDisplayDate] = useState(new Date());
   const dateRef = useRef(null);
 
+  // accessToken에서 userUuid 추출 (JWT 전용)
+  const getUserUuidFromToken = () => {
+    try {
+      const accessToken = localStorage.getItem('accessToken');
+      if (!accessToken) {
+        return null;
+      }
+
+      if (accessToken && accessToken.split('.').length === 3) {
+        const base64Url = accessToken.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(
+          atob(base64)
+            .split('')
+            .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+            .join('')
+        );
+        const payload = JSON.parse(jsonPayload);
+        return payload.userUuid;
+      }
+    } catch (e) {
+      return null;
+    }
+    return null;
+  };
+
+  const aiApi = aiAxios.create({
+    baseURL: 'http://localhost:8000', // FastAPI 서버
+    // headers 제거 (FormData는 자동으로 설정됨)
+  });
+
   const daysInMonth = new Date(
     displayDate.getFullYear(),
     displayDate.getMonth() + 1,
@@ -74,6 +106,7 @@ const DietForm = () => {
     fetchDietData(newDate, activeTab);
     fetchTodayNutrition(newDate);
     setSelectedFood(null);
+    setDietSummary(null); // 날짜 변경 시 오늘의 한줄 초기화
   };
 
   useEffect(() => {
@@ -134,7 +167,7 @@ const DietForm = () => {
         try {
           const favoritesRes = await axios.get(baseUrl + 'favorites/list', {
             params: {
-              favoritesType: 'RECIPE',
+              favoritesType: 'FOOD',
             },
           });
 
@@ -235,6 +268,7 @@ const DietForm = () => {
   const [totalFoods, setTotalFoods] = useState(null);
   const [searchInput, setSearchInput] = useState('');
   const [todayNutrition, setTodayNutrition] = useState(null);
+  const [dietSummary, setDietSummary] = useState(null);
 
   // 음식 추가 함수
   const addFood = (newFood) => {
@@ -262,6 +296,49 @@ const DietForm = () => {
 
     // 검색 입력 초기화
     setSearchInput('');
+  };
+
+  // 오늘의 한줄 평 가져오기
+  const fetchDietSummary = async (date) => {
+    try {
+      const userUuid = getUserUuidFromToken();
+      if (!userUuid) {
+        console.error('사용자 UUID를 찾을 수 없습니다.');
+        return;
+      }
+
+      // 날짜 형식을 YYYY-MM-DD로 변환
+      const formattedDate = new Date(+date + timeZone)
+        .toISOString()
+        .split('T')[0];
+
+      const response = await aiApi.get('/diet/summary', {
+        params: {
+          user_uuid: userUuid,
+          diet_date: formattedDate,
+        },
+      });
+
+      const data = response.data;
+      if (data && data.summary) {
+        setDietSummary(data.summary);
+      }
+    } catch (error) {
+      console.error('식단 요약 불러오기 실패:', error);
+      setDietSummary(null);
+    }
+  };
+
+  // 저장 버튼 클릭 핸들러
+  const handleSaveClick = () => {
+    setShowSaveModal(true);
+  };
+
+  // 모달 확인 버튼 핸들러
+  const handleSaveConfirm = async () => {
+    setShowSaveModal(false);
+    // 저장 후 요약 가져오기
+    await fetchDietSummary(currentDate);
   };
 
   // 즐겨찾기 토글
@@ -647,21 +724,19 @@ const DietForm = () => {
           ))}
         </div>
         <div className="dietSaveButton">
-          <SaveButton onClick={() => setShowSaveModal(true)} />
+          <SaveButton onClick={handleSaveClick} />
           {showSaveModal && (
             <SaveModal
               message="식단을 저장하시겠습니까?"
-              onConfirm={null}
+              onConfirm={handleSaveConfirm}
               onCancel={() => setShowSaveModal(false)}
             />
           )}
         </div>
         {/* 오늘의 한줄 평 */}
-        {/* <div className="todayComment">{todayNutrition.comment}</div> */}
-        <div className="todayComment">
-          오늘의 한줄: 아침 식사는 균형이 잡혀 있으며 탄수화물, 단백질, 건강에
-          좋은 지방이 적절히 혼합되어있어요.
-        </div>
+        {dietSummary && (
+          <div className="todayComment">오늘의 한줄: {dietSummary}</div>
+        )}
         {/* 목표 섭취량 */}
         {todayNutrition && hasGoalData() && (
           <div className="goalSection">

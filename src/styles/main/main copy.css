@@ -1,0 +1,266 @@
+.mainPage {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 20px;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.dashboardGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 1250px;
+  margin: 0 auto;
+}
+
+.dashboardCard {
+  background: white;
+  border: 1px solid #88c71f;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.dashboardCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.cardTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 15px 0;
+  text-align: left;
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* 식단 추천 */
+.kcalDisplay {
+  font-size: 24px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 5px;
+}
+
+.kcalLabel {
+  font-size: 14px;
+  color: #666;
+}
+
+/* 운동 추천 */
+.exerciseInfo {
+  margin-bottom: 15px;
+}
+
+.exerciseName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 5px;
+}
+
+.exerciseDetails {
+  font-size: 14px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.exerciseIcon {
+  font-size: 16px;
+}
+
+.startButton {
+  background-color: #f2f5f2;
+  color: #000;
+  border: none;
+  border-radius: 12px;
+  width: 84px;
+  height: 39px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-family: 'Pretendard', sans-serif;
+  font-size: 14px;
+  align-self: flex-start;
+}
+
+.startButton:active {
+  transform: scale(0.97);
+}
+
+.startButton:hover {
+  background-color: #e8f0e8;
+}
+
+.startButton:disabled {
+  background-color: #e0e0e0;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* 오늘의 체중 */
+.weightInfo {
+  font-size: 14px;
+  color: #000;
+  line-height: 1.4;
+}
+
+/* 영양소 분석 (식단 기록에서 변경) */
+.broccoliIcon {
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.dietMessage {
+  font-size: 14px;
+  color: #000;
+  line-height: 1.4;
+  text-align: center;
+}
+
+/* 목표 달성 진행률 */
+.progressRate {
+  font-size: 32px;
+  font-weight: 700;
+  color: #000;
+  text-align: center;
+}
+
+/* 라이프로그 */
+.lifeLogMessage {
+  font-size: 14px;
+  color: #000;
+  line-height: 1.4;
+}
+
+/* 건강리포트 */
+.healthReportInfo {
+  font-size: 14px;
+  color: #000;
+  line-height: 1.4;
+}
+
+/* 오늘의 미션 */
+.missionItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: #000;
+  margin-bottom: 10px;
+}
+
+.missionItem:last-child {
+  margin-bottom: 0;
+}
+
+.missionButton {
+  background-color: #f2f5f2;
+  color: #000;
+  border: none;
+  border-radius: 12px;
+  width: 84px;
+  height: 39px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-family: 'Pretendard', sans-serif;
+  font-size: 14px;
+}
+
+.missionButton:active {
+  transform: scale(0.97);
+}
+
+.missionButton:hover {
+  background-color: #e8f0e8;
+}
+
+.missionButton:disabled {
+  background-color: #e0e0e0;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* 비니 */
+.biniIcon {
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.biniMessage {
+  font-size: 14px;
+  color: #000;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.chatButton {
+  background-color: #f2f5f2;
+  color: #000;
+  border: none;
+  border-radius: 12px;
+  width: 84px;
+  height: 39px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-family: 'Pretendard', sans-serif;
+  font-size: 14px;
+  align-self: center;
+}
+
+.chatButton:active {
+  transform: scale(0.97);
+}
+
+.chatButton:hover {
+  background-color: #e8f0e8;
+}
+
+.chatButton:disabled {
+  background-color: #e0e0e0;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* 로딩 상태 */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 18px;
+  color: #666;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .dashboardGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+
+  .mainPage {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboardGrid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .dashboardCard {
+    padding: 15px;
+  }
+}

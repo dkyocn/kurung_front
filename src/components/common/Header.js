@@ -1,8 +1,7 @@
 // src/components/common/Header.js
 
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from '../../utils/axios';
+import { Link } from 'react-router-dom';
 
 import '../styles/Header.css';
 import Modal from './Modal';
@@ -14,8 +13,6 @@ import WarningModal from './WarningModal';
 //     };
 
 function Header({ toggleMenubar }) {
-  const navigate = useNavigate();
-
   // 로그인 상태 관리
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -72,48 +69,6 @@ function Header({ toggleMenubar }) {
     setShowModal(false);
   };
 
-  // 로그아웃 처리 함수
-  const handleLogout = async () => {
-    try {
-      const accessToken = localStorage.getItem('accessToken');
-      
-      if (accessToken) {
-        // 백엔드 로그아웃 API 호출 (선택사항)
-        try {
-          await axios.post('/user/logout', {}, {
-            headers: {
-              'Authorization': `Bearer ${accessToken}`
-            }
-          });
-          console.log('백엔드 로그아웃 API 호출 완료');
-        } catch (error) {
-          console.log('백엔드 로그아웃 API 호출 실패 (프론트엔드 로그아웃은 계속 진행)');
-        }
-      }
-      
-      // localStorage에서 토큰 및 사용자 정보 삭제
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('userInfo');
-      
-      // 로그인 상태 변화 이벤트 발생
-      window.dispatchEvent(new Event('loginStatusChanged'));
-      
-      // 로그인 페이지로 리다이렉트
-      navigate('/loginSelect');
-      
-      console.log('로그아웃 완료');
-    } catch (error) {
-      console.error('로그아웃 처리 중 오류:', error);
-      // 오류가 발생해도 프론트엔드 로그아웃은 진행
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('userInfo');
-      window.dispatchEvent(new Event('loginStatusChanged'));
-      navigate('/loginSelect');
-    }
-  };
-
   // Warning 모달 (식단용)
   const [warnOpen, setWarnOpen] = useState(false);
 
@@ -124,15 +79,6 @@ function Header({ toggleMenubar }) {
   };
   const warnClose = () => setWarnOpen(false);
 
-  // 마이페이지 클릭 핸들러
-  const handleMyPageClick = (e) => {
-    if (!isLoggedIn) {
-      e.preventDefault();
-      console.log('로그인되지 않은 상태 - 로그인 페이지로 이동');
-      navigate('/loginSelect');
-    }
-  };
-
   return (
     <header className="header">
       <div className="container">
@@ -140,7 +86,7 @@ function Header({ toggleMenubar }) {
           <button type="button" onClick={toggleMenubar} className="menuButton">
             ☰
           </button>
-          <Link to="/" className="logoLink">
+          <Link to="/main" className="logoLink">
             KURUNG
           </Link>
         </div>
@@ -148,9 +94,9 @@ function Header({ toggleMenubar }) {
           <nav>
             <ul className="navList">
               <li>
-                <button className="navItem" onClick={handleBiniClick}>
+                <Link to="/chatbot" className="navItem">
                   비니
-                </button>
+                </Link>
               </li>
               <li>
                 <Link to="/diet" className="navItem">
@@ -163,27 +109,22 @@ function Header({ toggleMenubar }) {
                 </Link>
               </li>
               <li>
-                <Link to="/" className="navItem">
+                <Link to="/getLifeLogList" className="navItem">
                   라이프로그
                 </Link>
               </li>
               <li>
-                <Link to="/myInfoManagement" className="navItem" onClick={handleMyPageClick}>
+                <Link to="/mypage" className="navItem">
                   마이페이지
                 </Link>
               </li>
               <li>
                 {isLoggedIn ? (
-                  <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                    <Link to="/myInfoManagement" className="navItem">
-                      프로필
-                    </Link>
-                    <button onClick={handleLogout} className="navItem" style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '15pt' }}>
-                      로그아웃
-                    </button>
-                  </div>
+                  <Link to="/myInfoManagement" className="navItem">
+                    프로필
+                  </Link>
                 ) : (
-                  <Link to="/loginSelect" className="navItem">
+                  <Link to="/" className="navItem">
                     로그인
                   </Link>
                 )}

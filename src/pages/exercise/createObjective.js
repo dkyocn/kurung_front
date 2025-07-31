@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../../styles/exercise/createObjective.css';
-import axios from 'axios';
+import apiClient from '../../utils/axios';
 
 function getMonthOptions(startYear, startMonth, count) {
   const options = [];
@@ -61,9 +61,48 @@ function CreateObjective() {
       alert('필수 입력값을 모두 입력하세요!');
       return;
     }
+
+    // 1. 로그인 사용자의 userUuid 동적 추출
+    const getUserUuidFromToken = () => {
+      try {
+        // localStorage에서 실제 로그인된 사용자의 토큰 가져오기
+        const accessToken = localStorage.getItem('accessToken');
+        if (!accessToken) {
+          console.error('accessToken이 localStorage에 없습니다.');
+          return null;
+        }
+
+        if (accessToken && accessToken.split('.').length === 3) {
+          // JWT payload 추출 (Base64 디코딩)
+          const base64Url = accessToken.split('.')[1];
+          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+          const jsonPayload = decodeURIComponent(
+            atob(base64)
+              .split('')
+              .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+              .join('')
+          );
+          const payload = JSON.parse(jsonPayload);
+          console.log('토큰에서 추출한 사용자 정보:', payload);
+          return payload.userUuid;
+        }
+      } catch (e) {
+        console.error('토큰에서 userUuid 추출 실패:', e);
+      }
+      return null;
+    };
+
+    const userUuid = getUserUuidFromToken();
+    if (!userUuid) {
+      alert('로그인 정보가 유효하지 않습니다. 다시 로그인해주세요.');
+      return;
+    }
+
+    console.log('사용할 userUuid:', userUuid);
+
     const selectedMonth = monthOptions.find(m => m.label === form.month);
     const data = {
-      user: { userUuid: '2025061401' },
+      user: { userUuid: userUuid }, // 동적으로 추출한 userUuid 사용
       objectiveTitle: form.title,
       objectiveCount: Number(form.count),
       objectiveDuration: Number(form.duration),
@@ -74,17 +113,12 @@ function CreateObjective() {
       // isActive: true // 필요시 주석 해제
     };
     try {
-      await axios.post('/api/v1/kurung/exercise/objective/created', data, {
-        headers: {
-          Authorization:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA2ODg5fQ.5ZYVum2-jopUE8h4jC784qTsKYMd8M3OSjCjDLkjCbKoCgBIr2VpAfiiqICMcTCfxQLr0B2bCb0oXwQgFN50Xw',
-          RefreshToken:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4OTY4OX0.dxeRiuXKqvnt2QkalIKZX2cUpKg8-KwI9uCfrbYFGnQBtDsCqlxe5OpN9fA1OCnppv8o2rKq_tviWJSBQlH5nw',
-        },
-      });
+      // apiClient 사용으로 변경
+      await apiClient.post('/exercise/objective/created', data);
       alert('목표가 저장되었습니다!');
     } catch (err) {
       alert('저장 실패!');
+      console.error('목표 저장 실패:', err);
     }
   };
 

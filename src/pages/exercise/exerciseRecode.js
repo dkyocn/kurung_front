@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import apiClient from '../../utils/axios';
 import dayjs from 'dayjs';
 import '../../styles/exercise/exerciseRecode.css';
 import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts';
-
-const USER_UUID = '2025061401';
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 const weekLabels = ['1주차', '2주차', '3주차', '4주차'];
 
@@ -264,6 +262,49 @@ const monthList = Array.from({ length: 12 }).map((_, i) =>
 // const formatForBackend = date => dayjs(date).format('YY/MM/DD');
 
 function ExerciseRecode() {
+  // accessToken에서 userUuid 추출 (JWT 전용) - exerciseLogCheck.js 참고
+  const getUserUuidFromToken = () => {
+    try {
+      // localStorage에서 실제 로그인된 사용자의 토큰 가져오기
+      const accessToken = localStorage.getItem('accessToken');
+      if (!accessToken) {
+        console.error('accessToken이 localStorage에 없습니다.');
+        return null;
+      }
+
+      if (accessToken && accessToken.split('.').length === 3) {
+        // JWT payload 추출 (Base64 디코딩)
+        const base64Url = accessToken.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(
+          atob(base64)
+            .split('')
+            .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+            .join('')
+        );
+        const payload = JSON.parse(jsonPayload);
+        console.log('토큰에서 추출한 사용자 정보:', payload);
+        return payload.userUuid;
+      }
+    } catch (e) {
+      console.error('토큰에서 userUuid 추출 실패:', e);
+    }
+    return null;
+  };
+
+  // 토큰 자동 검증 및 리다이렉트 - exerciseLogCheck.js 참고
+  const checkAndRedirectIfNeeded = () => {
+    const accessToken = localStorage.getItem('accessToken');
+    
+    if (!accessToken) {
+      alert('로그인이 필요합니다.');
+      window.location.href = '/loginpage';
+      return false;
+    }
+    
+    return true;
+  };
+
   const [tab, setTab] = useState('daily');
   const [dailyInfo, setDailyInfo] = useState(null);
   const [monthlyStats, setMonthlyStats] = useState(null);
@@ -273,38 +314,70 @@ function ExerciseRecode() {
   const [selectedDate, setSelectedDate] = useState(dateList[0]);
   const [selectedMonth, setSelectedMonth] = useState(monthList[0]);
 
+
+
   useEffect(() => {
     setLoading(true);
     setError('');
+
+    // 1. 토큰 자동 검증
+    if (!checkAndRedirectIfNeeded()) {
+      setLoading(false);
+      return;
+    }
+
+    // 2. 로그인 사용자의 userUuid 동적 추출
+    const userUuid = getUserUuidFromToken();
+    if (!userUuid) {
+      alert('로그인 정보가 유효하지 않습니다. 다시 로그인해주세요.');
+      setLoading(false);
+      return;
+    }
+
+
+
     if (tab === 'daily') {
-      axios.get(`/api/v1/kurung/exercise/summary/daily`, {
-        params: { date: selectedDate },
-        headers: {
-          Authorization:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA2ODg5fQ.5ZYVum2-jopUE8h4jC784qTsKYMd8M3OSjCjDLkjCbKoCgBIr2VpAfiiqICMcTCfxQLr0B2bCb0oXwQgFN50Xw',
-          RefreshToken:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4OTY4OX0.dxeRiuXKqvnt2QkalIKZX2cUpKg8-KwI9uCfrbYFGnQBtDsCqlxe5OpN9fA1OCnppv8o2rKq_tviWJSBQlH5nw',
-        },
+      apiClient.get(`/exercise/summary/daily`, {
+        params: { date: selectedDate }
       })
         .then(res => {
           setDailyInfo(res.data);
-          console.log('dailyInfo:', res.data);
         })
-        .catch(() => setError('일일 운동 데이터를 불러오지 못했습니다.'))
+        .catch((error) => {
+          if (error.response?.status === 401) {
+            alert('로그인이 필요합니다.');
+            window.location.href = '/loginpage';
+          } else {
+            setError('일일 운동 데이터를 불러오지 못했습니다.');
+          }
+        })
         .finally(() => setLoading(false));
     } else {
-      axios
-        .get(`/api/v1/kurung/exercise/summary/monthly`, { 
-          params: { month: selectedMonth },
-          headers: {
-            Authorization:
-              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA2ODg5fQ.5ZYVum2-jopUE8h4jC784qTsKYMd8M3OSjCjDLkjCbKoCgBIr2VpAfiiqICMcTCfxQLr0B2bCb0oXwQgFN50Xw',
-            RefreshToken:
-              'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4OTY4OX0.dxeRiuXKqvnt2QkalIKZX2cUpKg8-KwI9uCfrbYFGnQBtDsCqlxe5OpN9fA1OCnppv8o2rKq_tviWJSBQlH5nw',
-          },
+      apiClient.get(`/exercise/summary/monthly`, { 
+        params: { month: selectedMonth }
+      })
+        .then(res => {
+          setMonthlyStats(res.data);
         })
-        .then(res => setMonthlyStats(res.data))
-        .catch(() => setError('월간 통계 데이터를 불러오지 못했습니다.'))
+        .catch((error) => {
+          if (error.response?.status === 401) {
+            alert('로그인이 필요합니다.');
+            window.location.href = '/loginpage';
+          } else if (error.response?.status === 500) {
+            // 500 에러 시 빈 데이터로 처리
+            setMonthlyStats({
+              totalDuration: 0,
+              totalKcal: 0,
+              routineCount: 0,
+              goalAchievementRate: 0,
+              weeklyRoutineCounts: [0, 0, 0, 0],
+              weeklyDurations: [0, 0, 0, 0],
+              weeklyKcals: [0, 0, 0, 0]
+            });
+          } else {
+            setError('월간 통계 데이터를 불러오지 못했습니다.');
+          }
+        })
         .finally(() => setLoading(false));
     }
   }, [tab, selectedDate, selectedMonth]);
@@ -395,6 +468,8 @@ function ExerciseRecode() {
         <div className="content active">
           <div className="monthly-summary">
             <h2>누적 통계 및 목표 현황</h2>
+            
+
             <div className="stats-container">
               <div className="stat-item">
                 <h3>총 운동 시간</h3>

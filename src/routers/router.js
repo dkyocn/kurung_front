@@ -9,11 +9,13 @@ import { Routes, Route } from 'react-router-dom';
 // import boardRoutes from './boardRoutes';
 // import noticeRoutes from './noticeRoutes';
 // import memberRoutes from './memberRoutes';
-
+// import lifeLogRoutes from './lifeLogRoutes';
+import missionRoutes from './missionRoutes';
 import dietRouters from './dietRouters';
 import recipeRoutes from './recipeRoutes';
 import lifeLogRoutes from './lifeLogRoutes';
 import exerciseRoutes from './exerciseLogRoutes';
+import favoritesRoutes from './favoritesRoutes';
 import diagnosisRoutes from './diagnosisLogRoutes';
 import healthReportRoutes from './healthReportRoutes';
 import loginRoutes from './loginRoutes';
@@ -23,10 +25,17 @@ import chatbotRoutes from './chatbotRoutes';
 import communityRoutes from './communityRoutes';
 import medicineRoutes from './medicineRoutes';
 
+
 const AppRouter = () => {
   return (
     <Routes>
-      {chatbotRoutes}
+      {/* 메인 페이지 라우트 추가 */}
+      <Route path="/" element={<div>메인 페이지</div>} />
+      <Route path="/main" element={<div>메인 페이지</div>} />
+      
+      {favoritesRoutes}
+      {loginRoutes}
+      {missionRoutes}
       {exerciseRoutes}
       {lifeLogRoutes}
       {dietRouters}
@@ -34,14 +43,10 @@ const AppRouter = () => {
       {recipeRoutes}
       {healthReportRoutes}
       {communityRoutes}
-      {loginRoutes}
       {signupRoutes}
       {passwordResetRoutes}
       {medicineRoutes}
-      {/* {noticeRoutes} */}
-      {/* {memberRoutes} */}
-      {/* <Route path="/" element={<Home />} />
-      <Route path="/about" element={<About />} /> */}
+      {chatbotRoutes}
     </Routes>
   );
 };

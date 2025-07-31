@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/Menubar.css';
 import BiniImg from '../../assets/bini.png';
 import ArrowDown from '../../assets/arrow-down.png';
-import ArrowUp from '../../assets/arrow-up.png';
+import ArrowUp from '../../assets/arrow-up.png'
 import { Link } from 'react-router-dom';
 import axios from '../../utils/axios';
 
@@ -64,9 +64,20 @@ const Menubar = ({ isOpen }) => {
         {openSection === 'exercise' && (
           <>
             <Link to="/createExerciseLog" className="submenu">
-              운동 기록
+              운동 기록 입력
             </Link>
-            <div className="submenu">운동 추천</div>
+            <Link to="/exerciseLogCheck" className="submenu">
+              운동 기록 확인
+            </Link>
+            <Link to="/exerciseRecode" className="submenu">
+              운동 요약
+            </Link>
+            <Link to="/exerciseVideoRecommend" className="submenu">
+              운동 영상 추천
+            </Link>
+            <Link to="/analyzingExerciseStyle" className="submenu">
+              운동 유형 테스
+            </Link>
           </>
         )}
 
@@ -110,11 +121,13 @@ const Menubar = ({ isOpen }) => {
         {renderMenuTitle('마이페이지', 'mypage')}
         {openSection === 'mypage' && (
           <>
-            <div className="submenu">내 정보 관리</div>
-            <Link to="/missions" className="submenu">
-              mission
+            <Link to="/myInfoManagement" className="submenu">
+              내 정보 관리
             </Link>
-            <div className="submenu">즐겨찾기</div>
+            <div className="submenu">내 정보 관리</div>
+             <Link to="/mypage" className="submenu">마이페이지</Link>
+            <Link to="/missions" className="submenu">mission</Link>
+            <Link to="/favorites" className="submenu">즐겨찾기</Link>
           </>
         )}
       </div>

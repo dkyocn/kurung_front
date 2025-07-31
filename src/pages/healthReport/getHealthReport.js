@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../../utils/axios';
 import dayjs from 'dayjs';
 import {
   LineChart,
@@ -80,13 +80,7 @@ function HealthReport() {
       const reportMonth = dayjs(`${year}-${month}-01`)
         .startOf('month')
         .format('YYYY-MM-DDTHH:mm:ss');
-      const response = await axios.get(baseUrl + 'healthReport/report', {
-        headers: {
-          Authorization:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA1ODY2fQ.KUVV-2F1TPbZrXVmKNKadwGsv-zr0uW9RB1Wc28-IEfhvIuPzUH1GfqD9omZQwtJl7iTso3nrmC3yBb04DRf2Q',
-          RefreshToken:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4ODY2Nn0.tYu9Te9Dyged3XGT_5jxSy7aHrdlrS2DXIPSUplW-dZbwsd_-jdPITwKSSikG7gRsdqD9ZySsVjAFJgluEntEg',
-        },
+      const response = await axios.get('healthReport/report', {
         params: {
           reportMonth,
         },
@@ -103,13 +97,7 @@ function HealthReport() {
 
   const fetchMissions = async (currentDate, displayType) => {
     try {
-      const response = await axios.get(baseUrl + 'missions/range', {
-        headers: {
-          Authorization:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJuYW1lIjoi7Iah66-87IScIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzUzNDA1ODY2fQ.KUVV-2F1TPbZrXVmKNKadwGsv-zr0uW9RB1Wc28-IEfhvIuPzUH1GfqD9omZQwtJl7iTso3nrmC3yBb04DRf2Q',
-          RefreshToken:
-            'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0ajA0NTBAZ21haWwuY29tIiwidXNlclV1aWQiOiIyMDI1MDYxNDAxIiwiY2F0ZWdvcnkiOiJyZWZyZXNoIiwibmFtZSI6IuyGoeuvvOyEnCIsInJvbGUiOiJBRE1JTiIsImV4cCI6MTc1MzQ4ODY2Nn0.tYu9Te9Dyged3XGT_5jxSy7aHrdlrS2DXIPSUplW-dZbwsd_-jdPITwKSSikG7gRsdqD9ZySsVjAFJgluEntEg',
-        },
+      const response = await axios.get('missions/range', {
         params: {
           currentDate,
           displayType,
@@ -183,8 +171,8 @@ function HealthReport() {
 
     if (key === 'exercise') {
       const raw = (report.monthlyExercisesTimes || []).reduce((acc, item) => {
-        const day = dayjs(item.exerciseDate).date();
-        acc[day] = item.duration ?? 0;
+        const day = dayjs(item.date).date();
+        acc[day] = item.totalDuration ?? 0;
         return acc;
       }, {});
       return fullDays.map((day) => ({
@@ -206,7 +194,7 @@ function HealthReport() {
   const getAverageExerciseTime = () => {
     const exercise = report?.monthlyExercisesTimes ?? [];
     if (exercise.length === 0) return '-';
-    const total = exercise.reduce((sum, item) => sum + item.duration, 0);
+    const total = exercise.reduce((sum, item) => sum + item.totalDuration, 0);
     return Math.round(total / exercise.length);
   };
 
@@ -216,6 +204,8 @@ function HealthReport() {
     const sorted = [...healthInfo]
       .filter((item) => item.weight != null && item.createdAt)
       .sort((a, b) => dayjs(a.createdAt).unix() - dayjs(b.createdAt).unix());
+
+    if (sorted.length < 2) return null;
 
     const first = sorted[0].weight;
     const last = sorted[sorted.length - 1].weight;
@@ -230,6 +220,8 @@ function HealthReport() {
     const sorted = [...healthInfo]
       .filter((item) => item.bmi != null && item.createdAt)
       .sort((a, b) => dayjs(a.createdAt).unix() - dayjs(b.createdAt).unix());
+
+    if (sorted.length < 2) return null;
 
     const first = sorted[0].bmi;
     const last = sorted[sorted.length - 1].bmi;
@@ -324,13 +316,9 @@ function HealthReport() {
               <PieChartWithOnlyGreenRounded score={report.monthlyScore} />
             </div>
             <div className="score-text">
-              <h3>이번 달 건강상태: {report.healthStatus}</h3>
+              <h3>이번 달 건강상태:</h3>
               <p style={{ color: '#555', fontSize: 14, lineHeight: 1.4 }}>
-                이번 달 사용자의 건강상태는 양호한 것으로 판단됩니다.
-                <br />
-                식단과 운동 목표 분석결과
-                <br />
-                이를 지키지 않을 시 발생할 수 있는 질병은 아래와 같습니다..
+                {report.healthStatus}
               </p>
             </div>
           </div>

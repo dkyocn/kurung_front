@@ -13,6 +13,8 @@ import '../styles/SearchModal.css';
  * - selected: array of {label, value} (currently selected items)
  * - onRemove: function (called with item to remove)
  * - placeholder: string
+ * - itemKey: string (key for unique identification, default: 'foodId')
+ * - itemLabel: string (key for display label, default: 'foodName')
  */
 export default function SearchModal({
   open,
@@ -82,8 +84,11 @@ export default function SearchModal({
           {selected && selected.length > 0 && (
             <div className="searchModalSelectedList">
               {selected.map((item) => (
-                <span className="searchModalSelectedPill" key={item.value}>
-                  {item.label}
+                <span
+                  className="searchModalSelectedPill"
+                  key={item[itemKey] || item.value}
+                >
+                  {item[itemLabel] || item.label}
                   {onRemove && (
                     <button
                       className="searchModalSelectedRemove"

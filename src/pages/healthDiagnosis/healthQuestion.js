@@ -290,9 +290,9 @@ const HealthQuestion = () => {
     });
 
     try {
-      // await diagnosisApi.post('/diagnosis/analyze', {
-      //   userUuid: getUserUuidFromToken(),
-      // });
+      await diagnosisApi.post('/diagnosis/analyze', {
+        userUuid: getUserUuidFromToken(),
+      });
 
       await axios.post('diagnosis/answers', formattedAnswers);
       navigate('/healthResult');

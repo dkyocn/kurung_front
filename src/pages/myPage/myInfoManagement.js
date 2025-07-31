@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import BirthDatePicker from '../../components/common/BirthDatePicker';
 import apiClient from '../../utils/axios';
 import '../../styles/myPage/myInfoManagement.css';
 
 function MyInfoManagement() {
   const navigate = useNavigate();
   const [birthDate, setBirthDate] = useState('');
-  const [showBirthDatePicker, setShowBirthDatePicker] = useState(false);
   const [profileImage, setProfileImage] = useState('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png');
   const [nickname, setNickname] = useState('');
   const [isNicknameChecked, setIsNicknameChecked] = useState(false);
@@ -15,6 +13,7 @@ function MyInfoManagement() {
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
   const [message, setMessage] = useState(''); // 메시지 상태 추가
   const [selectedFile, setSelectedFile] = useState(null); // 선택된 파일 상태 추가
+  const [userId, setUserId] = useState(''); // 사용자 ID 상태 추가
   const fileInputRef = useRef(null);
 
   // 로그인 상태 확인 및 기존 정보 불러오기
@@ -41,6 +40,7 @@ function MyInfoManagement() {
       setNickname(userData.userNick || '');
       setBirthDate(userData.userAge ? userData.userAge.split('T')[0] : ''); // LocalDateTime을 YYYY-MM-DD 형식으로 변환
       setGender(userData.userGender || '');
+      setUserId(userData.userId || ''); // 사용자 ID 설정
       if (userData.profileImg) {
         // 백엔드 서버 주소로 이미지 URL 수정
         const imageUrl = userData.profileImg.startsWith('http') 
@@ -58,17 +58,7 @@ function MyInfoManagement() {
     }
   };
 
-  const handleBirthDateClick = () => {
-    setShowBirthDatePicker(true);
-  };
 
-  const handleBirthDateConfirm = (date) => {
-    setBirthDate(date);
-  };
-
-  const handleBirthDateClose = () => {
-    setShowBirthDatePicker(false);
-  };
 
   // 프로필 이미지 클릭 핸들러
   const handleProfileImageClick = () => {
@@ -237,6 +227,11 @@ function MyInfoManagement() {
     }
   };
 
+  // 회원탈퇴 핸들러
+  const handleWithdrawal = () => {
+    navigate('/withdrawal');
+  };
+
   return (
     <div className="myinfo-outer">
       <div className="myinfo-inner">
@@ -263,13 +258,20 @@ function MyInfoManagement() {
                              <div className="myinfo-file-info" style={{ 
                  color: '#88C71F', 
                  fontSize: '12px', 
-                 marginTop: '5px' 
+                 marginTop: '6px' 
                }}>
                 선택된 파일: {selectedFile.name}
               </div>
             )}
           </div>
           <form className="myinfo-form" onSubmit={handleSaveProfile}>
+            {/* 새로운 박스 추가 */}
+            <div className="myinfo-new-box">
+              <div className="myinfo-new-content">
+                {userId}
+              </div>
+            </div>
+            
             <div className="myinfo-row">
               <label className="myinfo-label">닉네임</label>
                              <input 
@@ -303,31 +305,21 @@ function MyInfoManagement() {
                                        {isNicknameChecked ? '확인됨' : '중복확인'}
                  </button>
             </div>
-            <div className="myinfo-row">
-              <label className="myinfo-label">생년월일</label>
-              <input 
-                className="myinfo-input" 
-                type="text" 
-                placeholder="YYYY-MM-DD" 
-                value={birthDate}
-                readOnly
-                onClick={handleBirthDateClick}
-                style={{ cursor: 'pointer' }}
-              />
-              <span 
-                className="myinfo-calendar-icon" 
-                onClick={handleBirthDateClick}
-                style={{ cursor: 'pointer' }}
-              >
-                📅
-              </span>
-            </div>
+                         <div className="myinfo-row">
+               <label className="myinfo-label">생년월일</label>
+               <input 
+                 className="myinfo-input" 
+                 type="date" 
+                 value={birthDate}
+                 onChange={(e) => setBirthDate(e.target.value)}
+               />
+             </div>
             <div className="myinfo-row myinfo-gender-row">
               <button 
                 type="button" 
                 className="myinfo-gender-btn" 
                 style={{ 
-                  marginRight: '10px',
+                  marginRight: '1px',
                   backgroundColor: gender === 'FEMALE' ? '#8dc63f' : '#e9ecef',
                   color: gender === 'FEMALE' ? 'white' : '#495057'
                 }}
@@ -367,6 +359,12 @@ function MyInfoManagement() {
               {isLoading ? '저장 중...' : '저장'}
             </button>
           </div>
+          
+          {/* 회원탈퇴 문구 추가 */}
+          <div className="myinfo-withdrawal-text" onClick={handleWithdrawal}>
+            회원탈퇴
+          </div>
+          
           {message && (
                          <div className="myinfo-message" style={{ 
                color: message.includes('성공') ? '#88C71F' : '#ff6b6b',
@@ -380,14 +378,7 @@ function MyInfoManagement() {
         </div>
       </div>
       
-      {/* 생년월일 선택 모달 */}
-      {showBirthDatePicker && (
-        <BirthDatePicker
-          onConfirm={handleBirthDateConfirm}
-          onClose={handleBirthDateClose}
-          initialDate={birthDate ? new Date(birthDate) : null}
-        />
-      )}
+      
     </div>
   );
 }

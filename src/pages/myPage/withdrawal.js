@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import apiClient from '../../utils/axios';
 import '../../styles/myPage/withdrawal.css';
 import WithdrawalModal from '../../components/common/WithdrawalModal';
 
@@ -29,6 +30,42 @@ function Withdrawal() {
     '다른 앱 사용 예정',
     '기타',
   ];
+
+  // 비밀번호 검증 및 탈퇴 처리 함수
+  const handleWithdrawalSubmit = async () => {
+    // 비밀번호 입력 확인
+    if (!password.trim()) {
+      alert('현재 비밀번호를 입력해주세요.');
+      return;
+    }
+
+    // 동의 확인
+    if (!agree) {
+      alert('탈퇴 동의에 체크해주세요.');
+      return;
+    }
+
+    // 비밀번호 검증 API 호출
+    try {
+      const response = await apiClient.post('/user/verify-password', {
+        userPwd: password
+      });
+
+      if (response.data.success) {
+        // 비밀번호 검증 성공 시 모달 표시
+        setShowWithdrawalModal(true);
+      } else {
+        alert('비밀번호가 올바르지 않습니다.');
+      }
+    } catch (error) {
+      console.error('비밀번호 검증 오류:', error);
+      if (error.response?.status === 401) {
+        alert('비밀번호가 올바르지 않습니다.');
+      } else {
+        alert('비밀번호 검증 중 오류가 발생했습니다.');
+      }
+    }
+  };
 
   return (
     <div className="page-outer">
@@ -112,7 +149,7 @@ function Withdrawal() {
               <button 
                 className="withdrawal-submit-btn" 
                 type="button"
-                onClick={() => setShowWithdrawalModal(true)}
+                onClick={handleWithdrawalSubmit}
               >
                 회원 탈퇴
               </button>
@@ -124,11 +161,29 @@ function Withdrawal() {
       {/* 회원탈퇴 확인 모달 */}
       {showWithdrawalModal && (
         <WithdrawalModal
-          onConfirm={() => {
-            // 여기에 실제 탈퇴 로직 추가
-            console.log('회원탈퇴 처리:', { reason, customReason, password });
+          onConfirm={async () => {
+            try {
+              // 실제 탈퇴 API 호출
+              const response = await apiClient.delete('/user/withdrawal', {
+                data: { 
+                  reason, 
+                  customReason, 
+                  password 
+                }
+              });
+
+              if (response.data.success) {
+                alert('회원탈퇴가 완료되었습니다.');
+                localStorage.removeItem('accessToken');
+                navigate('/loginSelect');
+              } else {
+                alert('회원탈퇴 처리 중 오류가 발생했습니다.');
+              }
+            } catch (error) {
+              console.error('회원탈퇴 오류:', error);
+              alert('회원탈퇴 처리 중 오류가 발생했습니다.');
+            }
             setShowWithdrawalModal(false);
-            // API 호출 후 페이지 이동 등
           }}
           onCancel={() => setShowWithdrawalModal(false)}
           onClose={() => setShowWithdrawalModal(false)}

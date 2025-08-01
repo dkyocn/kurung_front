@@ -12,13 +12,12 @@
   padding-bottom: 40px;
 }
 .myinfo-box {
-  
   flex-direction: column;
   align-items: center;
   min-width: 600px;
   background: #fff;
   border-radius: 24px;
-  box-shadow: 0 4px 32px rgba(0,0,0,0.04);
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.04);
   padding: 48px 56px 90px 56px;
 }
 .myinfo-title {
@@ -29,6 +28,32 @@
   letter-spacing: 0.5px;
   text-align: left;
   width: 100%;
+}
+
+/* 헤더 영역 스타일 추가 */
+.myinfo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+.myinfo-modify-btn {
+  padding: 8px 16px;
+  background-color: #88c71f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.myinfo-modify-btn:hover {
+  background-color: #7ab31a;
+  transform: translateY(-1px);
 }
 .myinfo-profile-block {
   display: flex;
@@ -130,26 +155,26 @@
   cursor: pointer;
   margin-left: 10px;
   transition: all 0.2s ease;
-  background-color: #88C71F;
+  background-color: #88c71f;
   color: white;
 }
 .myinfo-check-btn:not(:disabled) {
-  background-color: #88C71F;
+  background-color: #88c71f;
   color: white;
 }
 .myinfo-check-btn:not(:disabled):hover {
-  background-color: #88C71F;
+  background-color: #88c71f;
 }
 .myinfo-check-btn.checked {
-  background-color: #88C71F;
+  background-color: #88c71f;
   color: white;
 }
 .myinfo-check-btn.checked:hover {
-  background-color: #88C71F;
+  background-color: #88c71f;
 }
 .myinfo-check-btn:disabled {
   background-color: #e9ecef;
-  color: #88C71F;
+  color: #88c71f;
   cursor: not-allowed;
 }
 .myinfo-calendar-icon {
@@ -209,7 +234,7 @@
 }
 
 .myinfo-save-btn:hover {
-  background: #88C71F;
+  background: #88c71f;
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(141, 198, 63, 0.4);
 }
@@ -218,7 +243,7 @@
 .myinfo-withdrawal-text {
   text-align: center;
   margin-top: 20px;
-  color: #ff6b6b;
+  color: #f45757;
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
@@ -227,7 +252,7 @@
 }
 
 .myinfo-withdrawal-text:hover {
-  color: #ff5252;
+  color: #f45757;
 }
 
 /* 메시지 스타일 추가 */
@@ -258,6 +283,51 @@
   background: #8dc63f;
   transform: none;
   box-shadow: none;
+}
 
-  
+/* 하단 버튼 영역 스타일 추가 */
+.myinfo-bottom-buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 430px;
+  margin-top: 40px;
+  gap: 20px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.myinfo-withdrawal-btn {
+  padding: 10px 20px;
+  background-color: #f45757;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  flex: 1;
+}
+
+.myinfo-withdrawal-btn:hover {
+  background-color: #f45757;
+  transform: translateY(-1px);
+}
+
+.myinfo-logout-btn {
+  padding: 10px 20px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  flex: 1;
+}
+
+.myinfo-logout-btn:hover {
+  background-color: #5a6268;
+  transform: translateY(-1px);
 }

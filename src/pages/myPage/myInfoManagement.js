@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../../utils/axios';
+import CancleButton from '../../components/buttons/CancleButton';
+import DeleteButton from '../../components/buttons/DeleteButton';
+import UpdateButton from '../../components/buttons/UpdateButton';
 import '../../styles/myPage/myInfoManagement.css';
 
 function MyInfoManagement() {
@@ -10,12 +13,14 @@ function MyInfoManagement() {
     'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'
   );
   const [nickname, setNickname] = useState('');
+  const [originalNickname, setOriginalNickname] = useState(''); // 원래 닉네임 상태 추가
   const [isNicknameChecked, setIsNicknameChecked] = useState(false);
   const [gender, setGender] = useState(''); // 성별 상태 추가
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
   const [message, setMessage] = useState(''); // 메시지 상태 추가
   const [selectedFile, setSelectedFile] = useState(null); // 선택된 파일 상태 추가
   const [userId, setUserId] = useState(''); // 사용자 ID 상태 추가
+  const [isEditMode, setIsEditMode] = useState(false); // 수정 모드 상태 추가
   const fileInputRef = useRef(null);
 
   // 로그인 상태 확인 및 기존 정보 불러오기
@@ -23,7 +28,7 @@ function MyInfoManagement() {
     const accessToken = localStorage.getItem('accessToken');
     if (!accessToken) {
       console.log('로그인되지 않은 상태 - 로그인 페이지로 이동');
-      navigate('/loginSelect');
+      navigate('/');
       return;
     }
     console.log('로그인된 상태 - 마이페이지 접근 허용');
@@ -40,6 +45,7 @@ function MyInfoManagement() {
       const userData = response.data;
 
       setNickname(userData.userNick || '');
+      setOriginalNickname(userData.userNick || ''); // 원래 닉네임 저장
       setBirthDate(userData.userAge ? userData.userAge.split('T')[0] : ''); // LocalDateTime을 YYYY-MM-DD 형식으로 변환
       setGender(userData.userGender || '');
       setUserId(userData.userId || ''); // 사용자 ID 설정
@@ -139,8 +145,6 @@ function MyInfoManagement() {
 
   // 프로필 저장 핸들러
   const handleSaveProfile = async (e) => {
-    e.preventDefault();
-
     // 닉네임이 입력된 경우에만 중복 확인 필수
     if (nickname.trim()) {
       if (nickname.trim().length > 20) {
@@ -148,7 +152,8 @@ function MyInfoManagement() {
         return;
       }
 
-      if (!isNicknameChecked) {
+      // 닉네임이 변경되었을 때만 중복 확인 필요
+      if (nickname.trim() !== originalNickname && !isNicknameChecked) {
         alert('닉네임 중복 확인을 해주세요.');
         return;
       }
@@ -207,6 +212,8 @@ function MyInfoManagement() {
         alert('프로필이 성공적으로 저장되었습니다!');
         setMessage('프로필이 성공적으로 저장되었습니다!');
         setSelectedFile(null); // 파일 선택 상태 초기화
+        setOriginalNickname(nickname.trim()); // 원래 닉네임 업데이트
+        setIsEditMode(false); // 수정 모드 종료
         // 성공 후 페이지 새로고침
         window.location.reload();
       } else {
@@ -222,11 +229,11 @@ function MyInfoManagement() {
 
   // 취소 핸들러
   const handleCancel = () => {
-    if (
-      window.confirm('변경사항이 저장되지 않습니다. 정말 취소하시겠습니까?')
-    ) {
-      navigate('/myPage');
-    }
+    setIsEditMode(false);
+    // 변경사항 초기화
+    loadUserInfo();
+    setSelectedFile(null);
+    setIsNicknameChecked(false);
   };
 
   // 회원탈퇴 핸들러
@@ -234,11 +241,57 @@ function MyInfoManagement() {
     navigate('/withdrawal');
   };
 
+  // 로그아웃 핸들러
+  const handleLogout = async () => {
+    if (window.confirm('로그아웃 하시겠습니까?')) {
+      try {
+        // 백엔드에 로그아웃 요청
+        await apiClient.post('/logout');
+        console.log('백엔드 로그아웃 성공');
+      } catch (error) {
+        console.error('백엔드 로그아웃 오류:', error);
+        // 백엔드 오류가 있어도 프론트엔드에서는 로그아웃 처리
+      } finally {
+        // 프론트엔드에서 토큰 제거 및 페이지 이동
+        localStorage.removeItem('accessToken');
+        navigate('/');
+      }
+    }
+  };
+
+  // 수정하기 핸들러
+  const handleModify = () => {
+    setIsEditMode(true);
+    console.log('수정 모드 활성화');
+  };
+
   return (
     <div className="myinfo-outer">
       <div className="myinfo-inner">
         <div className="myinfo-box">
-          <h1 className="myinfo-title">내 정보 관리</h1>
+          <div className="myinfo-header">
+            <h1 className="myinfo-title">내 정보 관리</h1>
+            {!isEditMode && (
+              <button
+                type="button"
+                className="myinfo-modify-btn"
+                onClick={handleModify}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: '#88C71F',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  width: '84px',
+                }}
+              >
+                수정
+              </button>
+            )}
+          </div>
           <div className="myinfo-profile-block">
             <img
               className="myinfo-profile-img"
@@ -286,6 +339,7 @@ function MyInfoManagement() {
                 onChange={handleNicknameChange}
                 maxLength={20}
                 placeholder="닉네임 입력 (선택사항, 20자 이내)"
+                disabled={!isEditMode}
                 style={{
                   borderColor:
                     nickname && !isNicknameChecked
@@ -293,13 +347,18 @@ function MyInfoManagement() {
                       : isNicknameChecked
                         ? '#88C71F'
                         : undefined,
+                  opacity: isEditMode ? 1 : 0.6,
                 }}
               />
               <button
                 type="button"
                 className="myinfo-check-btn"
                 onClick={handleNicknameCheck}
-                disabled={!nickname.trim()}
+                disabled={
+                  !nickname.trim() ||
+                  !isEditMode ||
+                  nickname.trim() === originalNickname
+                }
                 style={{
                   marginLeft: '1px',
                   padding: '8px 12px',
@@ -307,8 +366,14 @@ function MyInfoManagement() {
                   color: 'white',
                   border: 'none',
                   borderRadius: '4px',
-                  cursor: nickname.trim() ? 'pointer' : 'not-allowed',
+                  cursor:
+                    nickname.trim() &&
+                    isEditMode &&
+                    nickname.trim() !== originalNickname
+                      ? 'pointer'
+                      : 'not-allowed',
                   fontSize: '14px',
+                  opacity: isEditMode ? 1 : 0.6,
                 }}
               >
                 {isNicknameChecked ? '확인됨' : '중복확인'}
@@ -321,16 +386,26 @@ function MyInfoManagement() {
                 type="date"
                 value={birthDate}
                 onChange={(e) => setBirthDate(e.target.value)}
+                disabled={!isEditMode}
+                style={{
+                  opacity: isEditMode ? 1 : 0.6,
+                }}
               />
+            </div>
+            <div className="myinfo-row">
+              <label className="myinfo-label">성별</label>
             </div>
             <div className="myinfo-row myinfo-gender-row">
               <button
                 type="button"
                 className="myinfo-gender-btn"
+                disabled={!isEditMode}
                 style={{
                   marginRight: '1px',
                   backgroundColor: gender === 'FEMALE' ? '#8dc63f' : '#e9ecef',
                   color: gender === 'FEMALE' ? 'white' : '#495057',
+                  opacity: isEditMode ? 1 : 0.6,
+                  cursor: isEditMode ? 'pointer' : 'not-allowed',
                 }}
                 onClick={() => handleGenderSelect('FEMALE')}
               >
@@ -339,10 +414,13 @@ function MyInfoManagement() {
               <button
                 type="button"
                 className="myinfo-gender-btn"
+                disabled={!isEditMode}
                 style={{
                   marginLeft: '10px',
                   backgroundColor: gender === 'MALE' ? '#8dc63f' : '#e9ecef',
                   color: gender === 'MALE' ? 'white' : '#495057',
+                  opacity: isEditMode ? 1 : 0.6,
+                  cursor: isEditMode ? 'pointer' : 'not-allowed',
                 }}
                 onClick={() => handleGenderSelect('MALE')}
               >
@@ -350,28 +428,20 @@ function MyInfoManagement() {
               </button>
             </div>
           </form>
-          <div className="myinfo-btn-row">
-            <button
-              type="button"
-              className="myinfo-cancel-btn"
-              onClick={handleCancel}
-              disabled={isLoading}
-            >
-              취소
-            </button>
-            <button
-              type="submit"
-              className="myinfo-save-btn"
-              onClick={handleSaveProfile}
-              disabled={isLoading}
-            >
-              {isLoading ? '저장 중...' : '저장'}
-            </button>
-          </div>
 
-          {/* 회원탈퇴 문구 추가 */}
-          <div className="myinfo-withdrawal-text" onClick={handleWithdrawal}>
-            회원탈퇴
+          {/* 하단 버튼 영역 */}
+          <div className="myinfo-bottom-buttons">
+            {isEditMode ? (
+              <>
+                <CancleButton label="취소" onClick={handleCancel} />
+                <UpdateButton label="수정" onClick={handleSaveProfile} />
+              </>
+            ) : (
+              <>
+                <DeleteButton label="회원탈퇴" onClick={handleWithdrawal} />
+                <CancleButton label="로그아웃" onClick={handleLogout} />
+              </>
+            )}
           </div>
 
           {message && (

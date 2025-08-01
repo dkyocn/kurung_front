@@ -14,7 +14,7 @@ const DeleteButton = ({ label = '삭제', link, onClick }) => {
 
   return (
     <button className="delete-button" onClick={handleClick}>
-      삭제
+      {label}
     </button>
   );
 };
